@@ -1,0 +1,369 @@
+/* ==========================================================================
+   VARIABLES Y CONFIGURACIÓN GLOBAL
+   ========================================================================== */
+   :root {
+    --color-primary: #001C8D;
+    --color-secondary: #DD0B0B;
+    --color-light: #f8f9fa;
+    --color-dark: #333;
+    --color-gray: #6c757d;
+    --color-white: #ffffff;
+    --transition-speed: 0.3s;
+    --border-radius: 8px;
+    --box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    --box-shadow-hover: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* ==========================================================================
+   ESTILOS BASE
+   ========================================================================== */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f5f5f5;
+    line-height: 1.6;
+}
+
+a {
+    text-decoration: none;
+    color: var(--color-primary);
+    transition: color var(--transition-speed);
+}
+
+a:hover {
+    color: var(--color-secondary);
+}
+
+img {
+    max-width: 100%;
+}
+
+/* ==========================================================================
+   UTILIDADES
+   ========================================================================== */
+.fade-with-slide {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity var(--transition-speed) ease-in-out, 
+                transform var(--transition-speed) ease-in-out;
+}
+
+.fade-with-slide.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ==========================================================================
+   COMPONENTES - NAVBAR
+   ========================================================================== */
+.navbar {
+    box-shadow: var(--box-shadow);
+}
+
+.navbar-brand img {
+    max-height: 40px;
+}
+
+.navbar__menu-item {
+    position: relative;
+}
+
+.navbar__dropdown {
+    border-radius: var(--border-radius);
+}
+
+/* ==========================================================================
+   COMPONENTES - BOTONES
+   ========================================================================== */
+.btn-compuya {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    border: none;
+    transition: background-color var(--transition-speed), transform var(--transition-speed);
+    border-radius: var(--border-radius);
+    padding: 0.5rem 1rem;
+}
+
+.btn-compuya:hover {
+    background-color: #001463;
+    color: var(--color-white);
+    transform: translateY(-2px);
+}
+
+.btn-compuya-secondary {
+    background-color: var(--color-secondary);
+    color: var(--color-white);
+    border: none;
+    transition: background-color var(--transition-speed), transform var(--transition-speed);
+    border-radius: var(--border-radius);
+    padding: 0.5rem 1rem;
+}
+
+.btn-compuya-secondary:hover {
+    background-color: #b30000;
+    color: var(--color-white);
+    transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   COMPONENTES - TARJETAS DE PRODUCTOS
+   ========================================================================== */
+.product-card {
+    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+    height: 100%;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--box-shadow);
+    background-color: var(--color-white);
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--box-shadow-hover);
+}
+
+.product-card__image {
+    height: 200px;
+    object-fit: contain;
+    padding: 15px;
+    background-color: var(--color-white);
+}
+
+.product-card__body {
+    padding: 1rem;
+}
+
+.product-card__title {
+    font-weight: 500;
+    height: 40px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.product-card__price {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: 0.5rem;
+}
+
+.product-card__discount-price {
+    color: var(--color-secondary);
+}
+
+.product-card__original-price {
+    text-decoration: line-through;
+    color: var(--color-gray);
+    font-size: 0.9rem;
+}
+
+.product-card__badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: var(--color-secondary);
+    color: var(--color-white);
+    font-size: 0.8rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--border-radius);
+}
+
+.product-card__rating {
+    margin-bottom: 0.5rem;
+}
+
+.product-card__button {
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+/* ==========================================================================
+   COMPONENTES - CATEGORÍAS
+   ========================================================================== */
+.category-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--border-radius);
+    margin-bottom: 20px;
+    box-shadow: var(--box-shadow);
+}
+
+.category-card__image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    transition: transform var(--transition-speed);
+}
+
+.category-card:hover .category-card__image {
+    transform: scale(1.05);
+}
+
+.category-card__overlay {
+    background: rgba(0, 28, 141, 0.7);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.category-card__title {
+    color: var(--color-white);
+    font-weight: 600;
+    text-align: center;
+}
+
+/* ==========================================================================
+   COMPONENTES - CARRUSEL
+   ========================================================================== */
+.carousel-item img {
+    height: 400px;
+    object-fit: cover;
+}
+
+.carousel-caption {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+}
+
+/* ==========================================================================
+   COMPONENTES - SERVICIOS
+   ========================================================================== */
+.service-card {
+    padding: 1.5rem;
+    background-color: var(--color-white);
+    border-radius: var(--border-radius);
+    text-align: center;
+    transition: transform var(--transition-speed);
+    box-shadow: var(--box-shadow);
+    height: 100%;
+}
+
+.service-card:hover {
+    transform: translateY(-5px);
+}
+
+.service-card__icon {
+    font-size: 3rem;
+    color: var(--color-primary);
+    margin-bottom: 1rem;
+}
+
+.service-card__title {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+/* ==========================================================================
+   COMPONENTES - FOOTER
+   ========================================================================== */
+.footer {
+    background-color: var(--color-dark);
+    color: var(--color-white);
+    padding: 3rem 0 1.5rem;
+    margin-top: 3rem;
+}
+
+.footer__title {
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.footer__link {
+    color: var(--color-white);
+    transition: color var(--transition-speed);
+}
+
+.footer__link:hover {
+    color: var(--color-secondary);
+}
+
+.footer__social {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.footer__payment {
+    margin-top: 1rem;
+}
+
+.footer__copyright {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ==========================================================================
+   SECCIONES - PÁGINA DE PRODUCTO
+   ========================================================================== */
+.product-detail__image-main {
+    width: 100%;
+    height: 400px;
+    object-fit: contain;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: var(--border-radius);
+    padding: 0.5rem;
+}
+
+.product-detail__image-thumbnail {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    padding: 5px;
+    border-radius: var(--border-radius);
+    transition: border-color var(--transition-speed);
+}
+
+.product-detail__image-thumbnail.active {
+    border-color: var(--color-primary);
+}
+
+.product-detail__title {
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.product-detail__price {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: 1rem;
+}
+
+/* ==========================================================================
+    MEDIA QUERIES
+   ========================================================================== */
+@media (max-width: 992px) {
+    .carousel-item img {
+        height: 350px;
+    }
+}
+
+@media (max-width: 768px) {
+    .carousel-item img {
+        height: 300px;
+    }
+    
+    .product-detail__image-main {
+        height: 300px;
+    }
+    
+    .product-card__title {
+        height: auto;
+        max-height: 40px;
+    }
+}
+
+@media (max-width: 576px) {
+    .carousel-item img {
+        height: 250px;
+    }
+}
