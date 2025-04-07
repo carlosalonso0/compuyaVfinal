@@ -31,6 +31,21 @@ $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
 
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3">Gestión de Productos</h1>
+        <div>
+            <a href="importar.php" class="btn btn-info me-2">
+                <i class="fas fa-file-import"></i> Importar
+            </a>
+            <a href="crear.php" class="btn btn-primary me-2">
+                <i class="fas fa-plus-circle"></i> Añadir Producto
+            </a>
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteAllModal">
+                <i class="fas fa-trash-alt"></i> Eliminar Todos
+            </button>
+        </div>
+    </div>
+
     <div class="card shadow mb-4">
         <div class="card-body">
             <div class="table-responsive">
@@ -133,7 +148,35 @@ $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
        </div>
    </div>
 </div>
-
+<!-- Modal de confirmación para eliminar todos los productos -->
+<div class="modal fade" id="deleteAllModal" tabindex="-1" aria-labelledby="deleteAllModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteAllModalLabel">Confirmar eliminación masiva</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-danger fw-bold">¡ADVERTENCIA! Esta acción eliminará TODOS los productos de la base de datos.</p>
+                    <p>Esta operación no se puede deshacer. ¿Estás seguro de que deseas continuar?</p>
+                    <div class="alert alert-warning">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="confirmDeleteAll" required>
+                            <label class="form-check-label" for="confirmDeleteAll">
+                                Entiendo que todos los productos serán eliminados permanentemente
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <form action="eliminar_todos.php" method="POST" id="delete-all-form">
+                        <button type="submit" class="btn btn-danger" id="btnDeleteAll" disabled>Eliminar Todos los Productos</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 <script>
    document.addEventListener('DOMContentLoaded', function() {
        // Modal de confirmación para eliminar producto
@@ -154,6 +197,16 @@ $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
            });
        });
    });
+
+    // Habilitar/deshabilitar botón de eliminar todos según checkbox
+const confirmDeleteAllCheckbox = document.getElementById('confirmDeleteAll');
+const btnDeleteAll = document.getElementById('btnDeleteAll');
+
+if (confirmDeleteAllCheckbox && btnDeleteAll) {
+    confirmDeleteAllCheckbox.addEventListener('change', function() {
+        btnDeleteAll.disabled = !this.checked;
+    });
+}
 </script>
 
 <?php

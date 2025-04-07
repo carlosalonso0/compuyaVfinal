@@ -8,8 +8,7 @@ if(!isset($_SESSION['admin_id']) || empty($_SESSION['admin_id'])) {
 }
 
 // Configuración e inicialización de base de datos
-require_once '../config/database.php';
-$database = new Database();
+require_once $_SERVER['DOCUMENT_ROOT'] . '/compuya/config/database.php';$database = new Database();
 $db = $database->connect();
 
 // Definir URL base del panel admin

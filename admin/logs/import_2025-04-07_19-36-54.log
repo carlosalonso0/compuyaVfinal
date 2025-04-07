@@ -1,0 +1,13 @@
+2025-04-07 19:36:54 - Iniciando proceso de importación
+2025-04-07 19:36:54 - Archivo: subida1.csv
+2025-04-07 19:36:54 - Encabezados encontrados: nombre, precio, categoria_id, descripcion, descripcion_corta, precio_oferta, stock, marca, modelo, caracteristicas, destacado, nuevo, activo
+2025-04-07 19:36:54 - Procesando fila 2
+2025-04-07 19:36:54 - Intentando insertar producto: HP-SMART-TANK-530-MULTIFUNCIONAL-WIFI
+2025-04-07 19:36:54 - Producto insertado correctamente: HP-SMART-TANK-530-MULTIFUNCIONAL-WIFI
+2025-04-07 19:36:54 - Procesando fila 3
+2025-04-07 19:36:54 - Intentando insertar producto: EPSON-ECOTANK-L3250-MULTIFUNCIONAL-WIFI
+2025-04-07 19:36:54 - Producto insertado correctamente: EPSON-ECOTANK-L3250-MULTIFUNCIONAL-WIFI
+2025-04-07 19:36:54 - Procesando fila 4
+2025-04-07 19:36:54 - Intentando insertar producto: HP-DESKJET-2874-INYECCION-COMPACTA
+2025-04-07 19:36:54 - Producto insertado correctamente: HP-DESKJET-2874-INYECCION-COMPACTA
+2025-04-07 19:36:54 - Proceso de importación completado: 3 productos importados, 0 errores
