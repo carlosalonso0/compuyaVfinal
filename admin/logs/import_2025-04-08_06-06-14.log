@@ -1,0 +1,55 @@
+2025-04-08 06:06:14 - Iniciando proceso de importación
+2025-04-08 06:06:14 - Archivo: prueba2.CSV
+2025-04-08 06:06:14 - Encabezados encontrados: nombre, precio, categoria_id, descripcion, descripcion_corta, precio_oferta, stock, marca, modelo, caracteristicas, destacado, nuevo, activo
+2025-04-08 06:06:14 - Producto importado: HP-SMART-TANK-530-MULTIFUNCIONAL-WIFI
+2025-04-08 06:06:14 - Producto importado: EPSON-ECOTANK-L3250-MULTIFUNCIONAL-WIFI
+2025-04-08 06:06:14 - Producto importado: HP-DESKJET-2874-INYECCION-COMPACTA
+2025-04-08 06:06:14 - Fila 5: Categoría con ID 599 no es válida
+2025-04-08 06:06:14 - Fila 6: Categoría con ID 299 no es válida
+2025-04-08 06:06:14 - Producto importado: AMD-RADEON-RX580-GAMING-8GB
+2025-04-08 06:06:14 - Producto importado: AMD-RADEON-RX6500XT-GAMING-4GB
+2025-04-08 06:06:14 - Producto importado: NVIDIA-GEFORCE-GT730-4GB-DDR3
+2025-04-08 06:06:14 - Producto importado: INTEL-CORE-I5-12400-12VA
+2025-04-08 06:06:14 - Producto importado: INTEL-CORE-I5-11400-11VA
+2025-04-08 06:06:14 - Producto importado: INTEL-CORE-I5-10400F-10MA
+2025-04-08 06:06:14 - Producto importado: INTEL-CORE-I3-10100F-10MA
+2025-04-08 06:06:14 - Producto importado: INTEL-CORE-I5-9400-9NA
+2025-04-08 06:06:14 - Producto importado: INTEL-CORE-I7-7700-7MA
+2025-04-08 06:06:14 - Producto importado: INTEL-CORE-I5-7400-7MA
+2025-04-08 06:06:14 - Producto importado: INTEL-CORE-I5-9400F-9NA
+2025-04-08 06:06:14 - Producto importado: INTEL-CORE-I5-10500-10MA
+2025-04-08 06:06:14 - Producto importado: INTEL-CORE-I5-12400F-12VA
+2025-04-08 06:06:14 - Producto importado: INTEL-CORE-I3-12100F-12VA
+2025-04-08 06:06:14 - Producto importado: INTEL-CORE-I7-9700KF-9NA
+2025-04-08 06:06:14 - Fila 22: Categoría con ID 299 no es válida
+2025-04-08 06:06:14 - Fila 23: Categoría con ID 499 no es válida
+2025-04-08 06:06:14 - Producto importado: AMD-RYZEN-5-8600G-8VA
+2025-04-08 06:06:14 - Producto importado: AMD-RYZEN-7-5700G-5TA
+2025-04-08 06:06:14 - Producto importado: AMD-RYZEN-5-2400G-2DA
+2025-04-08 06:06:14 - Producto importado: AMD-RYZEN-5-3600-3RA
+2025-04-08 06:06:14 - Producto importado: AMD-RYZEN-3-2200G-2DA
+2025-04-08 06:06:14 - Error en fila 29: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`compuya_db`.`productos`, CONSTRAINT `productos_ibfk_1` FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`id`) ON DELETE SET NULL)
+2025-04-08 06:06:14 - Error en fila 30: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`compuya_db`.`productos`, CONSTRAINT `productos_ibfk_1` FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`id`) ON DELETE SET NULL)
+2025-04-08 06:06:14 - Error en fila 31: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`compuya_db`.`productos`, CONSTRAINT `productos_ibfk_1` FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`id`) ON DELETE SET NULL)
+2025-04-08 06:06:14 - Error en fila 32: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`compuya_db`.`productos`, CONSTRAINT `productos_ibfk_1` FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`id`) ON DELETE SET NULL)
+2025-04-08 06:06:14 - Error en fila 33: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`compuya_db`.`productos`, CONSTRAINT `productos_ibfk_1` FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`id`) ON DELETE SET NULL)
+2025-04-08 06:06:14 - Error en fila 34: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`compuya_db`.`productos`, CONSTRAINT `productos_ibfk_1` FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`id`) ON DELETE SET NULL)
+2025-04-08 06:06:14 - Error en fila 35: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`compuya_db`.`productos`, CONSTRAINT `productos_ibfk_1` FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`id`) ON DELETE SET NULL)
+2025-04-08 06:06:14 - Error en fila 36: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`compuya_db`.`productos`, CONSTRAINT `productos_ibfk_1` FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`id`) ON DELETE SET NULL)
+2025-04-08 06:06:14 - Fila 37: Categoría con ID 299 no es válida
+2025-04-08 06:06:14 - Fila 38: Categoría con ID 499 no es válida
+2025-04-08 06:06:14 - Error en fila 39: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`compuya_db`.`productos`, CONSTRAINT `productos_ibfk_1` FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`id`) ON DELETE SET NULL)
+2025-04-08 06:06:14 - Fila 40: Categoría con ID 299 no es válida
+2025-04-08 06:06:14 - Error en fila 41: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`compuya_db`.`productos`, CONSTRAINT `productos_ibfk_1` FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`id`) ON DELETE SET NULL)
+2025-04-08 06:06:14 - Error en fila 42: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`compuya_db`.`productos`, CONSTRAINT `productos_ibfk_1` FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`id`) ON DELETE SET NULL)
+2025-04-08 06:06:14 - Error en fila 43: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`compuya_db`.`productos`, CONSTRAINT `productos_ibfk_1` FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`id`) ON DELETE SET NULL)
+2025-04-08 06:06:14 - Error en fila 44: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`compuya_db`.`productos`, CONSTRAINT `productos_ibfk_1` FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`id`) ON DELETE SET NULL)
+2025-04-08 06:06:14 - Error en fila 45: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`compuya_db`.`productos`, CONSTRAINT `productos_ibfk_1` FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`id`) ON DELETE SET NULL)
+2025-04-08 06:06:14 - Error en fila 46: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`compuya_db`.`productos`, CONSTRAINT `productos_ibfk_1` FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`id`) ON DELETE SET NULL)
+2025-04-08 06:06:14 - Error en fila 47: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`compuya_db`.`productos`, CONSTRAINT `productos_ibfk_1` FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`id`) ON DELETE SET NULL)
+2025-04-08 06:06:14 - Error en fila 48: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`compuya_db`.`productos`, CONSTRAINT `productos_ibfk_1` FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`id`) ON DELETE SET NULL)
+2025-04-08 06:06:14 - Error en fila 49: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`compuya_db`.`productos`, CONSTRAINT `productos_ibfk_1` FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`id`) ON DELETE SET NULL)
+2025-04-08 06:06:14 - Error en fila 50: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`compuya_db`.`productos`, CONSTRAINT `productos_ibfk_1` FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`id`) ON DELETE SET NULL)
+2025-04-08 06:06:14 - Fila 51: Categoría con ID 299 no es válida
+2025-04-08 06:06:14 - Fila 52: Categoría con ID 99 no es válida
+2025-04-08 06:06:14 - Proceso de importación completado: 23 productos importados, 28 errores

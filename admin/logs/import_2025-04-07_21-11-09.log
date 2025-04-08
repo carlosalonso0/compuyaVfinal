@@ -1,0 +1,55 @@
+2025-04-07 21:11:09 - Iniciando proceso de importación
+2025-04-07 21:11:09 - Archivo: prueba2.CSV
+2025-04-07 21:11:09 - Encabezados encontrados: nombre, precio, categoria_id, descripcion, descripcion_corta, precio_oferta, stock, marca, modelo, caracteristicas, destacado, nuevo, activo
+2025-04-07 21:11:09 - Producto importado: HP-SMART-TANK-530-MULTIFUNCIONAL-WIFI
+2025-04-07 21:11:09 - Producto importado: EPSON-ECOTANK-L3250-MULTIFUNCIONAL-WIFI
+2025-04-07 21:11:09 - Producto importado: HP-DESKJET-2874-INYECCION-COMPACTA
+2025-04-07 21:11:09 - Fila 5: Categoría con ID 599 no existe
+2025-04-07 21:11:09 - Fila 6: Categoría con ID 299 no existe
+2025-04-07 21:11:09 - Producto importado: AMD-RADEON-RX580-GAMING-8GB
+2025-04-07 21:11:09 - Producto importado: AMD-RADEON-RX6500XT-GAMING-4GB
+2025-04-07 21:11:09 - Producto importado: NVIDIA-GEFORCE-GT730-4GB-DDR3
+2025-04-07 21:11:09 - Producto importado: INTEL-CORE-I5-12400-12VA
+2025-04-07 21:11:09 - Producto importado: INTEL-CORE-I5-11400-11VA
+2025-04-07 21:11:09 - Producto importado: INTEL-CORE-I5-10400F-10MA
+2025-04-07 21:11:09 - Producto importado: INTEL-CORE-I3-10100F-10MA
+2025-04-07 21:11:09 - Producto importado: INTEL-CORE-I5-9400-9NA
+2025-04-07 21:11:09 - Producto importado: INTEL-CORE-I7-7700-7MA
+2025-04-07 21:11:09 - Producto importado: INTEL-CORE-I5-7400-7MA
+2025-04-07 21:11:09 - Producto importado: INTEL-CORE-I5-9400F-9NA
+2025-04-07 21:11:09 - Producto importado: INTEL-CORE-I5-10500-10MA
+2025-04-07 21:11:09 - Producto importado: INTEL-CORE-I5-12400F-12VA
+2025-04-07 21:11:09 - Producto importado: INTEL-CORE-I3-12100F-12VA
+2025-04-07 21:11:09 - Producto importado: INTEL-CORE-I7-9700KF-9NA
+2025-04-07 21:11:09 - Fila 22: Categoría con ID 299 no existe
+2025-04-07 21:11:09 - Fila 23: Categoría con ID 499 no existe
+2025-04-07 21:11:09 - Producto importado: AMD-RYZEN-5-8600G-8VA
+2025-04-07 21:11:09 - Producto importado: AMD-RYZEN-7-5700G-5TA
+2025-04-07 21:11:09 - Producto importado: AMD-RYZEN-5-2400G-2DA
+2025-04-07 21:11:09 - Producto importado: AMD-RYZEN-5-3600-3RA
+2025-04-07 21:11:09 - Producto importado: AMD-RYZEN-3-2200G-2DA
+2025-04-07 21:11:09 - Fila 29: Categoría con ID 11 no existe
+2025-04-07 21:11:09 - Fila 30: Categoría con ID 11 no existe
+2025-04-07 21:11:09 - Fila 31: Categoría con ID 11 no existe
+2025-04-07 21:11:09 - Fila 32: Categoría con ID 11 no existe
+2025-04-07 21:11:09 - Fila 33: Categoría con ID 11 no existe
+2025-04-07 21:11:09 - Fila 34: Categoría con ID 11 no existe
+2025-04-07 21:11:09 - Fila 35: Categoría con ID 11 no existe
+2025-04-07 21:11:09 - Fila 36: Categoría con ID 11 no existe
+2025-04-07 21:11:09 - Fila 37: Categoría con ID 299 no existe
+2025-04-07 21:11:09 - Fila 38: Categoría con ID 499 no existe
+2025-04-07 21:11:09 - Fila 39: Categoría con ID 11 no existe
+2025-04-07 21:11:09 - Fila 40: Categoría con ID 299 no existe
+2025-04-07 21:11:09 - Fila 41: Categoría con ID 11 no existe
+2025-04-07 21:11:09 - Fila 42: Categoría con ID 11 no existe
+2025-04-07 21:11:09 - Fila 43: Categoría con ID 11 no existe
+2025-04-07 21:11:09 - Fila 44: Categoría con ID 11 no existe
+2025-04-07 21:11:09 - Fila 45: Categoría con ID 11 no existe
+2025-04-07 21:11:09 - Fila 46: Categoría con ID 11 no existe
+2025-04-07 21:11:09 - Fila 47: Categoría con ID 11 no existe
+2025-04-07 21:11:09 - Fila 48: Categoría con ID 11 no existe
+2025-04-07 21:11:09 - Fila 49: Categoría con ID 11 no existe
+2025-04-07 21:11:09 - Fila 50: Categoría con ID 11 no existe
+2025-04-07 21:11:09 - Fila 51: Categoría con ID 299 no existe
+2025-04-07 21:11:09 - Fila 52: Categoría con ID 99 no existe
+2025-04-07 21:11:09 - Proceso de importación completado: 23 productos importados, 28 errores

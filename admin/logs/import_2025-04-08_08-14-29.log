@@ -1,0 +1,942 @@
+2025-04-08 08:14:29 - Iniciando proceso de importación
+2025-04-08 08:14:29 - Archivo: prueba2.CSV
+2025-04-08 08:14:29 - Categoría válida encontrada: ID 1 - Periféricos
+2025-04-08 08:14:29 - Categoría válida encontrada: ID 2 - Monitores
+2025-04-08 08:14:29 - Categoría válida encontrada: ID 3 - Laptops
+2025-04-08 08:14:29 - Categoría válida encontrada: ID 4 - Impresoras
+2025-04-08 08:14:29 - Categoría válida encontrada: ID 5 - Componentes
+2025-04-08 08:14:29 - Categoría válida encontrada: ID 6 - PCs Armadas
+2025-04-08 08:14:29 - Categoría válida encontrada: ID 7 - Cases
+2025-04-08 08:14:29 - Categoría válida encontrada: ID 8 - Procesadores
+2025-04-08 08:14:29 - Categoría válida encontrada: ID 9 - Tarjetas
+2025-04-08 08:14:29 - Categoría válida encontrada: ID 10 - Placas
+2025-04-08 08:14:29 - Categorías válidas para importación: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+2025-04-08 08:14:29 - Encabezados encontrados: nombre, precio, categoria_id, descripcion, descripcion_corta, precio_oferta, stock, marca, modelo, caracteristicas, destacado, nuevo, activo
+2025-04-08 08:14:29 - Procesando fila 2: Array
+(
+    [nombre] => HP-SMART-TANK-530-MULTIFUNCIONAL-WIFI
+    [precio] => 699.00
+    [categoria_id] => 4
+    [descripcion] => La impresora HP Smart Tank 530 es una solución integral para impresión, escaneo y copia diseñada para usuarios que buscan alta eficiencia y bajo costo por página. Con su innovador sistema de tanques de tinta continua, esta multifuncional ofrece una impresión de alta calidad y económica para hogares y pequeñas oficinas. Incluye tecnología de recarga sin derrames, lo que facilita el mantenimiento y reduce los costos de impresión. Su conectividad Wi-Fi permite imprimir desde múltiples dispositivos, mientras que la aplicación HP Smart simplifica la gestión de impresión desde smartphones y tablets.
+    [descripcion_corta] => Impresora multifuncional con sistema de tanques de tinta continua y conexión WiFi
+    [precio_oferta] => 549.00
+    [stock] => 25
+    [marca] => HP
+    [modelo] => Smart Tank 530
+    [caracteristicas] => Sistema de tanques de tinta\nImpresión, escaneo y copia\nConexión WiFi\nAplicación HP Smart\nBajo costo por página
+    [destacado] => true
+    [nuevo] => true
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Producto importado: HP-SMART-TANK-530-MULTIFUNCIONAL-WIFI
+2025-04-08 08:14:29 - Procesando fila 3: Array
+(
+    [nombre] => EPSON-ECOTANK-L3250-MULTIFUNCIONAL-WIFI
+    [precio] => 749.00
+    [categoria_id] => 4
+    [descripcion] => La Epson EcoTank L3250 representa la evolución en impresión doméstica y de oficina pequeña, combinando alta eficiencia con económica impresión continua. Su innovador sistema de tanques de tinta permite imprimir miles de páginas a un costo significativamente menor que las impresoras tradicionales. Diseñada con tecnología de última generación, ofrece impresión, escaneo y copia de alta calidad. La conectividad WiFi integrada permite imprimir desde smartphones, tablets y computadoras, mientras que la aplicación Epson Connect facilita la gestión de documentos e impresión remota.
+    [descripcion_corta] => Impresora multifuncional con sistema de tanques de tinta de alta eficiencia y conectividad WiFi
+    [precio_oferta] => 649.00
+    [stock] => 20
+    [marca] => EPSON
+    [modelo] => EcoTank L3250
+    [caracteristicas] => Sistema de tanques de tinta\nMultifuncional (impresión, escaneo, copia)\nConexión WiFi\nBajo costo por página\nImpresión desde dispositivos móviles
+    [destacado] => true
+    [nuevo] => true
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Producto importado: EPSON-ECOTANK-L3250-MULTIFUNCIONAL-WIFI
+2025-04-08 08:14:29 - Procesando fila 4: Array
+(
+    [nombre] => HP-DESKJET-2874-INYECCION-COMPACTA
+    [precio] => 399.00
+    [categoria_id] => 4
+    [descripcion] => La HP DeskJet 2874 es una impresora compacta ideal para usuarios domésticos que buscan una solución de impresión económica y eficiente. Diseñada para espacios reducidos, ofrece impresión, escaneo y copia con facilidad de uso. Su tecnología de inyección de tinta garantiza documentos de calidad y la posibilidad de imprimir desde dispositivos móviles mediante HP Smart App. Perfecta para estudiantes, familias y pequeñas oficinas que requieren una impresora versátil y asequible.
+    [descripcion_corta] => Impresora compacta de inyección con funciones de impresión, escaneo y copia
+    [precio_oferta] => 329.00
+    [stock] => 15
+    [marca] => HP
+    [modelo] => DeskJet 2874
+    [caracteristicas] => Impresión, escaneo y copia\nTamaño compacto\nConexión USB\nFácil de usar\nImpresión desde móviles
+    [destacado] => false
+    [nuevo] => true
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Producto importado: HP-DESKJET-2874-INYECCION-COMPACTA
+2025-04-08 08:14:29 - Procesando fila 5: Array
+(
+    [nombre] => NVIDIA-GEFORCE-RTX4060-TUF-GAMING-8GB
+    [precio] => 1
+    [categoria_id] => 599.00
+    [descripcion] => 9
+    [descripcion_corta] => La NVIDIA GeForce RTX 4060 TUF Gaming representa lo último en tecnología de gráficos para gaming medio-alto. Con 8GB de memoria GDDR6 y arquitectura Ada Lovelace, ofrece un rendimiento excepcional en resoluciones 1080p y 1440p. Incluye tecnologías de vanguardia como DLSS 3.0, Ray Tracing y optimización para los juegos más exigentes del mercado. Su diseño de perfil bajo (LP) la hace ideal para sistemas compactos sin sacrificar potencia gráfica.
+    [precio_oferta] => Tarjeta gráfica NVIDIA para gaming con 8GB GDDR6 y tecnologías de última generación
+    [stock] => 1
+    [marca] => 399.00
+    [modelo] => 30
+    [caracteristicas] => NVIDIA
+    [destacado] => GeForce RTX 4060 OC 8GB LP
+    [nuevo] => Ray Tracing de 3ra generación\nDLSS 3.0\n8GB GDDR6\nPerfil bajo\nRendimiento 1080p/1440p\nBajo consumo energético
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Fila 5: Categoría con ID 599 no es válida. Usando categoría por defecto 1.
+2025-04-08 08:14:29 - Producto importado: NVIDIA-GEFORCE-RTX4060-TUF-GAMING-8GB
+2025-04-08 08:14:29 - Procesando fila 6: Array
+(
+    [nombre] => NVIDIA-GEFORCE-RTX3060-TUF-GAMING-12GB
+    [precio] => 1
+    [categoria_id] => 299.00
+    [descripcion] => 9
+    [descripcion_corta] => La GeForce RTX 3060 TUF Gaming es una tarjeta gráfica potente diseñada para gamers que buscan un rendimiento equilibrado. Con 12GB de memoria GDDR6, ofrece excelente capacidad para juegos actuales y multitarea intensiva. Su arquitectura Ampere incluye Ray Tracing de segunda generación y DLSS, permitiendo gráficos realistas y alto rendimiento en resoluciones 1080p y 1440p. El diseño TUF garantiza durabilidad y refrigeración óptima.
+    [precio_oferta] => Tarjeta gráfica NVIDIA para gaming con 12GB GDDR6 y tecnologías avanzadas
+    [stock] => 1
+    [marca] => 099.00
+    [modelo] => 25
+    [caracteristicas] => NVIDIA
+    [destacado] => GeForce RTX 3060 12GB
+    [nuevo] => 12GB GDDR6\nRay Tracing\nDLSS 2.0\nRendimiento 1080p/1440p\nRefrigeración mejorada\nAlta durabilidad
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Fila 6: Categoría con ID 299 no es válida. Usando categoría por defecto 1.
+2025-04-08 08:14:29 - Producto importado: NVIDIA-GEFORCE-RTX3060-TUF-GAMING-12GB
+2025-04-08 08:14:29 - Procesando fila 7: Array
+(
+    [nombre] => AMD-RADEON-RX580-GAMING-8GB
+    [precio] => 799.00
+    [categoria_id] => 9
+    [descripcion] => La AMD Radeon RX 580 8GB es una tarjeta gráfica versátil que ofrece un rendimiento sólido para gaming en resolución 1080p. Con 8GB de memoria GDDR5, proporciona un equilibrio perfecto entre precio y capacidad. Ideal para jugadores que buscan una opción económica pero potente, soporta tecnologías como FreeSync y ofrece excelente rendimiento en juegos moderados y aplicaciones de diseño.
+    [descripcion_corta] => Tarjeta gráfica AMD para gaming 1080p con 8GB de memoria
+    [precio_oferta] => 699.00
+    [stock] => 20
+    [marca] => AMD
+    [modelo] => Radeon RX 580 8GB
+    [caracteristicas] => 8GB GDDR5\nRendimiento 1080p\nFreeSync\nBajo consumo\nDiseño compacto\nCompatibilidad amplia
+    [destacado] => false
+    [nuevo] => fal	se
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Producto importado: AMD-RADEON-RX580-GAMING-8GB
+2025-04-08 08:14:29 - Procesando fila 8: Array
+(
+    [nombre] => AMD-RADEON-RX6500XT-GAMING-4GB
+    [precio] => 599.00
+    [categoria_id] => 9
+    [descripcion] => La AMD Radeon RX 6500 XT es una tarjeta gráfica compacta y eficiente diseñada para gaming básico y esencial. Con 4GB de memoria GDDR6, ofrece un rendimiento competente en resoluciones 1080p para juegos menos exigentes. Su arquitectura RDNA 2 incluye características como FidelityFX Super Resolution para mejorar el rendimiento y optimizar la experiencia de juego en sistemas de gama de entrada.
+    [descripcion_corta] => Tarjeta gráfica AMD compacta para gaming 1080p básico
+    [precio_oferta] => 499.00
+    [stock] => 15
+    [marca] => AMD
+    [modelo] => Radeon RX 6500 XT 4GB
+    [caracteristicas] => 4GB GDDR6\nArquitectura RDNA 2\nRendimiento 1080p\nBajo consumo\nTamaño compacto\nFidelityFX SR
+    [destacado] => false
+    [nuevo] => true
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Producto importado: AMD-RADEON-RX6500XT-GAMING-4GB
+2025-04-08 08:14:29 - Procesando fila 9: Array
+(
+    [nombre] => NVIDIA-GEFORCE-GT730-4GB-DDR3
+    [precio] => 299.00
+    [categoria_id] => 9
+    [descripcion] => La NVIDIA GeForce GT 730 4GB DDR3 es una tarjeta gráfica de entrada diseñada para usuarios que requieren funciones básicas de video y gráficos. Ideal para computadoras de oficina, multimedia básica y tareas que no demandan alto rendimiento gráfico. Ofrece soporte para múltiples monitores y reproducción de video HD, siendo una opción económica para actualizar sistemas antiguos o para uso básico.
+    [descripcion_corta] => Tarjeta gráfica NVIDIA de entrada para tareas básicas y oficina
+    [precio_oferta] => 249.00
+    [stock] => 10
+    [marca] => NVIDIA
+    [modelo] => GeForce GT 730 4GB DDR3
+    [caracteristicas] => 4GB DDR3\nMulti-monitor\nVideo HD\nBajo consumo\nTamaño compacto\nPrecio económico
+    [destacado] => false
+    [nuevo] => false
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Producto importado: NVIDIA-GEFORCE-GT730-4GB-DDR3
+2025-04-08 08:14:29 - Procesando fila 10: Array
+(
+    [nombre] => INTEL-CORE-I5-12400-12VA
+    [precio] => 649.00
+    [categoria_id] => 8
+    [descripcion] => El Intel Core i5-12400 es un procesador de 12va generación diseñado para ofrecer un rendimiento excepcional en tareas de productividad, gaming y multitarea. Con 6 núcleos y 12 subprocesos, utiliza la arquitectura Intel 7 que proporciona un equilibrio perfecto entre eficiencia energética y potencia de procesamiento. Ideal para usuarios que buscan un procesador versátil para trabajo, estudio y entretenimiento, con capacidad para manejar aplicaciones exigentes y juegos modernos en resoluciones medias.
+    [descripcion_corta] => Procesador Intel Core i5 de 12va generación con 6 núcleos para rendimiento versátil
+    [precio_oferta] => 599.00
+    [stock] => 35
+    [marca] => INTEL
+    [modelo] => Core i5-12400
+    [caracteristicas] => 6 núcleos / 12 subprocesos\nFrecuencia base 2.5 GHz\nArquitectura Intel 7\nSoporte DDR4 y DDR5\nGráficos integrados Intel UHD 730
+    [destacado] => true
+    [nuevo] => true
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Producto importado: INTEL-CORE-I5-12400-12VA
+2025-04-08 08:14:29 - Procesando fila 11: Array
+(
+    [nombre] => INTEL-CORE-I5-11400-11VA
+    [precio] => 599.00
+    [categoria_id] => 8
+    [descripcion] => El Intel Core i5-11400 representa una solución de procesamiento eficiente para usuarios que requieren un rendimiento sólido en computación diaria. Perteneciente a la 11va generación, ofrece 6 núcleos y 12 subprocesos con una arquitectura optimizada que mejora significativamente la eficiencia energética y el rendimiento en comparación con generaciones anteriores. Perfecto para trabajo de oficina, estudio, navegación web y gaming casual.
+    [descripcion_corta] => Procesador Intel Core i5 de 11va generación con 6 núcleos para uso versátil
+    [precio_oferta] => 549.00
+    [stock] => 30
+    [marca] => INTEL
+    [modelo] => Core i5-11400
+    [caracteristicas] => 6 núcleos / 12 subprocesos\nFrecuencia base 2.6 GHz\nArquitectura Rocket Lake\nGráficos integrados Intel UHD 750\nSoporte DDR4
+    [destacado] => false
+    [nuevo] => false
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Producto importado: INTEL-CORE-I5-11400-11VA
+2025-04-08 08:14:29 - Procesando fila 12: Array
+(
+    [nombre] => INTEL-CORE-I5-10400F-10MA
+    [precio] => 499.00
+    [categoria_id] => 8
+    [descripcion] => El Intel Core i5-10400F es un procesador de 10ma generación diseñado para usuarios que buscan un rendimiento equilibrado sin gráficos integrados. Con 6 núcleos y 12 subprocesos, ofrece una excelente relación costo-rendimiento para trabajo ofimático, navegación y gaming de nivel medio. Ideal para sistemas que utilizarán una tarjeta gráfica dedicada, proporcionando potencia de procesamiento eficiente para múltiples tareas.
+    [descripcion_corta] => Procesador Intel Core i5 sin gráficos integrados para sistemas con tarjeta gráfica dedicada
+    [precio_oferta] => 449.00
+    [stock] => 25
+    [marca] => INTEL
+    [modelo] => Core i5-10400F
+    [caracteristicas] => 6 núcleos / 12 subprocesos\nFrecuencia base 2.9 GHz\nArquitectura Comet Lake\nSin gráficos integrados\nSoporte DDR4\nBajo consumo energético
+    [destacado] => false
+    [nuevo] => false
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Producto importado: INTEL-CORE-I5-10400F-10MA
+2025-04-08 08:14:29 - Procesando fila 13: Array
+(
+    [nombre] => INTEL-CORE-I3-10100F-10MA
+    [precio] => 349.00
+    [categoria_id] => 8
+    [descripcion] => El Intel Core i3-10100F es un procesador de entrada de 10ma generación diseñado para usuarios que requieren un rendimiento básico a un precio accesible. Con 4 núcleos y 8 subprocesos, ofrece un desempeño sólido para tareas cotidianas como navegación web, trabajo ofimático y multimedia ligera. Sin gráficos integrados, es perfecto para sistemas que utilizarán una tarjeta gráfica dedicada, ideal para usuarios con presupuesto limitado.
+    [descripcion_corta] => Procesador Intel Core i3 económico sin gráficos integrados para uso básico
+    [precio_oferta] => 299.00
+    [stock] => 20
+    [marca] => INTEL
+    [modelo] => Core i3-10100F
+    [caracteristicas] => 4 núcleos / 8 subprocesos\nFrecuencia base 3.6 GHz\nArquitectura Comet Lake\nSin gráficos integrados\nSoporte DDR4\nPrecio accesible
+    [destacado] => false
+    [nuevo] => false
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Producto importado: INTEL-CORE-I3-10100F-10MA
+2025-04-08 08:14:29 - Procesando fila 14: Array
+(
+    [nombre] => INTEL-CORE-I5-9400-9NA
+    [precio] => 429.00
+    [categoria_id] => 8
+    [descripcion] => El Intel Core i5-9400 es un procesador de 9na generación que ofrece un rendimiento confiable para usuarios que buscan un equilibrio entre eficiencia y potencia. Con 6 núcleos y sin hyperthreading, proporciona un desempeño sólido para trabajo ofimático, navegación y tareas multimedia. Sus gráficos integrados UHD 630 lo hacen versátil para sistemas que no requieren una tarjeta gráfica dedicada.
+    [descripcion_corta] => Procesador Intel Core i5 de 9na generación con gráficos integrados
+    [precio_oferta] => 379.00
+    [stock] => 15
+    [marca] => INTEL
+    [modelo] => Core i5-9400
+    [caracteristicas] => 6 núcleos\nFrecuencia base 2.9 GHz\nArquitectura Coffee Lake\nGráficos integrados Intel UHD 630\nSoporte DDR4\nBajo consumo
+    [destacado] => false
+    [nuevo] => false
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Producto importado: INTEL-CORE-I5-9400-9NA
+2025-04-08 08:14:29 - Procesando fila 15: Array
+(
+    [nombre] => INTEL-CORE-I7-7700-7MA
+    [precio] => 399.00
+    [categoria_id] => 8
+    [descripcion] => El Intel Core i7-7700 es un procesador de 7ma generación que representa un punto medio en rendimiento para usuarios que requieren potencia de procesamiento para tareas moderadamente exigentes. Con 4 núcleos y 8 subprocesos, ofrece un desempeño sólido para trabajo ofimático, edición de contenido ligero y gaming casual. Sus gráficos integrados Intel HD Graphics 630 permiten una experiencia multimedia versátil sin necesidad de tarjeta gráfica dedicada.
+    [descripcion_corta] => Procesador Intel Core i7 de 7ma generación con gráficos integrados para uso versátil
+    [precio_oferta] => 349.00
+    [stock] => 10
+    [marca] => INTEL
+    [modelo] => Core i7-7700
+    [caracteristicas] => 4 núcleos / 8 subprocesos\nFrecuencia base 3.6 GHz\nArquitectura Kaby Lake\nGráficos integrados Intel HD 630\nSoporte DDR4\nHyperthreading
+    [destacado] => false
+    [nuevo] => false
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Producto importado: INTEL-CORE-I7-7700-7MA
+2025-04-08 08:14:29 - Procesando fila 16: Array
+(
+    [nombre] => INTEL-CORE-I5-7400-7MA
+    [precio] => 329.00
+    [categoria_id] => 8
+    [descripcion] => El Intel Core i5-7400 es un procesador de 7ma generación diseñado para usuarios que buscan un rendimiento básico a económico. Con 4 núcleos sin hyperthreading, ofrece un desempeño adecuado para tareas cotidianas como navegación web, ofimática y reproducción multimedia. Sus gráficos integrados Intel HD Graphics 630 lo convierten en una opción ideal para sistemas de bajo consumo y presupuesto limitado.
+    [descripcion_corta] => Procesador Intel Core i5 de 7ma generación para uso básico y económico
+    [precio_oferta] => 279.00
+    [stock] => 8
+    [marca] => INTEL
+    [modelo] => Core i5-7400
+    [caracteristicas] => 4 núcleos\nFrecuencia base 3.0 GHz\nArquitectura Kaby Lake\nGráficos integrados Intel HD 630\nBajo consumo\nPrecio accesible
+    [destacado] => false
+    [nuevo] => false
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Producto importado: INTEL-CORE-I5-7400-7MA
+2025-04-08 08:14:29 - Procesando fila 17: Array
+(
+    [nombre] => INTEL-CORE-I5-9400F-9NA
+    [precio] => 399.00
+    [categoria_id] => 8
+    [descripcion] => El Intel Core i5-9400F es un procesador de 9na generación optimizado para sistemas con tarjeta gráfica dedicada. Sin gráficos integrados, ofrece 6 núcleos de alto rendimiento para gaming y aplicaciones que demandan potencia de procesamiento. Ideal para usuarios que buscan un procesador eficiente para gaming de nivel medio y multitarea sin un costo elevado.
+    [descripcion_corta] => Procesador Intel Core i5 sin gráficos integrados para sistemas con tarjeta gráfica
+    [precio_oferta] => 349.00
+    [stock] => 20
+    [marca] => INTEL
+    [modelo] => Core i5-9400F
+    [caracteristicas] => 6 núcleos\nFrecuencia base 2.9 GHz\nArquitectura Coffee Lake\nSin gráficos integrados\nSoporte DDR4\nPara sistemas con GPU dedicada
+    [destacado] => false
+    [nuevo] => false
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Producto importado: INTEL-CORE-I5-9400F-9NA
+2025-04-08 08:14:29 - Procesando fila 18: Array
+(
+    [nombre] => INTEL-CORE-I5-10500-10MA
+    [precio] => 549.00
+    [categoria_id] => 8
+    [descripcion] => El Intel Core i5-10500 es un procesador de 10ma generación que ofrece un rendimiento equilibrado para usuarios exigentes. Con 6 núcleos y 12 subprocesos, proporciona potencia de procesamiento para trabajo profesional, gaming y multitarea intensiva. Sus gráficos integrados Intel UHD 630 lo hacen versátil para sistemas que no requieren una tarjeta gráfica dedicada.
+    [descripcion_corta] => Procesador Intel Core i5 de 10ma generación con gráficos integrados para uso profesional
+    [precio_oferta] => 499.00
+    [stock] => 25
+    [marca] => INTEL
+    [modelo] => Core i5-10500
+    [caracteristicas] => 6 núcleos / 12 subprocesos\nFrecuencia base 3.1 GHz\nArquitectura Comet Lake\nGráficos integrados Intel UHD 630\nSoporte DDR4\nAlto rendimiento
+    [destacado] => true
+    [nuevo] => false
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Producto importado: INTEL-CORE-I5-10500-10MA
+2025-04-08 08:14:29 - Procesando fila 19: Array
+(
+    [nombre] => INTEL-CORE-I5-12400F-12VA
+    [precio] => 599.00
+    [categoria_id] => 8
+    [descripcion] => El Intel Core i5-12400F es un procesador de 12va generación diseñado para ofrecer un rendimiento excepcional sin gráficos integrados. Con 6 núcleos y 12 subprocesos, utiliza la arquitectura Intel 7 para proporcionar una potencia de procesamiento eficiente y equilibrada. Ideal para sistemas con tarjeta gráfica dedicada que requieren alto rendimiento en gaming y aplicaciones profesionales.
+    [descripcion_corta] => Procesador Intel Core i5 sin gráficos integrados para sistemas de alto rendimiento
+    [precio_oferta] => 549.00
+    [stock] => 30
+    [marca] => INTEL
+    [modelo] => Core i5-12400F
+    [caracteristicas] => 6 núcleos / 12 subprocesos\nFrecuencia base 2.5 GHz\nArquitectura Intel 7\nSin gráficos integrados\nSoporte DDR4 y DDR5\nAlto rendimiento en gaming
+    [destacado] => true
+    [nuevo] => true
+    [activo] => trueRetryYS
+)
+
+2025-04-08 08:14:29 - Producto importado: INTEL-CORE-I5-12400F-12VA
+2025-04-08 08:14:29 - Procesando fila 20: Array
+(
+    [nombre] => INTEL-CORE-I3-12100F-12VA
+    [precio] => 449.00
+    [categoria_id] => 8
+    [descripcion] => El Intel Core i3-12100F es un procesador de 12va generación diseñado para usuarios que buscan un rendimiento eficiente a un precio accesible. Con 4 núcleos y 8 subprocesos, ofrece una potencia de procesamiento sorprendente para tareas cotidianas, trabajo ofimático y gaming básico. Sin gráficos integrados, es ideal para sistemas que utilizarán una tarjeta gráfica dedicada, proporcionando una solución económica y de alto rendimiento.
+    [descripcion_corta] => Procesador Intel Core i3 de 12va generación sin gráficos integrados para uso versátil
+    [precio_oferta] => 399.00
+    [stock] => 25
+    [marca] => INTEL
+    [modelo] => Core i3-12100F
+    [caracteristicas] => 4 núcleos / 8 subprocesos\nFrecuencia base 3.3 GHz\nArquitectura Intel 7\nSin gráficos integrados\nSoporte DDR4 y DDR5\nAlto rendimiento por su precio
+    [destacado] => false
+    [nuevo] => true
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Producto importado: INTEL-CORE-I3-12100F-12VA
+2025-04-08 08:14:29 - Procesando fila 21: Array
+(
+    [nombre] => INTEL-CORE-I7-9700KF-9NA
+    [precio] => 799.00
+    [categoria_id] => 8
+    [descripcion] => El Intel Core i7-9700KF es un procesador de alto rendimiento de 9na generación diseñado para usuarios profesionales y entusiastas del gaming. Con 8 núcleos sin hyperthreading y capacidad de overclock, ofrece un rendimiento excepcional en aplicaciones exigentes y juegos modernos. Sin gráficos integrados, está optimizado para sistemas con tarjetas gráficas de alta gama, proporcionando una experiencia de computación de primera clase.
+    [descripcion_corta] => Procesador Intel Core i7 de 9na generación sin gráficos, ideal para gaming y trabajo profesional
+    [precio_oferta] => 699.00
+    [stock] => 15
+    [marca] => INTEL
+    [modelo] => Core i7-9700KF
+    [caracteristicas] => 8 núcleos\nFrecuencia base 3.6 GHz\nArquitectura Coffee Lake\nSin gráficos integrados\nCapaz de overclock\nAlto rendimiento en gaming
+    [destacado] => true
+    [nuevo] => false
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Producto importado: INTEL-CORE-I7-9700KF-9NA
+2025-04-08 08:14:29 - Procesando fila 22: Array
+(
+    [nombre] => INTEL-CORE-I7-12700K-12VA
+    [precio] => 1
+    [categoria_id] => 299.00
+    [descripcion] => 8
+    [descripcion_corta] => El Intel Core i7-12700K es un procesador de élite de 12va generación que representa lo mejor en rendimiento y eficiencia. Con una configuración híbrida de 12 núcleos (8 de rendimiento y 4 de eficiencia) y 20 subprocesos, ofrece un rendimiento extraordinario para gaming de alto nivel, edición de contenido y multitarea intensiva. Diseñado para entusiastas y profesionales que demandan la máxima potencia de procesamiento.
+    [precio_oferta] => Procesador Intel Core i7 de 12va generación de alto rendimiento para usuarios exigentes
+    [stock] => 1
+    [marca] => 149.00
+    [modelo] => 20
+    [caracteristicas] => INTEL
+    [destacado] => Core i7-12700K
+    [nuevo] => 12 núcleos (8P + 4E) / 20 subprocesos\nFrecuencia base 3.6 GHz\nArquitectura Intel 7\nSoporte DDR4 y DDR5\nCapaz de overclock\nRendimiento de élite
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Fila 22: Categoría con ID 299 no es válida. Usando categoría por defecto 1.
+2025-04-08 08:14:29 - Producto importado: INTEL-CORE-I7-12700K-12VA
+2025-04-08 08:14:29 - Procesando fila 23: Array
+(
+    [nombre] => INTEL-CORE-I7-14700K-14VA
+    [precio] => 1
+    [categoria_id] => 499.00
+    [descripcion] => 8
+    [descripcion_corta] => El Intel Core i7-14700K representa la última generación en procesadores de alto rendimiento. Con una arquitectura mejorada que incluye 20 núcleos (8 de rendimiento y 12 de eficiencia) y 28 subprocesos, ofrece un rendimiento revolucionario para gaming, creación de contenido y aplicaciones profesionales. Diseñado para usuarios que buscan lo último en tecnología de procesamiento, con capacidades de overclock y soporte para las últimas tecnologías de memoria y conectividad.
+    [precio_oferta] => Procesador Intel Core i7 de última generación con rendimiento de próxima generación
+    [stock] => 1
+    [marca] => 349.00
+    [modelo] => 15
+    [caracteristicas] => INTEL
+    [destacado] => Core i7-14700K
+    [nuevo] => 20 núcleos (8P + 12E) / 28 subprocesos\nFrecuencia base 3.4 GHz\nArquitectura Intel 7\nSoporte DDR4 y DDR5\nCapaz de overclock\nTecnología de vanguardia
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Fila 23: Categoría con ID 499 no es válida. Usando categoría por defecto 1.
+2025-04-08 08:14:29 - Producto importado: INTEL-CORE-I7-14700K-14VA
+2025-04-08 08:14:29 - Procesando fila 24: Array
+(
+    [nombre] => AMD-RYZEN-5-8600G-8VA
+    [precio] => 799.00
+    [categoria_id] => 8
+    [descripcion] => El AMD Ryzen 5 8600G es un procesador de última generación que combina rendimiento de CPU de gama media con gráficos integrados de alto nivel. Con 6 núcleos y 12 subprocesos, ofrece un excelente equilibrio entre potencia de procesamiento y capacidad gráfica. Ideal para usuarios que buscan un sistema compacto sin necesidad de tarjeta gráfica dedicada, perfecto para gaming ligero, trabajo multimedia y aplicaciones de productividad.
+    [descripcion_corta] => Procesador AMD Ryzen 5 con gráficos integrados para sistemas compactos de alto rendimiento
+    [precio_oferta] => 699.00
+    [stock] => 25
+    [marca] => AMD
+    [modelo] => Ryzen 5 8600G
+    [caracteristicas] => 6 núcleos / 12 subprocesos\nFrecuencia base 4.3 GHz\nGráficos Radeon integrados\nArquitectura Zen 4\nSoporte DDR5\nBajo consumo energético
+    [destacado] => true
+    [nuevo] => true
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Producto importado: AMD-RYZEN-5-8600G-8VA
+2025-04-08 08:14:29 - Procesando fila 25: Array
+(
+    [nombre] => AMD-RYZEN-7-5700G-5TA
+    [precio] => 899.00
+    [categoria_id] => 8
+    [descripcion] => El AMD Ryzen 7 5700G es un procesador de alto rendimiento diseñado para usuarios que requieren potencia de procesamiento y capacidades gráficas integradas de primera clase. Con 8 núcleos y 16 subprocesos, ofrece un rendimiento excepcional en multitarea, trabajo profesional y gaming casual. Sus gráficos Radeon integrados eliminan la necesidad de una tarjeta gráfica dedicada para la mayoría de las tareas.
+    [descripcion_corta] => Procesador AMD Ryzen 7 con gráficos integrados de alto rendimiento
+    [precio_oferta] => 799.00
+    [stock] => 20
+    [marca] => AMD
+    [modelo] => Ryzen 7 5700G
+    [caracteristicas] => 8 núcleos / 16 subprocesos\nFrecuencia base 3.8 GHz\nGráficos Radeon integrados\nArquitectura Zen 3\nSoporte DDR4\nAlto rendimiento en múltiples tareas
+    [destacado] => true
+    [nuevo] => false
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Producto importado: AMD-RYZEN-7-5700G-5TA
+2025-04-08 08:14:29 - Procesando fila 26: Array
+(
+    [nombre] => AMD-RYZEN-5-2400G-2DA
+    [precio] => 399.00
+    [categoria_id] => 8
+    [descripcion] => El AMD Ryzen 5 2400G es un procesador económico y eficiente diseñado para usuarios que buscan un rendimiento sólido en sistemas de presupuesto limitado. Con 4 núcleos y 8 subprocesos, ofrece una solución completa con gráficos Radeon integrados, ideal para trabajo ofimático, navegación web y gaming básico. Perfecto para usuarios que no requieren una tarjeta gráfica dedicada.
+    [descripcion_corta] => Procesador AMD Ryzen 5 económico con gráficos integrados para uso básico
+    [precio_oferta] => 349.00
+    [stock] => 15
+    [marca] => AMD
+    [modelo] => Ryzen 5 2400G
+    [caracteristicas] => 4 núcleos / 8 subprocesos\nFrecuencia base 3.6 GHz\nGráficos Radeon integrados\nArquitectura Zen+\nSoporte DDR4\nPrecio accesible
+    [destacado] => false
+    [nuevo] => false
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Producto importado: AMD-RYZEN-5-2400G-2DA
+2025-04-08 08:14:29 - Procesando fila 27: Array
+(
+    [nombre] => AMD-RYZEN-5-3600-3RA
+    [precio] => 649.00
+    [categoria_id] => 8
+    [descripcion] => El AMD Ryzen 5 3600 es un procesador versátil y potente que se ha convertido en un favorito entre entusiastas y usuarios de PC. Con 6 núcleos y 12 subprocesos, ofrece un rendimiento excepcional en gaming y aplicaciones de productividad. Su arquitectura Zen 2 proporciona una eficiencia energética superior y un rendimiento que supera significativamente a sus predecesores.
+    [descripcion_corta] => Procesador AMD Ryzen 5 de alto rendimiento para gaming y productividad
+    [precio_oferta] => 549.00
+    [stock] => 30
+    [marca] => AMD
+    [modelo] => Ryzen 5 3600
+    [caracteristicas] => 6 núcleos / 12 subprocesos\nFrecuencia base 3.6 GHz\nArquitectura Zen 2\nSoporte DDR4\nAlto rendimiento en gaming\nExcelente relación precio-rendimiento
+    [destacado] => true
+    [nuevo] => false
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Producto importado: AMD-RYZEN-5-3600-3RA
+2025-04-08 08:14:29 - Procesando fila 28: Array
+(
+    [nombre] => AMD-RYZEN-3-2200G-2DA
+    [precio] => 329.00
+    [categoria_id] => 8
+    [descripcion] => El AMD Ryzen 3 2200G es un procesador de entrada diseñado para usuarios que buscan un rendimiento básico a un precio accesible. Con 4 núcleos y gráficos Radeon integrados, ofrece una solución económica para tareas cotidianas como navegación web, ofimática y multimedia ligera. Ideal para estudiantes y usuarios con presupuesto limitado que no requieren un sistema de alto rendimiento.
+    [descripcion_corta] => Procesador AMD Ryzen 3 económico con gráficos integrados para uso básico
+    [precio_oferta] => 279.00
+    [stock] => 10
+    [marca] => AMD
+    [modelo] => Ryzen 3 2200G
+    [caracteristicas] => 4 núcleos\nFrecuencia base 3.5 GHz\nGráficos Radeon integrados\nArquitectura Zen+\nSoporte DDR4\nBajo consumo y precio económico
+    [destacado] => false
+    [nuevo] => false
+    [activo] => trueRetryYS
+)
+
+2025-04-08 08:14:29 - Producto importado: AMD-RYZEN-3-2200G-2DA
+2025-04-08 08:14:29 - Procesando fila 29: Array
+(
+    [nombre] => GIGABYTE-ROG-B550-GAMING-X-AM4-ATX
+    [precio] => 499.00
+    [categoria_id] => 10
+    [descripcion] => La placa base GIGABYTE B550 GAMING X es una opción versátil y robusta para usuarios que buscan un rendimiento sólido en sistemas AMD Ryzen. Compatible con procesadores socket AM4 de tercera y cuarta generación, ofrece características de gaming de alta calidad como slots M.2 para almacenamiento rápido, conectividad PCIe 4.0 y soporte para memorias DDR4 de alta velocidad. Diseñada con componentes de calidad para garantizar estabilidad y durabilidad.
+    [descripcion_corta] => Placa base GIGABYTE para procesadores AMD Ryzen con características de gaming
+    [precio_oferta] => 449.00
+    [stock] => 25
+    [marca] => GIGABYTE
+    [modelo] => B550 GAMING X
+    [caracteristicas] => Socket AM4\nChipset B550\nSoporte DDR4\nPCIe 4.0\nSlots M.2\nAudio HD
+    [destacado] => true
+    [nuevo] => true
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Producto importado: GIGABYTE-ROG-B550-GAMING-X-AM4-ATX
+2025-04-08 08:14:29 - Procesando fila 30: Array
+(
+    [nombre] => GIGABYTE-AB350M-DS3H-V2-AM4-MATX
+    [precio] => 329.00
+    [categoria_id] => 10
+    [descripcion] => La placa base GIGABYTE AB350M-DS3H V2 es una solución económica y confiable para sistemas AMD Ryzen de primera y segunda generación. Con factor de forma microATX, es ideal para construcciones compactas. Ofrece conectividad básica, slots PCIe, soporte para memorias DDR4 y características esenciales para usuarios que buscan un rendimiento eficiente a un precio accesible.
+    [descripcion_corta] => Placa base compacta GIGABYTE para procesadores AMD Ryzen de primera generación
+    [precio_oferta] => 279.00
+    [stock] => 15
+    [marca] => GIGABYTE
+    [modelo] => AB350M-DS3H V2
+    [caracteristicas] => Socket AM4\nChipset A320\nMicroATX\nSoporte DDR4\nPCIe\nÓptima para sistemas básicos
+    [destacado] => false
+    [nuevo] => false
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Producto importado: GIGABYTE-AB350M-DS3H-V2-AM4-MATX
+2025-04-08 08:14:29 - Procesando fila 31: Array
+(
+    [nombre] => ASUS-PRIME-A320M-K-AM4-MATX
+    [precio] => 279.00
+    [categoria_id] => 10
+    [descripcion] => La placa base ASUS PRIME A320M-K es una opción económica y eficiente para sistemas AMD Ryzen de primera y segunda generación. Con factor de forma microATX, ofrece funcionalidades esenciales para usuarios que buscan un sistema básico pero confiable. Incluye características como slots PCIe, soporte para memorias DDR4 y conectividad fundamental para tareas cotidianas.
+    [descripcion_corta] => Placa base ASUS compacta para procesadores AMD Ryzen de entrada
+    [precio_oferta] => 239.00
+    [stock] => 20
+    [marca] => ASUS
+    [modelo] => PRIME A320M-K
+    [caracteristicas] => Socket AM4\nChipset A320\nMicroATX\nSoporte DDR4\nPCIe\nPrecio accesible
+    [destacado] => false
+    [nuevo] => false
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Producto importado: ASUS-PRIME-A320M-K-AM4-MATX
+2025-04-08 08:14:29 - Procesando fila 32: Array
+(
+    [nombre] => MSI-A320M-A-PRO-MAX-AM4-MATX
+    [precio] => 299.00
+    [categoria_id] => 10
+    [descripcion] => La placa base MSI A320M-A PRO MAX es una solución económica y confiable para sistemas AMD Ryzen de primera y segunda generación. Diseñada con un factor de forma microATX, ofrece las características esenciales para usuarios que buscan un rendimiento básico a un precio accesible. Incluye slots PCIe, soporte para memorias DDR4 y componentes de calidad para una operación estable.
+    [descripcion_corta] => Placa base MSI compacta para procesadores AMD Ryzen de entrada
+    [precio_oferta] => 259.00
+    [stock] => 18
+    [marca] => MSI
+    [modelo] => A320M-A PRO MAX
+    [caracteristicas] => Socket AM4\nChipset A320\nMicroATX\nSoporte DDR4\nPCIe\nDiseño simple y funcional
+    [destacado] => false
+    [nuevo] => false
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Producto importado: MSI-A320M-A-PRO-MAX-AM4-MATX
+2025-04-08 08:14:29 - Procesando fila 33: Array
+(
+    [nombre] => ASUS-PRIME-B450M-A-II-AM4-MATX
+    [precio] => 399.00
+    [categoria_id] => 10
+    [descripcion] => La placa base ASUS PRIME B450M-A II es una opción versátil para sistemas AMD Ryzen de segunda y tercera generación. Con factor de forma microATX, ofrece un equilibrio entre rendimiento y precio. Incluye características avanzadas como soporte PCIe 3.0, slots M.2, conectividad USB 3.1 y compatibilidad con memorias DDR4 de alta velocidad. Ideal para usuarios que buscan un sistema de rendimiento medio.
+    [descripcion_corta] => Placa base ASUS para procesadores AMD Ryzen con características de rendimiento medio
+    [precio_oferta] => 349.00
+    [stock] => 25
+    [marca] => ASUS
+    [modelo] => PRIME B450M-A II
+    [caracteristicas] => Socket AM4\nChipset B450\nMicroATX\nSoporte DDR4\nPCIe 3.0\nSlots M.2\nÓptima para gaming y productividad
+    [destacado] => true
+    [nuevo] => false
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Producto importado: ASUS-PRIME-B450M-A-II-AM4-MATX
+2025-04-08 08:14:29 - Procesando fila 34: Array
+(
+    [nombre] => GIGABYTE-B450M-DS3H-AM4-MATX
+    [precio] => 349.00
+    [categoria_id] => 10
+    [descripcion] => La placa base GIGABYTE B450M DS3H es una solución compacta y eficiente para sistemas AMD Ryzen de segunda generación. Con factor de forma microATX, ofrece un rendimiento sólido para usuarios que buscan una placa base confiable a un precio accesible. Incluye características esenciales como slots PCIe, soporte para memorias DDR4 y conectividad fundamental para tareas cotidianas y gaming ligero.
+    [descripcion_corta] => Placa base GIGABYTE compacta para procesadores AMD Ryzen de segunda generación
+    [precio_oferta] => 299.00
+    [stock] => 20
+    [marca] => GIGABYTE
+    [modelo] => B450M DS3H
+    [caracteristicas] => Socket AM4\nChipset B450\nMicroATX\nSoporte DDR4\nPCIe\nRendimiento equilibrado
+    [destacado] => false
+    [nuevo] => false
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Producto importado: GIGABYTE-B450M-DS3H-AM4-MATX
+2025-04-08 08:14:29 - Procesando fila 35: Array
+(
+    [nombre] => MSI-B550M-PRO-VDH-WIFI-AM4-MATX
+    [precio] => 499.00
+    [categoria_id] => 10
+    [descripcion] => La placa base MSI B550M PRO-VDH WIFI es una opción moderna y versátil para sistemas AMD Ryzen de tercera y cuarta generación. Con conectividad WiFi integrada, factor de forma microATX y soporte PCIe 4.0, ofrece un rendimiento avanzado para gaming y productividad. Incluye características como slots M.2, audio HD y compatibilidad con memorias DDR4 de alta velocidad.
+    [descripcion_corta] => Placa base MSI con WiFi para procesadores AMD Ryzen de última generación
+    [precio_oferta] => 449.00
+    [stock] => 30
+    [marca] => MSI
+    [modelo] => B550M PRO-VDH WIFI
+    [caracteristicas] => Socket AM4\nChipset B550\nMicroATX\nWiFi integrado\nPCIe 4.0\nSlots M.2\nIdeal para gaming
+    [destacado] => true
+    [nuevo] => true
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Producto importado: MSI-B550M-PRO-VDH-WIFI-AM4-MATX
+2025-04-08 08:14:29 - Procesando fila 36: Array
+(
+    [nombre] => ASUS-PRIME-B650M-A-II-AM4-MATX
+    [precio] => 599.00
+    [categoria_id] => 10
+    [descripcion] => La placa base ASUS PRIME B650M-A II es una solución de vanguardia para sistemas AMD Ryzen de última generación. Con soporte para procesadores Ryzen 7000, ofrece características de alto rendimiento como PCIe 5.0, slots M.2 de última generación y compatibilidad con memorias DDR5. Su factor de forma microATX la hace ideal para construcciones compactas de alto rendimiento.
+    [descripcion_corta] => Placa base ASUS de última generación para procesadores AMD Ryzen 7000
+    [precio_oferta] => 549.00
+    [stock] => 25
+    [marca] => ASUS
+    [modelo] => PRIME B650M-A II
+    [caracteristicas] => Socket AM5\nChipset B650\nMicroATX\nSoporte DDR5\nPCIe 5.0\nSlots M.2 Gen5\nTecnología de vanguardia
+    [destacado] => true
+    [nuevo] => true
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Producto importado: ASUS-PRIME-B650M-A-II-AM4-MATX
+2025-04-08 08:14:29 - Procesando fila 37: Array
+(
+    [nombre] => MSI-MAG-X670E-TOMAHAWK-WIFI-AM5-ATX
+    [precio] => 1
+    [categoria_id] => 299.00
+    [descripcion] => 10
+    [descripcion_corta] => La placa base MSI MAG X670E TOMAHAWK WIFI representa lo último en tecnología para sistemas AMD Ryzen de próxima generación. Con soporte para procesadores Ryzen 7000, ofrece características de alto rendimiento como PCIe 5.0, múltiples slots M.2 de última generación, WiFi 6E integrado y compatibilidad con memorias DDR5. Diseñada para entusiastas y usuarios profesionales que buscan máximo rendimiento.
+    [precio_oferta] => Placa base MSI de gama alta para procesadores AMD Ryzen 7000 con WiFi 6E
+    [stock] => 1
+    [marca] => 149.00
+    [modelo] => 20
+    [caracteristicas] => MSI
+    [destacado] => MAG X670E TOMAHAWK WIFI
+    [nuevo] => Socket AM5\nChipset X670E\nATX\nWiFi 6E\nPCIe 5.0\nSoporte DDR5\nSlots M.2 Gen5\nRendimiento de élite
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Fila 37: Categoría con ID 299 no es válida. Usando categoría por defecto 1.
+2025-04-08 08:14:29 - Producto importado: MSI-MAG-X670E-TOMAHAWK-WIFI-AM5-ATX
+2025-04-08 08:14:29 - Procesando fila 38: Array
+(
+    [nombre] => ASUS-ROG-STRIX-X670E-E-GAMING-WIFI-AM5-ATX
+    [precio] => 1
+    [categoria_id] => 499.00
+    [descripcion] => 10
+    [descripcion_corta] => La placa base ASUS ROG STRIX X670E-E GAMING WIFI es la culminación del rendimiento para sistemas AMD Ryzen de última generación. Diseñada para entusiastas y profesionales, ofrece características de punta como PCIe 5.0, múltiples slots M.2 Gen5, WiFi 6E integrado y soporte para memorias DDR5 de alta velocidad. Su diseñoROG garantiza la máxima estabilidad y rendimiento para gaming de élite y trabajo profesional.
+    [precio_oferta] => Placa base ASUS ROG de gama ultra alta para procesadores AMD Ryzen 7000
+    [stock] => 1
+    [marca] => 349.00
+    [modelo] => 15
+    [caracteristicas] => ASUS
+    [destacado] => ROG STRIX X670E-E GAMING WIFI
+    [nuevo] => Socket AM5\nChipset X670E\nATX\nROG Gaming\nWiFi 6E\nPCIe 5.0\nSoporte DDR5\nSlots M.2 Gen5\nRendimiento extremo
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Fila 38: Categoría con ID 499 no es válida. Usando categoría por defecto 1.
+2025-04-08 08:14:29 - Producto importado: ASUS-ROG-STRIX-X670E-E-GAMING-WIFI-AM5-ATX
+2025-04-08 08:14:29 - Procesando fila 39: Array
+(
+    [nombre] => ASUS-PRIME-B760M-A-D4-LGA1700-MATX
+    [precio] => 499.00
+    [categoria_id] => 10
+    [descripcion] => La placa base ASUS PRIME B760M-A D4 es una solución moderna para sistemas Intel de 12va y 13va generación. Con soporte para DDR4, ofrece un rendimiento equilibrado en un factor de forma microATX. Ideal para usuarios que buscan una placa base confiable y versátil para trabajo y gaming ligero, con características como slots PCIe, M.2 y conectividad fundamental.
+    [descripcion_corta] => Placa base ASUS para procesadores Intel de 12va y 13va generación con DDR4
+    [precio_oferta] => 449.00
+    [stock] => 30
+    [marca] => ASUS
+    [modelo] => PRIME B760M-A D4
+    [caracteristicas] => Socket LGA1700\nChipset B760\nMicroATX\nSoporte DDR4\nPCIe 5.0\nSlots M.2\nCompatible con Intel 12/13 Gen
+    [destacado] => true
+    [nuevo] => true
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Producto importado: ASUS-PRIME-B760M-A-D4-LGA1700-MATX
+2025-04-08 08:14:29 - Procesando fila 40: Array
+(
+    [nombre] => GIGABYTE-X670-AORUS-ELITE-AX-AM5-ATX
+    [precio] => 1
+    [categoria_id] => 299.00
+    [descripcion] => 10
+    [descripcion_corta] => La placa base GIGABYTE X670 AORUS ELITE AX representa lo último en tecnología para sistemas AMD Ryzen de próxima generación. Con soporte para procesadores Ryzen 7000, ofrece características de vanguardia como PCIe 5.0, múltiples slots M.2 Gen5, WiFi 6E integrado y compatibilidad con memorias DDR5 de alta velocidad. Diseñada para entusiastas y profesionales que buscan el máximo rendimiento y futuras expansiones.
+    [precio_oferta] => Placa base GIGABYTE de gama alta para procesadores AMD Ryzen 7000 con conectividad avanzada
+    [stock] => 1
+    [marca] => 149.00
+    [modelo] => 25
+    [caracteristicas] => GIGABYTE
+    [destacado] => X670 AORUS ELITE AX
+    [nuevo] => Socket AM5\nChipset X670\nATX\nWiFi 6E\nPCIe 5.0\nSoporte DDR5\nMulti M.2 Gen5\nDiseño premium para gaming y trabajo profesional
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Fila 40: Categoría con ID 299 no es válida. Usando categoría por defecto 1.
+2025-04-08 08:14:29 - Producto importado: GIGABYTE-X670-AORUS-ELITE-AX-AM5-ATX
+2025-04-08 08:14:29 - Procesando fila 41: Array
+(
+    [nombre] => ASUS-PRIME-B760M-A-D4-LGA1700-MATX
+    [precio] => 499.00
+    [categoria_id] => 10
+    [descripcion] => La placa base ASUS PRIME B760M-A D4 es una solución moderna para sistemas Intel de 12va y 13va generación. Con soporte para DDR4, ofrece un rendimiento equilibrado en un factor de forma microATX. Ideal para usuarios que buscan una placa base confiable y versátil para trabajo y gaming ligero, con características como slots PCIe, M.2 y conectividad fundamental.
+    [descripcion_corta] => Placa base ASUS para procesadores Intel de 12va y 13va generación con DDR4
+    [precio_oferta] => 449.00
+    [stock] => 30
+    [marca] => ASUS
+    [modelo] => PRIME B760M-A D4
+    [caracteristicas] => Socket LGA1700\nChipset B760\nMicroATX\nSoporte DDR4\nPCIe 5.0\nSlots M.2\nCompatible con Intel 12/13 Gen
+    [destacado] => true
+    [nuevo] => true
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Producto importado: ASUS-PRIME-B760M-A-D4-LGA1700-MATX
+2025-04-08 08:14:29 - Procesando fila 42: Array
+(
+    [nombre] => ASUS-PRIME-B760M-A-LGA1700-MATX
+    [precio] => 549.00
+    [categoria_id] => 10
+    [descripcion] => La placa base ASUS PRIME B760M-A con soporte DDR5 representa la última tecnología para sistemas Intel de 12va y 13va generación. Con factor de forma microATX, ofrece características avanzadas como PCIe 5.0, múltiples slots M.2 y conectividad de última generación. Ideal para usuarios que buscan un rendimiento moderno y futuro en un formato compacto.
+    [descripcion_corta] => Placa base ASUS de última generación para procesadores Intel con DDR5
+    [precio_oferta] => 499.00
+    [stock] => 25
+    [marca] => ASUS
+    [modelo] => PRIME B760M-A
+    [caracteristicas] => Socket LGA1700\nChipset B760\nMicroATX\nSoporte DDR5\nPCIe 5.0\nSlots M.2\nTecnología de vanguardia
+    [destacado] => true
+    [nuevo] => true
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Producto importado: ASUS-PRIME-B760M-A-LGA1700-MATX
+2025-04-08 08:14:29 - Procesando fila 43: Array
+(
+    [nombre] => ASUS-PRIME-H610M-E-D4-LGA1700-MATX
+    [precio] => 379.00
+    [categoria_id] => 10
+    [descripcion] => La placa base ASUS PRIME H610M-E D4 es una solución económica y eficiente para sistemas Intel de 12va generación. Con soporte DDR4 y factor de forma microATX, ofrece funcionalidades esenciales para usuarios que buscan un sistema básico pero confiable. Perfecta para trabajo ofimático, navegación y tareas cotidianas.
+    [descripcion_corta] => Placa base ASUS económica para procesadores Intel de 12va generación
+    [precio_oferta] => 329.00
+    [stock] => 20
+    [marca] => ASUS
+    [modelo] => PRIME H610M-E D4
+    [caracteristicas] => Socket LGA1700\nChipset H610\nMicroATX\nSoporte DDR4\nPCIe\nPrecio accesible\nIdeal para uso básico
+    [destacado] => false
+    [nuevo] => false
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Producto importado: ASUS-PRIME-H610M-E-D4-LGA1700-MATX
+2025-04-08 08:14:29 - Procesando fila 44: Array
+(
+    [nombre] => GIGABYTE-H610M-H-DDR4-LGA1700-MATX
+    [precio] => 349.00
+    [categoria_id] => 10
+    [descripcion] => La placa base GIGABYTE H610M H DDR4 es una opción compacta y económica para sistemas Intel de 12va generación. Con factor de forma microATX y soporte DDR4, ofrece las características fundamentales para un sistema básico de trabajo y entretenimiento ligero. Ideal para usuarios que buscan una solución confiable a bajo costo.
+    [descripcion_corta] => Placa base GIGABYTE compacta para procesadores Intel de 12va generación
+    [precio_oferta] => 299.00
+    [stock] => 15
+    [marca] => GIGABYTE
+    [modelo] => H610M H DDR4
+    [caracteristicas] => Socket LGA1700\nChipset H610\nMicroATX\nSoporte DDR4\nPCIe\nDiseño simple\nBajo consumo
+    [destacado] => false
+    [nuevo] => false
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Producto importado: GIGABYTE-H610M-H-DDR4-LGA1700-MATX
+2025-04-08 08:14:29 - Procesando fila 45: Array
+(
+    [nombre] => GIGABYTE-Z690-GAMING-X-DDR4-LGA1700-ATX
+    [precio] => 799.00
+    [categoria_id] => 10
+    [descripcion] => La placa base GIGABYTE Z690 GAMING X DDR4 es una solución de alto rendimiento para sistemas Intel de 12va generación. Con soporte DDR4, factor de forma ATX y chipset Z690, ofrece características premium para gaming y trabajo profesional. Incluye múltiples slots M.2, PCIe 5.0 y características optimizadas para overclock y máximo rendimiento.
+    [descripcion_corta] => Placa base GIGABYTE de gama alta para procesadores Intel de 12va generación
+    [precio_oferta] => 699.00
+    [stock] => 25
+    [marca] => GIGABYTE
+    [modelo] => Z690 GAMING X DDR4
+    [caracteristicas] => Socket LGA1700\nChipset Z690\nATX\nSoporte DDR4\nPCIe 5.0\nMulti M.2\nIdeal para gaming\nSoporte overclock
+    [destacado] => true
+    [nuevo] => false
+    [activo] => trueRetryYS
+)
+
+2025-04-08 08:14:29 - Producto importado: GIGABYTE-Z690-GAMING-X-DDR4-LGA1700-ATX
+2025-04-08 08:14:29 - Procesando fila 46: Array
+(
+    [nombre] => MSI-PRO-H510M-B-LGA1200-MATX
+    [precio] => 299.00
+    [categoria_id] => 10
+    [descripcion] => La placa base MSI PRO H510M-B es una solución económica y eficiente para sistemas Intel de 10ma y 11va generación. Con factor de forma microATX, ofrece funcionalidades básicas para usuarios que requieren un sistema confiable para tareas cotidianas. Ideal para trabajo ofimático, navegación web y entretenimiento ligero.
+    [descripcion_corta] => Placa base MSI compacta para procesadores Intel de 10ma y 11va generación
+    [precio_oferta] => 249.00
+    [stock] => 20
+    [marca] => MSI
+    [modelo] => PRO H510M-B
+    [caracteristicas] => Socket LGA1200\nChipset H510\nMicroATX\nSoporte DDR4\nPCIe\nPrecio accesible\nBajo consumo
+    [destacado] => false
+    [nuevo] => false
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Producto importado: MSI-PRO-H510M-B-LGA1200-MATX
+2025-04-08 08:14:29 - Procesando fila 47: Array
+(
+    [nombre] => GIGABYTE-H510M-H-LGA1200-MATX
+    [precio] => 329.00
+    [categoria_id] => 10
+    [descripcion] => La placa base GIGABYTE H510M H es una opción compacta y confiable para sistemas Intel de 10ma y 11va generación. Con factor de forma microATX, proporciona las características esenciales para un sistema básico de trabajo y entretenimiento. Diseñada para ofrecer estabilidad y rendimiento a un precio accesible.
+    [descripcion_corta] => Placa base GIGABYTE económica para procesadores Intel de 10ma generación
+    [precio_oferta] => 279.00
+    [stock] => 18
+    [marca] => GIGABYTE
+    [modelo] => H510M H
+    [caracteristicas] => Socket LGA1200\nChipset H510\nMicroATX\nSoporte DDR4\nPCIe\nDiseño simple\nIdeal para uso básico
+    [destacado] => false
+    [nuevo] => false
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Producto importado: GIGABYTE-H510M-H-LGA1200-MATX
+2025-04-08 08:14:29 - Procesando fila 48: Array
+(
+    [nombre] => GIGABYTE-B560M-DS3H-V2-LGA1200-MATX
+    [precio] => 449.00
+    [categoria_id] => 10
+    [descripcion] => La placa base GIGABYTE B560M DS3H V2 es una solución versátil para sistemas Intel de 10ma y 11va generación. Con factor de forma microATX, ofrece un rendimiento equilibrado para gaming ligero y trabajo profesional. Incluye características como soporte PCIe, múltiples slots M.2 y compatibilidad con memorias DDR4 de alta velocidad.
+    [descripcion_corta] => Placa base GIGABYTE para procesadores Intel con características de rendimiento medio
+    [precio_oferta] => 399.00
+    [stock] => 25
+    [marca] => GIGABYTE
+    [modelo] => B560M DS3H V2
+    [caracteristicas] => Socket LGA1200\nChipset B560\nMicroATX\nSoporte DDR4\nPCIe 4.0\nSlots M.2\nÓptima para gaming y productividad
+    [destacado] => true
+    [nuevo] => false
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Producto importado: GIGABYTE-B560M-DS3H-V2-LGA1200-MATX
+2025-04-08 08:14:29 - Procesando fila 49: Array
+(
+    [nombre] => MSI-B460M-A-PRO-LGA1200-MATX
+    [precio] => 399.00
+    [categoria_id] => 10
+    [descripcion] => La placa base MSI B460M-A PRO es una solución robusta para sistemas Intel de 10ma generación. Con factor de forma microATX, ofrece un rendimiento confiable para trabajo ofimático, gaming ligero y multitarea básica. Incluye características esenciales como slots PCIe, soporte DDR4 y conectividad fundamental.
+    [descripcion_corta] => Placa base MSI para procesadores Intel de 10ma generación con rendimiento equilibrado
+    [precio_oferta] => 349.00
+    [stock] => 20
+    [marca] => MSI
+    [modelo] => B460M-A PRO
+    [caracteristicas] => Socket LGA1200\nChipset B460\nMicroATX\nSoporte DDR4\nPCIe\nRendimiento equilibrado\nDiseño compacto
+    [destacado] => false
+    [nuevo] => false
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Producto importado: MSI-B460M-A-PRO-LGA1200-MATX
+2025-04-08 08:14:29 - Procesando fila 50: Array
+(
+    [nombre] => MSI-B365M-PRO-VDH-LGA1151-MATX
+    [precio] => 349.00
+    [categoria_id] => 10
+    [descripcion] => La placa base MSI B365M PRO-VDH es una solución versátil para sistemas Intel de 8va y 9na generación. Con factor de forma microATX, ofrece un rendimiento confiable para trabajo ofimático y entretenimiento ligero. Incluye características esenciales como slots PCIe, soporte DDR4 y conectividad fundamental a un precio accesible.
+    [descripcion_corta] => Placa base MSI compacta para procesadores Intel de 8va y 9na generación
+    [precio_oferta] => 299.00
+    [stock] => 15
+    [marca] => MSI
+    [modelo] => B365M PRO-VDH
+    [caracteristicas] => Socket LGA1151\nChipset B365\nMicroATX\nSoporte DDR4\nPCIe\nPrecio económico\nIdeal para uso básico
+    [destacado] => false
+    [nuevo] => false
+    [activo] => trueRetryYS
+)
+
+2025-04-08 08:14:29 - Producto importado: MSI-B365M-PRO-VDH-LGA1151-MATX
+2025-04-08 08:14:29 - Procesando fila 51: Array
+(
+    [nombre] => ASUS-ROG-STRIX-Z790-F-GAMING-WIFI-LGA1700-ATX
+    [precio] => 1
+    [categoria_id] => 299.00
+    [descripcion] => 10
+    [descripcion_corta] => La placa base ASUS ROG STRIX Z790-F GAMING WIFI representa lo último en tecnología para sistemas Intel de 13va generación. Diseñada para entusiastas y gamers profesionales, ofrece características de punta como PCIe 5.0, múltiples slots M.2 Gen5, WiFi 6E integrado y soporte para memorias DDR5 de alta velocidad. Su diseño ROG garantiza la máxima estabilidad y rendimiento para gaming de élite y trabajo profesional de alto nivel.
+    [precio_oferta] => Placa base ASUS ROG de gama ultra alta para procesadores Intel de 13va generación
+    [stock] => 1
+    [marca] => 149.00
+    [modelo] => 15
+    [caracteristicas] => ASUS
+    [destacado] => ROG STRIX Z790-F GAMING WIFI
+    [nuevo] => Socket LGA1700\nChipset Z790\nATX\nROG Gaming\nWiFi 6E\nPCIe 5.0\nSoporte DDR5\nSlots M.2 Gen5\nRendimiento extremo
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Fila 51: Categoría con ID 299 no es válida. Usando categoría por defecto 1.
+2025-04-08 08:14:29 - Producto importado: ASUS-ROG-STRIX-Z790-F-GAMING-WIFI-LGA1700-ATX
+2025-04-08 08:14:29 - Procesando fila 52: Array
+(
+    [nombre] => GIGABYTE-Z790-AORUS-ELITE-AX-LGA1700-ATX
+    [precio] => 1
+    [categoria_id] => 099.00
+    [descripcion] => 10
+    [descripcion_corta] => La placa base GIGABYTE Z790 AORUS ELITE AX es una solución de alto rendimiento para sistemas Intel de 13va generación. Con soporte DDR5, WiFi 6E integrado y PCIe 5.0, ofrece características premium para gaming y trabajo profesional. Diseñada con componentes de alta calidad y tecnologías de última generación para máximo rendimiento y estabilidad.
+    [precio_oferta] => Placa base GIGABYTE Aorus de gama alta para procesadores Intel de 13va generación
+    [stock] => 999.00
+    [marca] => 20
+    [modelo] => GIGABYTE
+    [caracteristicas] => Z790 AORUS ELITE AX
+    [destacado] => Socket LGA1700\nChipset Z790\nATX\nWiFi 6E\nPCIe 5.0\nSoporte DDR5\nMulti M.2\nIdeal para gaming profesional
+    [nuevo] => true
+    [activo] => true
+)
+
+2025-04-08 08:14:29 - Fila 52: Categoría con ID 99 no es válida. Usando categoría por defecto 1.
+2025-04-08 08:14:29 - Producto importado: GIGABYTE-Z790-AORUS-ELITE-AX-LGA1700-ATX
+2025-04-08 08:14:29 - Proceso de importación completado: 51 productos importados, 0 errores

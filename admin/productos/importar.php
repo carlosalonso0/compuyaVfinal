@@ -18,263 +18,13 @@ $detailed_errors = [];
 $mensaje = '';
 $tipo_mensaje = '';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['csv_file'])) {
-    // Verificar si se ha subido un archivo
-    if ($_FILES['csv_file']['error'] == 0) {
-        $file_name = $_FILES['csv_file']['name'];
-        $file_tmp = $_FILES['csv_file']['tmp_name'];
-        $ext = pathinfo($file_name, PATHINFO_EXTENSION);
-        
-        // Verificar extensión
-        if (strtolower($ext) == 'csv') {
-            // Crear un archivo de log
-            $log_file = '../logs/import_' . date('Y-m-d_H-i-s') . '.log';
-            if (!file_exists('../logs/')) {
-                mkdir('../logs/', 0777, true);
-            }
-            
-            // Función para escribir en el log
-            function writeLog($message) {
-                global $log_file;
-                file_put_contents($log_file, date('Y-m-d H:i:s') . ' - ' . $message . PHP_EOL, FILE_APPEND);
-            }
-            
-            writeLog('Iniciando proceso de importación');
-            writeLog('Archivo: ' . $file_name);
-            
-            // Pre-procesar el archivo para manejar comas en valores numéricos
-            $file_content = file_get_contents($file_tmp);
-            $processed_content = '';
-            $in_quotes = false;
-            $current_char = '';
-            $prev_char = '';
-
-            // Recorremos cada carácter del archivo
-            for ($i = 0; $i < strlen($file_content); $i++) {
-                $current_char = $file_content[$i];
-                
-                // Si encontramos comillas, cambiamos el estado de in_quotes
-                if ($current_char === '"' && $prev_char !== '\\') {
-                    $in_quotes = !$in_quotes;
-                }
-                
-                // Si estamos dentro de comillas y hay una coma (posible separador de miles)
-                if ($in_quotes && $current_char === ',' && ctype_digit($prev_char) && 
-                    $i + 1 < strlen($file_content) && ctype_digit($file_content[$i + 1])) {
-                    // Reemplazar la coma por un carácter especial temporalmente
-                    $processed_content .= '#COMMA#';
-                } else {
-                    $processed_content .= $current_char;
-                }
-                
-                $prev_char = $current_char;
-            }
-
-            // Guardar el contenido procesado en un archivo temporal
-            $temp_file = tempnam(sys_get_temp_dir(), 'csv_import_');
-            file_put_contents($temp_file, $processed_content);
-
-            // Ahora abrir el archivo procesado
-            $handle = fopen($temp_file, 'r');
-            
-            if ($handle !== FALSE) {
-                // Leer la primera línea (encabezados)
-                $headers = fgetcsv($handle, 0, ',', '"', '"');
-                if (!$headers) {
-                    writeLog('ERROR: No se pudieron leer los encabezados del archivo');
-                    $error_log[] = 'No se pudieron leer los encabezados del archivo';
-                } else {
-                    writeLog('Encabezados encontrados: ' . implode(', ', $headers));
-                    
-                    // Verificar encabezados requeridos
-                    $required_headers = ['nombre', 'precio', 'categoria_id'];
-                    $missing_headers = array_diff($required_headers, $headers);
-                    
-                    if (empty($missing_headers)) {
-                        // Procesar el archivo
-                        $row = 1; // Empezamos en 1 porque la fila 0 son los encabezados
-                        
-                        while (($data = fgetcsv($handle, 0, ',', '"', '"')) !== FALSE) {
-                            $row++;
-                            writeLog("Procesando fila $row");
-                            
-                            // Verificar que el número de columnas sea consistente
-                            if (count($data) != count($headers)) {
-                                writeLog("ERROR en fila $row: Número de columnas inconsistente. Se esperaban " . count($headers) . ", se encontraron " . count($data));
-                                $detailed_errors[] = "Fila $row: Número de columnas inconsistente. Se esperaban " . count($headers) . ", se encontraron " . count($data);
-                                $error_count++;
-                                continue;
-                            }
-                            
-                            // Crear array asociativo con los datos
-                            $product_data = [];
-                            foreach ($headers as $index => $header) {
-                                if (isset($data[$index])) {
-                                    // Restaurar las comas en los valores
-                                    $value = trim($data[$index]);
-                                    $value = str_replace('#COMMA#', ',', $value);
-                                    $product_data[$header] = $value;
-                                } else {
-                                    $product_data[$header] = '';
-                                }
-                            }
-                            
-                            // Validar datos requeridos
-                            $validation_errors = [];
-                            
-                            if (empty($product_data['nombre'])) {
-                                $validation_errors[] = 'El nombre es obligatorio';
-                            }
-                            
-                            if (empty($product_data['precio']) || !is_numeric($product_data['precio'])) {
-                                $validation_errors[] = 'El precio debe ser un número válido';
-                            }
-                            
-                            if (empty($product_data['categoria_id']) || !is_numeric($product_data['categoria_id'])) {
-                                $validation_errors[] = 'El ID de categoría debe ser un número válido';
-                            } else {
-                                // Verificar si la categoría existe
-                                $query = "SELECT id FROM categorias WHERE id = :id";
-                                $stmt = $db->prepare($query);
-                                $stmt->bindParam(':id', $product_data['categoria_id'], PDO::PARAM_INT);
-                                $stmt->execute();
-                                if ($stmt->rowCount() == 0) {
-                                    $validation_errors[] = 'La categoría con ID ' . $product_data['categoria_id'] . ' no existe';
-                                }
-                            }
-                            
-                            // Si hay errores de validación, registrarlos y continuar con la siguiente fila
-                            if (!empty($validation_errors)) {
-                                writeLog("ERROR en fila $row: " . implode(', ', $validation_errors));
-                                $detailed_errors[] = "Fila $row: " . implode(', ', $validation_errors);
-                                $error_count++;
-                                continue;
-                            }
-                            
-                            // Preparar datos para inserción
-                            $nombre = $product_data['nombre'];
-                            $slug = generateSlug($nombre);
-                            $descripcion = isset($product_data['descripcion']) ? $product_data['descripcion'] : '';
-                            $descripcion_corta = isset($product_data['descripcion_corta']) ? $product_data['descripcion_corta'] : '';
-                            $precio = floatval(cleanNumericValue($product_data['precio']));
-                            $precio_oferta = isset($product_data['precio_oferta']) && !empty($product_data['precio_oferta']) ? floatval(cleanNumericValue($product_data['precio_oferta'])) : null;
-                            $stock = isset($product_data['stock']) ? intval($product_data['stock']) : 0;
-                            $marca = isset($product_data['marca']) ? $product_data['marca'] : '';
-                            $modelo = isset($product_data['modelo']) ? $product_data['modelo'] : '';
-                            $caracteristicas = isset($product_data['caracteristicas']) ? $product_data['caracteristicas'] : '';
-                            
-                            // Valores booleanos
-                            $destacado = 0;
-                            if (isset($product_data['destacado'])) {
-                                if ($product_data['destacado'] == '1' || strtolower($product_data['destacado']) == 'true') {
-                                    $destacado = 1;
-                                }
-                            }
-                            
-                            $nuevo = 0;
-                            if (isset($product_data['nuevo'])) {
-                                if ($product_data['nuevo'] == '1' || strtolower($product_data['nuevo']) == 'true') {
-                                    $nuevo = 1;
-                                }
-                            }
-                            
-                            $activo = 1; // Por defecto activo
-                            if (isset($product_data['activo'])) {
-                                if ($product_data['activo'] == '0' || strtolower($product_data['activo']) == 'false') {
-                                    $activo = 0;
-                                }
-                            }
-                            
-                            // Generar código único para el producto
-                            $codigo = strtoupper(substr(str_replace(' ', '', $nombre), 0, 3)) . '-' . substr(md5(time() . $row), 0, 6);
-                            
-                            try {
-                                // Debug
-                                writeLog("Intentando insertar producto: $nombre");
-                                
-                                // Insertar producto en la base de datos
-                                $query = "INSERT INTO productos 
-                                          (codigo, nombre, slug, descripcion, descripcion_corta, precio, precio_oferta, 
-                                           stock, marca, modelo, caracteristicas, destacado, nuevo, activo, categoria_id) 
-                                          VALUES 
-                                          (:codigo, :nombre, :slug, :descripcion, :descripcion_corta, :precio, :precio_oferta, 
-                                           :stock, :marca, :modelo, :caracteristicas, :destacado, :nuevo, :activo, :categoria_id)";
-                                
-                                $stmt = $db->prepare($query);
-                                $stmt->bindParam(':codigo', $codigo);
-                                $stmt->bindParam(':nombre', $nombre);
-                                $stmt->bindParam(':slug', $slug);
-                                $stmt->bindParam(':descripcion', $descripcion);
-                                $stmt->bindParam(':descripcion_corta', $descripcion_corta);
-                                $stmt->bindParam(':precio', $precio);
-                                $stmt->bindParam(':precio_oferta', $precio_oferta);
-                                $stmt->bindParam(':stock', $stock);
-                                $stmt->bindParam(':marca', $marca);
-                                $stmt->bindParam(':modelo', $modelo);
-                                $stmt->bindParam(':caracteristicas', $caracteristicas);
-                                $stmt->bindParam(':destacado', $destacado);
-                                $stmt->bindParam(':nuevo', $nuevo);
-                                $stmt->bindParam(':activo', $activo);
-                                $stmt->bindParam(':categoria_id', $product_data['categoria_id']);
-                                
-                                $result = $stmt->execute();
-                                
-                                if ($result) {
-                                    $success_count++;
-                                    writeLog("Producto insertado correctamente: $nombre");
-                                } else {
-                                    $error_count++;
-                                    $error_info = $stmt->errorInfo();
-                                    $detailed_errors[] = "Fila $row: Error SQL - " . $error_info[2];
-                                    writeLog("Error al insertar producto: " . $error_info[2]);
-                                }
-                                
-                            } catch (PDOException $e) {
-                                $error_count++;
-                                $detailed_errors[] = "Fila $row: Error en la base de datos - " . $e->getMessage();
-                                writeLog("ERROR en fila $row: " . $e->getMessage());
-                            }
-                        }
-                        
-                        writeLog("Proceso de importación completado: $success_count productos importados, $error_count errores");
-                        
-                        fclose($handle);
-                        
-                        if ($success_count > 0) {
-                            $mensaje = "Se importaron correctamente $success_count productos. Errores: $error_count.";
-                            $tipo_mensaje = "success";
-                            
-                            if ($error_count > 0) {
-                                $tipo_mensaje = "warning";
-                            }
-                        } else {
-                            $mensaje = "No se pudo importar ningún producto. Errores: $error_count.";
-                            $tipo_mensaje = "danger";
-                        }
-                    } else {
-                        $missing = implode(', ', $missing_headers);
-                        $mensaje = "El archivo CSV no tiene los encabezados requeridos: $missing";
-                        $tipo_mensaje = "danger";
-                        $error_log[] = "Faltan encabezados requeridos: $missing";
-                        writeLog("ERROR: Faltan encabezados requeridos: $missing");
-                    }
-                }
-            } else {
-                $mensaje = "No se pudo abrir el archivo.";
-                $tipo_mensaje = "danger";
-                $error_log[] = "No se pudo abrir el archivo.";
-                writeLog("ERROR: No se pudo abrir el archivo");
-            }
-        } else {
-            $mensaje = "El archivo debe ser CSV.";
-            $tipo_mensaje = "danger";
-            $error_log[] = "El archivo debe ser CSV, se recibió: $ext";
-        }
-    } else {
-        $mensaje = "Error al subir el archivo: " . $_FILES['csv_file']['error'];
-        $tipo_mensaje = "danger";
-        $error_log[] = "Error al subir el archivo: " . $_FILES['csv_file']['error'];
-    }
+// Función para limpiar valores numéricos (manejar comas de miles)
+function cleanNumericValue($value) {
+    // Eliminar comas de miles y espacios en blanco
+    $value = trim(str_replace(',', '', $value));
+    
+    // Convertir a número de punto flotante
+    return $value !== '' ? floatval($value) : null;
 }
 
 // Función para generar slug
@@ -299,19 +49,208 @@ function generateSlug($text) {
     return $text;
 }
 
-// Función para limpiar valores numéricos (eliminar comas de separadores de miles)
-function cleanNumericValue($value) {
-    // Si el valor es numérico con comas como separadores de miles
-    if (preg_match('/^[0-9,]+(\.[0-9]+)?$/', $value)) {
-        return str_replace(',', '', $value);
+// Procesar formulario de importación
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['csv_file'])) {
+    // Verificar si se ha subido un archivo
+    if ($_FILES['csv_file']['error'] == 0) {
+        $file_name = $_FILES['csv_file']['name'];
+        $file_tmp = $_FILES['csv_file']['tmp_name'];
+        $ext = pathinfo($file_name, PATHINFO_EXTENSION);
+        
+        // Verificar extensión
+        if (strtolower($ext) == 'csv') {
+            // Crear un archivo de log
+            $log_file = '../logs/import_' . date('Y-m-d_H-i-s') . '.log';
+            if (!file_exists('../logs/')) {
+                mkdir('../logs/', 0777, true);
+            }
+            
+            // Función para escribir en el log
+            function writeLog($message) {
+                global $log_file;
+                file_put_contents($log_file, date('Y-m-d H:i:s') . ' - ' . $message . PHP_EOL, FILE_APPEND);
+            }
+            
+            writeLog('Iniciando proceso de importación');
+            writeLog('Archivo: ' . $file_name);
+            
+            // Definir categorías válidas
+            $categorias_validas = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+            writeLog("Categorías válidas para importación: " . implode(', ', $categorias_validas));
+            
+            // Leer contenido del archivo
+            $file_content = file_get_contents($file_tmp);
+            
+            // Usar str_getcsv con opciones para manejar comillas y comas
+            $lines = explode(PHP_EOL, $file_content);
+            
+            // Remover líneas vacías
+            $lines = array_filter($lines);
+            
+            // Obtener encabezados
+            $headers = str_getcsv(array_shift($lines));
+            writeLog('Encabezados encontrados: ' . implode(', ', $headers));
+            
+            // Verificar encabezados requeridos
+            $required_headers = ['nombre', 'precio', 'categoria_id'];
+            $missing_headers = array_diff($required_headers, $headers);
+            
+            if (empty($missing_headers)) {
+                // Preparar statement para inserción de productos
+                $query = "INSERT INTO productos 
+                          (codigo, nombre, slug, precio, precio_oferta, categoria_id, 
+                           descripcion, descripcion_corta, stock, marca, modelo, 
+                           caracteristicas, destacado, nuevo, activo) 
+                          VALUES 
+                          (:codigo, :nombre, :slug, :precio, :precio_oferta, :categoria_id, 
+                           :descripcion, :descripcion_corta, :stock, :marca, :modelo, 
+                           :caracteristicas, :destacado, :nuevo, :activo)";
+                
+                $stmt = $db->prepare($query);
+                
+                // Procesar cada fila
+                foreach ($lines as $row => $line) {
+                    // Saltar líneas vacías
+                    if (trim($line) === '') continue;
+                    
+                    // Parsear la línea actual
+                    $data = str_getcsv($line);
+                    
+                    // Asegurar que tenga el mismo número de campos que los encabezados
+                    $data = array_slice($data, 0, count($headers));
+                    while (count($data) < count($headers)) {
+                        $data[] = '';
+                    }
+                    
+                    // Crear array asociativo
+                    $product_data = array_combine($headers, $data);
+                    
+                    try {
+                        // Datos básicos
+                        $nombre = trim($product_data['nombre'] ?? '');
+                        $slug = generateSlug($nombre);
+                        $precio = cleanNumericValue($product_data['precio'] ?? 0);
+                        
+                        // Validar categoría
+                        $categoria_id = intval(preg_replace('/[^0-9]/', '', $product_data['categoria_id'] ?? '0'));
+                        
+                        // Verificar categoría válida
+                        if (!in_array($categoria_id, $categorias_validas)) {
+                            $categoria_id = $categorias_validas[0]; // Default a Periféricos
+                            $detailed_errors[] = "Fila " . ($row + 2) . ": Categoría no válida. Usando categoría por defecto.";
+                        }
+                        
+                        // Campos opcionales
+                        $precio_oferta = !empty($product_data['precio_oferta']) ? 
+                            cleanNumericValue($product_data['precio_oferta']) : 
+                            null;
+                        $descripcion = $product_data['descripcion'] ?? '';
+                        $descripcion_corta = $product_data['descripcion_corta'] ?? '';
+                        $stock = intval($product_data['stock'] ?? 0);
+                        $marca = $product_data['marca'] ?? '';
+                        $modelo = $product_data['modelo'] ?? '';
+                        $caracteristicas = $product_data['caracteristicas'] ?? '';
+                        
+                        // Valores booleanos
+                        $destacado = !empty($product_data['destacado']) && 
+                            ($product_data['destacado'] === '1' || 
+                             strtolower($product_data['destacado']) === 'true') ? 1 : 0;
+                        
+                        $nuevo = !empty($product_data['nuevo']) && 
+                            ($product_data['nuevo'] === '1' || 
+                             strtolower($product_data['nuevo']) === 'true') ? 1 : 0;
+                        
+                        $activo = !isset($product_data['activo']) || 
+                            $product_data['activo'] === '1' || 
+                            strtolower($product_data['activo']) === 'true' ? 1 : 0;
+                        
+                        // Generar código único
+                        $codigo = strtoupper(substr(str_replace(' ', '', $nombre), 0, 3)) . 
+                            '-' . substr(md5(time() . $row), 0, 6);
+                        
+                        // Validaciones
+                        $validation_errors = [];
+                        
+                        if (empty($nombre)) {
+                            $validation_errors[] = 'Nombre es obligatorio';
+                        }
+                        
+                        if ($precio <= 0) {
+                            $validation_errors[] = 'Precio debe ser mayor a 0';
+                        }
+                        
+                        // Si hay errores, registrar y continuar con la siguiente fila
+                        if (!empty($validation_errors)) {
+                            $error_message = "Fila " . ($row + 2) . ": " . implode(', ', $validation_errors);
+                            writeLog($error_message);
+                            $detailed_errors[] = $error_message;
+                            $error_count++;
+                            continue;
+                        }
+                        
+                        // Bind y ejecutar
+                        $stmt->bindParam(':codigo', $codigo);
+                        $stmt->bindParam(':nombre', $nombre);
+                        $stmt->bindParam(':slug', $slug);
+                        $stmt->bindParam(':precio', $precio);
+                        $stmt->bindParam(':precio_oferta', $precio_oferta);
+                        $stmt->bindParam(':categoria_id', $categoria_id);
+                        $stmt->bindParam(':descripcion', $descripcion);
+                        $stmt->bindParam(':descripcion_corta', $descripcion_corta);
+                        $stmt->bindParam(':stock', $stock);
+                        $stmt->bindParam(':marca', $marca);
+                        $stmt->bindParam(':modelo', $modelo);
+                        $stmt->bindParam(':caracteristicas', $caracteristicas);
+                        $stmt->bindParam(':destacado', $destacado);
+                        $stmt->bindParam(':nuevo', $nuevo);
+                        $stmt->bindParam(':activo', $activo);
+                        
+                        // Ejecutar inserción
+                        $result = $stmt->execute();
+                        
+                        if ($result) {
+                            $success_count++;
+                            writeLog("Producto importado: $nombre");
+                        } else {
+                            $error_count++;
+                            writeLog("Error al importar producto: $nombre");
+                        }
+                        
+                    } catch (Exception $e) {
+                        $error_count++;
+                        $detailed_errors[] = "Fila " . ($row + 2) . ": " . $e->getMessage();
+                        writeLog("Error en fila " . ($row + 2) . ": " . $e->getMessage());
+                    }
+                }
+                
+                // Resumen de importación
+                writeLog("Proceso de importación completado: $success_count productos importados, $error_count errores");
+                
+                if ($success_count > 0) {
+                    $mensaje = "Se importaron correctamente $success_count productos.";
+                    $tipo_mensaje = $error_count > 0 ? 'warning' : 'success';
+                } else {
+                    $mensaje = "No se pudo importar ningún producto.";
+                    $tipo_mensaje = 'danger';
+                }
+            } else {
+                $missing = implode(', ', $missing_headers);
+                $mensaje = "El archivo CSV no tiene los encabezados requeridos: $missing";
+                $tipo_mensaje = 'danger';
+                writeLog("ERROR: Faltan encabezados requeridos: $missing");
+            }
+        } else {
+            $mensaje = "El archivo debe ser CSV.";
+            $tipo_mensaje = 'danger';
+        }
+    } else {
+        $mensaje = "Error al subir el archivo.";
+        $tipo_mensaje = 'danger';
     }
-    return $value;
 }
-
-
-
 ?>
 
+<!-- Contenido HTML (igual que en versiones anteriores) -->
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3">Importar Productos</h1>
@@ -372,34 +311,38 @@ function cleanNumericValue($value) {
                     <h6 class="font-weight-bold">Campos requeridos:</h6>
                     <ul>
                         <li><strong>nombre</strong>: Nombre del producto</li>
-                        <li><strong>precio</strong>: Precio en soles (usar punto como separador decimal)</li>
-                        <li><strong>categoria_id</strong>: ID de la categoría a la que pertenece el producto</li>
+                        <li><strong>precio</strong>: Precio en soles</li>
+                        <li><strong>categoria_id</strong>: ID de la categoría</li>
                     </ul>
                     
+                    <h6 class="font-weight-bold">IDs de Categoría Válidos:</h6>
+                    <ul>
+                        <li>1: Periféricos</li>
+                        <li>2: Monitores</li>
+                        <li>3: Laptops</li>
+                        <li>4: Impresoras</li>
+                        <li>5: Componentes</li>
+                        <li>6: PCs Armadas</li>
+                        <li>7: Teclados</li>
+                        <li>8: Mouse</li>
+                        <li>9: Tarjetas de Video</li>
+                        <li>10: Procesadores</li>
+                    </ul>
                     <h6 class="font-weight-bold">Campos opcionales:</h6>
                     <ul>
-                        <li><strong>descripcion</strong>: Descripción completa del producto</li>
+                        <li><strong>descripcion</strong>: Descripción completa</li>
                         <li><strong>descripcion_corta</strong>: Descripción resumida</li>
-                        <li><strong>precio_oferta</strong>: Precio de oferta si existe</li>
-                        <li><strong>stock</strong>: Cantidad disponible (por defecto 0)</li>
+                        <li><strong>precio_oferta</strong>: Precio de oferta</li>
+                        <li><strong>stock</strong>: Cantidad disponible</li>
                         <li><strong>marca</strong>: Marca del producto</li>
-                        <li><strong>modelo</strong>: Modelo del producto</li>
+                        <li><strong>modelo</strong>: Modelo específico</li>
                         <li><strong>caracteristicas</strong>: Características principales</li>
-                        <li><strong>destacado</strong>: Si es un producto destacado (1 o true para sí)</li>
-                        <li><strong>nuevo</strong>: Si es un producto nuevo (1 o true para sí)</li>
-                        <li><strong>activo</strong>: Si el producto está activo (1 o true para sí, por defecto)</li>
+                        <li><strong>destacado</strong>: true/false (producto destacado)</li>
+                        <li><strong>nuevo</strong>: true/false (producto nuevo)</li>
+                        <li><strong>activo</strong>: true (siempre true)</li>
                     </ul>
                     
                     <p class="mb-0"><a href="#" class="btn btn-sm btn-info" id="download-template">Descargar Plantilla CSV</a></p>
-                    
-                    <h6 class="font-weight-bold mt-3">Reglas a considerar:</h6>
-                    <ul>
-                        <li>Usa <strong>comas (,)</strong> como separador de campos</li>
-                        <li>Si un campo tiene comas, debe estar <strong>entre comillas dobles</strong></li>
-                        <li>Usa <strong>punto (.)</strong> como separador decimal para precios</li>
-                        <li>Asegúrate que el archivo esté en <strong>formato UTF-8</strong></li>
-                        <li>Para campos booleanos, usa <strong>1 o true</strong> para sí, <strong>0 o false</strong> para no</li>
-                    </ul>
                 </div>
             </div>
         </div>
@@ -419,9 +362,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Datos de ejemplo
         const exampleData = [
-            'AMD-RYZEN-5-8600G-8VA', '799.00', '10', 'Descripción completa del procesador...', 
-            'Procesador AMD Ryzen 5 de última generación', '', '10', 'AMD', 'Ryzen 5 8600G', 
-            'Núcleos: 6\nHilos: 12\nFrecuencia: 4.3GHz', '1', '1', '1'
+            'NVIDIA GeForce RTX 4060 TUF Gaming 8GB', '1,599.00', '9', 
+            'Tarjeta de video de última generación con capacidades de ray tracing y alto rendimiento en juegos.', 
+            'Potente tarjeta gráfica para gaming de alta calidad', '', '20', 'NVIDIA', 'RTX 4060', 
+            'Memoria 8GB GDDR6\nPCIe 4.0\nRay Tracing\nDLSS', 'true', 'true', 'true'
         ];
         
         // Crear contenido CSV
@@ -445,4 +389,6 @@ document.addEventListener('DOMContentLoaded', function() {
 <?php
 // Incluir pie de página
 include '../includes/footer.php';
-?>  
+?>
+                            </document_content>
+</invoke>
