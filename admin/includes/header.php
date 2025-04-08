@@ -175,10 +175,26 @@
                     </a>
                 </li>
                 <li>
+                    <a href="<?php echo ADMIN_URL; ?>sliders/" class="<?php echo strpos($_SERVER['PHP_SELF'], '/admin/sliders/') !== false ? 'active' : ''; ?>">
+                        <i class="fas fa-images"></i> Sliders
+                    </a>
+                </li>
+                <li>
+                    <a href="<?php echo ADMIN_URL; ?>banners/" class="<?php echo strpos($_SERVER['PHP_SELF'], '/admin/banners/') !== false ? 'active' : ''; ?>">
+                        <i class="fas fa-ad"></i> Banners
+                    </a>
+                </li>
+                <li>
+                    <a href="<?php echo ADMIN_URL; ?>config/home.php" class="<?php echo strpos($_SERVER['PHP_SELF'], '/admin/config/home.php') !== false ? 'active' : ''; ?>">
+                        <i class="fas fa-home"></i> Página Principal
+                    </a>
+                </li>
+                <li>
                     <a href="<?php echo ADMIN_URL; ?>logout.php">
                         <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
                     </a>
                 </li>
+
             </ul>
         </nav>
 

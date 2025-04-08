@@ -29,7 +29,7 @@
                     <a class="nav-link" href="<?php echo BASE_URL; ?>contacto">Contacto</a>
                 </li>
             </ul>
-            <form class="d-flex me-2" action="<?php echo BASE_URL; ?>buscar" method="GET">
+            <form class="d-flex me-2" action="<?php echo BASE_URL; ?>buscar.php" method="GET">
                 <input class="form-control me-2" type="search" name="q" placeholder="Buscar productos..." aria-label="Buscar">
                 <button class="btn btn-outline-light" type="submit"><i class="fas fa-search"></i></button>
             </form>
