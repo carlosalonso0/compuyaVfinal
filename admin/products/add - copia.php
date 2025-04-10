@@ -55,47 +55,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     
    // Si no hay errores, guardar en la base de datos
-// Si no hay errores, guardar en la base de datos
-// Si no hay errores, guardar en la base de datos
-// Si no hay errores, guardar en la base de datos
 if (empty($errores)) {
-    // Depuración ANTES de preparar
-    echo "Variables antes de inserción:<br>";
-    echo "Nombre: " . $nombre . "<br>";
-    echo "Precio: " . $precio . "<br>";
-    echo "Categoría ID: " . $categoria_id . "<br>";
-    echo "Descripción: " . $descripcion . "<br>";
-    echo "Descripción Corta: " . $descripcion_corta . "<br>";
-    echo "Precio Oferta: " . ($precio_oferta === null ? 'NULL' : $precio_oferta) . "<br>";
-    echo "Stock: " . $stock . "<br>";
-    echo "Marca: " . $marca . "<br>";
-    echo "Modelo: " . $modelo . "<br>";
-    echo "Características: " . $caracteristicas . "<br>";
-    echo "Destacado: " . $destacado . "<br>";
-    echo "Nuevo: " . $nuevo . "<br>";
-    echo "Activo: " . $activo . "<br>";
-
     $stmt = $conn->prepare("INSERT INTO productos (nombre, precio, categoria_id, descripcion, descripcion_corta, precio_oferta, stock, marca, modelo, caracteristicas, destacado, nuevo, activo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-
-    // Tipos de datos: s(string), d(double/float), i(integer)
-    $tipos = "sdissddiisssiii";
     
-    // Directamente con bind_param para ver exactamente qué pasa
-    $stmt->bind_param($tipos, 
-        $nombre, 
-        $precio, 
-        $categoria_id, 
-        $descripcion, 
-        $descripcion_corta, 
-        $precio_oferta, 
-        $stock, 
-        $marca, 
-        $modelo, 
-        $caracteristicas, 
-        $destacado, 
-        $nuevo, 
-        $activo
-    );
+    // Corregir el bind_param
+    if ($precio_oferta === null) {
+        // Para precio_oferta NULL
+        $null_value = null;
+        $stmt->bind_param("sdissdissiiii", 
+    $nombre, 
+    $precio, 
+    $categoria_id, 
+    $descripcion, 
+    $descripcion_corta, 
+    $precio_oferta, 
+    $stock, 
+    $marca, 
+    $modelo, 
+    $caracteristicas, 
+    $destacado, 
+    $nuevo, 
+    $activo
+);
+    } else {
+        // Para precio_oferta con valor
+        $stmt->bind_param("sdissdissiiii", 
+            $nombre, 
+            $precio, 
+            $categoria_id, 
+            $descripcion, 
+            $descripcion_corta, 
+            $precio_oferta, 
+            $stock, 
+            $marca, 
+            $modelo, 
+            $caracteristicas, 
+            $destacado, 
+            $nuevo, 
+            $activo
+        );
+    }
+        
         if ($stmt->execute()) {
             $nuevo_id = $conn->insert_id;
             $mensajes[] = "Producto añadido correctamente.";
