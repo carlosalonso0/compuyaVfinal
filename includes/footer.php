@@ -1,54 +1,66 @@
-<footer class="footer">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4 mb-3">
-                <h5 class="footer__title">CompuYA</h5>
-                <p>Tu tienda de confianza para productos tecnológicos</p>
-                <p>
-                    <i class="fas fa-map-marker-alt me-2"></i> Lima, Perú<br>
-                    <i class="fas fa-phone me-2"></i> +51 XXX XXX XXX<br>
-                    <i class="fas fa-envelope me-2"></i> contacto@compuya.pe
-                </p>
-            </div>
-            <div class="col-md-4 mb-3">
-                <h5 class="footer__title">Enlaces rápidos</h5>
-                <ul class="list-unstyled">
-                    <li><a href="<?php echo BASE_URL; ?>" class="footer__link">Inicio</a></li>
-                    <li><a href="<?php echo BASE_URL; ?>productos" class="footer__link">Productos</a></li>
-                    <li><a href="<?php echo BASE_URL; ?>nosotros" class="footer__link">Nosotros</a></li>
-                    <li><a href="<?php echo BASE_URL; ?>contacto" class="footer__link">Contacto</a></li>
-                </ul>
-            </div>
-            <div class="col-md-4 mb-3">
-                <h5 class="footer__title">Síguenos</h5>
-                <div class="footer__social">
-                    <a href="#" class="footer__link"><i class="fab fa-facebook-f fa-lg"></i></a>
-                    <a href="#" class="footer__link"><i class="fab fa-instagram fa-lg"></i></a>
-                    <a href="#" class="footer__link"><i class="fab fa-twitter fa-lg"></i></a>
-                    <a href="#" class="footer__link"><i class="fab fa-youtube fa-lg"></i></a>
+<?php
+if (!defined('IN_COMPUYA')) {
+    exit;
+}
+?>
+    </main>
+    
+    <footer>
+        <div class="footer-top">
+            <div class="container">
+                <div class="footer-columns">
+                    <div class="footer-column">
+                        <h3>Acerca de CompuYa</h3>
+                        <ul>
+                            <li><a href="about.php">Quiénes Somos</a></li>
+                            <li><a href="terms.php">Términos y Condiciones</a></li>
+                            <li><a href="privacy.php">Política de Privacidad</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-column">
+                        <h3>Servicio al Cliente</h3>
+                        <ul>
+                            <li><a href="faq.php">Preguntas Frecuentes</a></li>
+                            <li><a href="returns.php">Devoluciones</a></li>
+                            <li><a href="shipping.php">Envíos</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-column">
+                        <h3>Mi Cuenta</h3>
+                        <ul>
+                            <li><a href="login.php">Iniciar Sesión</a></li>
+                            <li><a href="register.php">Registrarse</a></li>
+                            <li><a href="orders.php">Mis Pedidos</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-column">
+                        <h3>Contacto</h3>
+                        <p>Av. Principal 123, Lima</p>
+                        <p>Teléfono: (01) 123-4567</p>
+                        <p>Email: ventas@compuya.com</p>
+                    </div>
                 </div>
-                <h5 class="footer__title mt-3">Métodos de pago</h5>
-                <div class="footer__payment">
-                    <i class="fab fa-cc-visa fa-2x me-2"></i>
-                    <i class="fab fa-cc-mastercard fa-2x me-2"></i>
-                    <i class="fab fa-cc-paypal fa-2x"></i>
+                
+                <div class="payment-methods">
+                    <h3>Métodos de Pago</h3>
+                    <div class="payment-icons">
+                        <span>Visa</span>
+                        <span>MasterCard</span>
+                        <span>PayPal</span>
+                        <span>Transferencia</span>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="footer__copyright text-center">
-            <p class="mb-0">&copy; <?php echo date('Y'); ?> CompuYA. Todos los derechos reservados.</p>
+        
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; <?php echo date('Y'); ?> <?php echo SITE_NAME; ?>. Todos los derechos reservados.</p>
+            </div>
         </div>
-    </div>
-</footer>
-
-</div><!-- Fin del contenedor principal -->
-
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- JavaScript personalizado -->
-<script src="<?php echo BASE_URL; ?>assets/js/main.js"></script>
-
+    </footer>
 </body>
 </html>

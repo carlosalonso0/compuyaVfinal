@@ -1,7 +1,0 @@
-2025-04-07 19:36:34 - Iniciando proceso de importación
-2025-04-07 19:36:34 - Archivo: prueba1.csv
-2025-04-07 19:36:34 - Encabezados encontrados: nombre, precio, categoria_id
-2025-04-07 19:36:34 - Procesando fila 2
-2025-04-07 19:36:34 - Intentando insertar producto: AMD-RYZEN-5-8600G-8VA
-2025-04-07 19:36:34 - Producto insertado correctamente: AMD-RYZEN-5-8600G-8VA
-2025-04-07 19:36:34 - Proceso de importación completado: 1 productos importados, 0 errores
