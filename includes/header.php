@@ -10,6 +10,8 @@ if (!defined('IN_COMPUYA')) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo isset($page_title) ? $page_title . ' - ' . SITE_NAME : SITE_NAME; ?></title>
     <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/category.css">
+
 </head>
 <body>
     <!-- resto del código igual -->
