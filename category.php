@@ -6,6 +6,21 @@ require_once 'includes/functions.php';
 
 // Obtener ID de categoría
 $categoria_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+$slug = isset($_GET['slug']) ? $_GET['slug'] : '';
+
+// Determinar qué consulta usar
+if ($categoria_id > 0) {
+    // Buscar por ID
+    $sql_categoria = "SELECT * FROM categorias WHERE id = $categoria_id AND activo = 1";
+} elseif (!empty($slug)) {
+    // Buscar por slug
+    $slug = $conn->real_escape_string($slug);
+    $sql_categoria = "SELECT * FROM categorias WHERE slug = '$slug' AND activo = 1";
+} else {
+    // Ni ID ni slug proporcionados
+    header('Location: index.php');
+    exit;
+}
 
 // Obtener datos de la categoría
 $db = Database::getInstance();

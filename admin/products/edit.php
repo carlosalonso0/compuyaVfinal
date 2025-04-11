@@ -1,204 +1,140 @@
 <?php
-session_start();
-require_once '../../includes/config.php';
-require_once '../../includes/db.php';
-require_once '../../includes/functions.php';
+define('IN_COMPUYA', true);
+require_once 'includes/config.php';
+require_once 'includes/db.php';
+require_once 'includes/functions.php';
 
-// Verificar si está iniciada la sesión
-// Aquí iría el control de acceso cuando implementemos el login
+// Diagnóstico - NO ELIMINAR HASTA RESOLVER EL PROBLEMA
+echo "Archivo product.php está siendo ejecutado.<br>";
+echo "REQUEST_URI: " . $_SERVER['REQUEST_URI'] . "<br>";
+echo "QUERY_STRING: " . $_SERVER['QUERY_STRING'] . "<br>";
+echo "GET params: <pre>";
+print_r($_GET);
+echo "</pre>";
+
+// Obtener ID o slug del producto
+$producto_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+$slug = isset($_GET['slug']) ? $_GET['slug'] : '';
+
+echo "Producto ID: " . $producto_id . "<br>";
+echo "Slug: " . $slug . "<br>";
 
 $db = Database::getInstance();
 $conn = $db->getConnection();
 
-$mensajes = [];
-$errores = [];
-
-// Obtener ID del producto
-$producto_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-
-if ($producto_id <= 0) {
-    header('Location: index.php');
-    exit;
-}
-
-// Obtener todas las categorías
-$result_categorias = $conn->query("SELECT id, nombre FROM categorias ORDER BY nombre");
-$categorias = [];
-while ($row = $result_categorias->fetch_assoc()) {
-    $categorias[] = $row;
-}
-
-// Obtener datos del producto
-$stmt = $conn->prepare("SELECT * FROM productos WHERE id = ?");
-$stmt->bind_param("i", $producto_id);
-$stmt->execute();
-$result = $stmt->get_result();
-
-if ($result->num_rows === 0) {
-    header('Location: index.php');
-    exit;
-}
-
-$producto = $result->fetch_assoc();
-
-
-// Obtener especificaciones del producto
-$especificaciones = [];
-$stmt = $conn->prepare("SELECT * FROM especificaciones_producto WHERE producto_id = ? ORDER BY tipo_spec, nombre");
-$stmt->bind_param("i", $producto_id);
-$stmt->execute();
-$result_specs = $stmt->get_result();
-
-while ($spec = $result_specs->fetch_assoc()) {
-    $especificaciones[] = $spec;
-}
-// Generar slug si ha cambiado el nombre
-if ($nombre != $producto['nombre']) {
-    $slug = generarSlugUnico($nombre, $conn, $producto_id);
+// Determinar qué consulta usar
+if ($producto_id > 0) {
+    // Buscar por ID
+    $stmt = $conn->prepare("SELECT p.*, c.nombre as categoria_nombre FROM productos p 
+                          LEFT JOIN categorias c ON p.categoria_id = c.id 
+                          WHERE p.id = ? AND p.activo = 1");
+    $stmt->bind_param("i", $producto_id);
+    echo "Buscando por ID: " . $producto_id . "<br>";
+} elseif (!empty($slug)) {
+    // Buscar por slug
+    $stmt = $conn->prepare("SELECT p.*, c.nombre as categoria_nombre FROM productos p 
+                          LEFT JOIN categorias c ON p.categoria_id = c.id 
+                          WHERE p.slug = ? AND p.activo = 1");
+    $stmt->bind_param("s", $slug);
+    echo "Buscando por slug: " . $slug . "<br>";
 } else {
-    $slug = $producto['slug'];
+    // Ni ID ni slug proporcionados - NO redireccionar aún para propósitos de depuración
+    echo "No se proporcionó ID ni slug<br>";
+    // COMENTAMOS LA REDIRECCIÓN PARA DEPURAR
+    // header('Location: index.php');
+    // exit;
 }
 
-// Usar SKU existente o generar uno nuevo si no existe
-if (empty($producto['sku'])) {
-    $sku = generarSKU($nombre, $categoria_id, $conn);
-} else {
-    $sku = $producto['sku'];
-}
+// Solo ejecutar la consulta si tenemos una declaración preparada
+if (isset($stmt)) {
+    $stmt->execute();
+    $result = $stmt->get_result();
+    echo "Número de resultados encontrados: " . $result->num_rows . "<br>";
 
+    if ($result->num_rows === 0) {
+        echo "No se encontró el producto. Debería redirigir a index.php pero no lo hará para depuración.<br>";
+        // COMENTAMOS LA REDIRECCIÓN PARA DEPURAR
+        // header('Location: index.php');
+        // exit;
+    }
 
-// Procesar formulario
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Obtener y validar datos
-    $nombre = isset($_POST['nombre']) ? trim($_POST['nombre']) : '';
-    $precio = isset($_POST['precio']) ? (float)$_POST['precio'] : 0;
-    $categoria_id = isset($_POST['categoria_id']) ? (int)$_POST['categoria_id'] : 0;
-    $descripcion = isset($_POST['descripcion']) ? trim($_POST['descripcion']) : '';
-    $descripcion_corta = isset($_POST['descripcion_corta']) ? trim($_POST['descripcion_corta']) : '';
-    $precio_oferta = !empty($_POST['precio_oferta']) ? (float)$_POST['precio_oferta'] : null;
-    $stock = isset($_POST['stock']) ? (int)$_POST['stock'] : 0;
-    $marca = isset($_POST['marca']) ? trim($_POST['marca']) : '';
-    $modelo = isset($_POST['modelo']) ? trim($_POST['modelo']) : '';
-    $caracteristicas = isset($_POST['caracteristicas']) ? trim($_POST['caracteristicas']) : '';
-    $destacado = isset($_POST['destacado']) ? 1 : 0;
-    $nuevo = isset($_POST['nuevo']) ? 1 : 0;
-    $en_oferta = isset($_POST['en_oferta']) ? 1 : 0; // Añadir esta línea
-    $activo = isset($_POST['activo']) ? 1 : 0;
-    
-    // Validaciones básicas
-    if (empty($nombre)) {
-        $errores[] = "El nombre del producto es obligatorio.";
+    $producto = $result->fetch_assoc();
+    $producto_id = $producto['id']; // Asignar ID para usar en el resto del código
+    $page_title = $producto['nombre'];
+
+    // Obtener especificaciones del producto
+    $especificaciones = [];
+    $stmt = $conn->prepare("SELECT * FROM especificaciones_producto WHERE producto_id = ? ORDER BY tipo_spec, nombre");
+    $stmt->bind_param("i", $producto_id);
+    $stmt->execute();
+    $result_specs = $stmt->get_result();
+
+    while ($spec = $result_specs->fetch_assoc()) {
+        $especificaciones[] = $spec;
     }
-    
-    if ($precio <= 0) {
-        $errores[] = "El precio debe ser mayor que cero.";
-    }
-    
-    if ($categoria_id <= 0) {
-        $errores[] = "Debe seleccionar una categoría.";
-    }
-    
-    if ($stock < 0) {
-        $errores[] = "El stock no puede ser negativo.";
-    }
-    
-    // Si no hay errores, actualizar en la base de datos
-    if (empty($errores)) {
-        if ($precio_oferta === null) {
-            $stmt = $conn->prepare("UPDATE productos SET sku = ?, nombre = ?, slug = ?, precio = ?, categoria_id = ?, descripcion = ?, descripcion_corta = ?, precio_oferta = NULL, stock = ?, marca = ?, modelo = ?, caracteristicas = ?, destacado = ?, nuevo = ?, en_oferta = ?, activo = ? WHERE id = ?");
-            $stmt->bind_param("sssdisissiiiii", $sku, $nombre, $slug, $precio, $categoria_id, $descripcion, $descripcion_corta, $stock, $marca, $modelo, $caracteristicas, $destacado, $nuevo, $en_oferta, $activo, $producto_id);
-        } else {
-            $stmt = $conn->prepare("UPDATE productos SET sku = ?, nombre = ?, slug = ?, precio = ?, categoria_id = ?, descripcion = ?, descripcion_corta = ?, precio_oferta = ?, stock = ?, marca = ?, modelo = ?, caracteristicas = ?, destacado = ?, nuevo = ?, en_oferta = ?, activo = ? WHERE id = ?");
-            $stmt->bind_param("sssdiisdiissiiiii", $sku, $nombre, $slug, $precio, $categoria_id, $descripcion, $descripcion_corta, $precio_oferta, $stock, $marca, $modelo, $caracteristicas, $destacado, $nuevo, $en_oferta, $activo, $producto_id);
+
+    // Organizar especificaciones por tipo
+    $specs_por_tipo = [];
+    foreach ($especificaciones as $spec) {
+        $tipo = $spec['tipo_spec'];
+        if (!isset($specs_por_tipo[$tipo])) {
+            $specs_por_tipo[$tipo] = [];
         }
-        
-        if ($stmt->execute()) {
-            $mensajes[] = "Producto actualizado correctamente.";
-            
-            // Eliminar especificaciones antiguas
-            $stmt_del = $conn->prepare("DELETE FROM especificaciones_producto WHERE producto_id = ?");
-            $stmt_del->bind_param("i", $producto_id);
-            $stmt_del->execute();
-            
-            // Procesar nuevas especificaciones
-            if (isset($_POST['spec_nombres']) && isset($_POST['spec_valores']) && isset($_POST['spec_tipos'])) {
-                $spec_nombres = $_POST['spec_nombres'];
-                $spec_valores = $_POST['spec_valores'];
-                $spec_tipos = $_POST['spec_tipos'];
-                
-                // Preparar la consulta
-                $stmt_spec = $conn->prepare("INSERT INTO especificaciones_producto (producto_id, tipo_spec, nombre, valor) VALUES (?, ?, ?, ?)");
-                
-                for ($i = 0; $i < count($spec_nombres); $i++) {
-                    if (!empty($spec_nombres[$i]) && !empty($spec_valores[$i])) {
-                        $stmt_spec->bind_param("isss", $producto_id, $spec_tipos[$i], $spec_nombres[$i], $spec_valores[$i]);
-                        $stmt_spec->execute();
-                    }
-                }
-                
-                $mensajes[] = "Especificaciones actualizadas correctamente.";
-            }
-            
-            // Procesar imagen si se ha subido
-            if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] == 0) {
-                $imagen = $_FILES['imagen'];
-                $extension = pathinfo($imagen['name'], PATHINFO_EXTENSION);
-                $nombre_archivo = 'producto_' . $producto_id . '_' . uniqid() . '.' . $extension;
-                $ruta_destino = '../../uploads/productos/' . $nombre_archivo;
-                
-                // Crear directorio si no existe
-                if (!is_dir('../../uploads/productos/')) {
-                    mkdir('../../uploads/productos/', 0777, true);
-                }
-                
-                if (move_uploaded_file($imagen['tmp_name'], $ruta_destino)) {
-                    // Verificar si ya tiene una imagen principal
-                    $stmt = $conn->prepare("SELECT id FROM imagenes_producto WHERE producto_id = ? AND principal = 1");
-                    $stmt->bind_param("i", $producto_id);
-                    $stmt->execute();
-                    $result = $stmt->get_result();
-                    
-                    $ruta_bd = 'uploads/productos/' . $nombre_archivo;
-                    
-                    if ($result->num_rows > 0) {
-                        // Actualizar imagen existente
-                        $imagen_id = $result->fetch_assoc()['id'];
-                        $stmt = $conn->prepare("UPDATE imagenes_producto SET ruta = ? WHERE id = ?");
-                        $stmt->bind_param("si", $ruta_bd, $imagen_id);
-                    } else {
-                        // Insertar nueva imagen
-                        $stmt = $conn->prepare("INSERT INTO imagenes_producto (producto_id, ruta, principal) VALUES (?, ?, 1)");
-                        $stmt->bind_param("is", $producto_id, $ruta_bd);
-                    }
-                    
-                    $stmt->execute();
-                    $mensajes[] = "Imagen actualizada correctamente.";
-                } else {
-                    $errores[] = "Error al subir la imagen.";
-                }
-            }
-            
-            // Actualizar la información del producto después de guardar
-            $stmt = $conn->prepare("SELECT * FROM productos WHERE id = ?");
-            $stmt->bind_param("i", $producto_id);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $producto = $result->fetch_assoc();
-        } else {
-            $errores[] = "Error al actualizar el producto: " . $conn->error;
+        $specs_por_tipo[$tipo][] = $spec;
+    }
+
+    // Obtener imágenes del producto
+    $imagenes = [];
+    $stmt = $conn->prepare("SELECT * FROM imagenes_producto WHERE producto_id = ? ORDER BY principal DESC, id ASC");
+    $stmt->bind_param("i", $producto_id);
+    $stmt->execute();
+    $result_img = $stmt->get_result();
+
+    while ($img = $result_img->fetch_assoc()) {
+        $imagenes[] = $img;
+    }
+
+    // Si no hay imágenes, usar una por defecto
+    if (empty($imagenes)) {
+        $imagenes[] = ['ruta' => 'assets/img/productos/placeholder.png', 'principal' => 1];
+    }
+
+    // Obtener productos relacionados (misma categoría)
+    $productos_relacionados = [];
+    if (isset($producto['categoria_id'])) {
+        $stmt = $conn->prepare("SELECT p.* FROM productos p 
+                           WHERE p.categoria_id = ? AND p.id != ? AND p.activo = 1 
+                           ORDER BY p.destacado DESC, RAND() 
+                           LIMIT 4");
+        $stmt->bind_param("ii", $producto['categoria_id'], $producto_id);
+        $stmt->execute();
+        $result_rel = $stmt->get_result();
+
+        while ($prod_rel = $result_rel->fetch_assoc()) {
+            $productos_relacionados[] = $prod_rel;
         }
     }
+
+    // Procesar caracteristicas (formato de lista)
+    $caracteristicas_lista = [];
+    if (!empty($producto['caracteristicas'])) {
+        $caracteristicas_lista = explode("\n", $producto['caracteristicas']);
+        $caracteristicas_lista = array_map('trim', $caracteristicas_lista);
+        $caracteristicas_lista = array_filter($caracteristicas_lista);
+    }
+} else {
+    echo "No se creó ninguna consulta SQL porque no hay ID ni slug<br>";
 }
 
-// Obtener imagen principal del producto
-$imagen_producto = null;
-$stmt = $conn->prepare("SELECT ruta FROM imagenes_producto WHERE producto_id = ? AND principal = 1 LIMIT 1");
-$stmt->bind_param("i", $producto_id);
-$stmt->execute();
-$result = $stmt->get_result();
-if ($row = $result->fetch_assoc()) {
-    $imagen_producto = $row['ruta'];
+// Controlar mensajes
+$mensaje = '';
+if (isset($_GET['added']) && $_GET['added'] == 1) {
+    $mensaje = 'Producto añadido al carrito correctamente.';
 }
+
+// Incluir cabecera solo si no estamos en modo depuración
+// Para depuración, comenta esta línea
+include 'includes/header.php';
 ?>
 
 <!DOCTYPE html>

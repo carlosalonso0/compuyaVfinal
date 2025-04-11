@@ -9,8 +9,8 @@ if (!defined('IN_COMPUYA')) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo isset($page_title) ? $page_title . ' - ' . SITE_NAME : SITE_NAME; ?></title>
-    <link rel="stylesheet" href="assets/css/main.css">
-    <link rel="stylesheet" href="assets/css/category.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/main.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/product.css">
 
 </head>
 <body>
@@ -28,8 +28,8 @@ if (!defined('IN_COMPUYA')) {
         <div class="main-header" style="background-color: #001CBD;">
             <div class="container">
                 <div class="logo">
-                    <a href="index.php">
-                        <img src="assets/img/logo.svg" alt="<?php echo SITE_NAME; ?>">
+                <a href="<?php echo BASE_URL; ?>/index.php">
+                    <img src="assets/img/logo.svg" alt="<?php echo SITE_NAME; ?>">
                     </a>
                 </div>
                 
@@ -41,12 +41,12 @@ if (!defined('IN_COMPUYA')) {
                 </div>
                 
                 <div class="header-actions">
-                    <a href="cart.php" class="cart-icon">Carrito (0)</a>
-                    <a href="login.php" class="user-icon">Mi Cuenta</a>
+                    <a href="<?php echo BASE_URL; ?>/cart.php" class="cart-icon">Carrito (0)</a>
+                    <a href="<?php echo BASE_URL; ?>/login.php" class="user-icon">Mi Cuenta</a>
                 </div>
             </div>
         </div>
-        
+            
         <nav class="main-menu">
             <div class="container">
                 <ul>

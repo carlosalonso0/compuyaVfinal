@@ -4,7 +4,6 @@ require_once 'includes/config.php';
 require_once 'includes/db.php';
 require_once 'includes/functions.php';
 
-
 // Obtener ID o slug del producto
 $producto_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 $slug = isset($_GET['slug']) ? $_GET['slug'] : '';
@@ -41,33 +40,6 @@ if ($result->num_rows === 0) {
 
 $producto = $result->fetch_assoc();
 $producto_id = $producto['id']; // Asignar ID para usar en el resto del código
-$page_title = $producto['nombre'];
-
-
-
-
-// Obtener ID del producto
-$producto_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-
-if ($producto_id <= 0) {
-    header('Location: index.php');
-    exit;
-}
-
-// Obtener datos del producto
-$stmt = $conn->prepare("SELECT p.*, c.nombre as categoria_nombre FROM productos p 
-                       LEFT JOIN categorias c ON p.categoria_id = c.id 
-                       WHERE p.id = ? AND p.activo = 1");
-$stmt->bind_param("i", $producto_id);
-$stmt->execute();
-$result = $stmt->get_result();
-
-if ($result->num_rows === 0) {
-    header('Location: index.php');
-    exit;
-}
-
-$producto = $result->fetch_assoc();
 $page_title = $producto['nombre'];
 
 // Obtener especificaciones del producto
