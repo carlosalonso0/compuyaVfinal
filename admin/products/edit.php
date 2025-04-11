@@ -52,6 +52,19 @@ $result_specs = $stmt->get_result();
 while ($spec = $result_specs->fetch_assoc()) {
     $especificaciones[] = $spec;
 }
+// Generar slug si ha cambiado el nombre
+if ($nombre != $producto['nombre']) {
+    $slug = generarSlugUnico($nombre, $conn, $producto_id);
+} else {
+    $slug = $producto['slug'];
+}
+
+// Usar SKU existente o generar uno nuevo si no existe
+if (empty($producto['sku'])) {
+    $sku = generarSKU($nombre, $categoria_id, $conn);
+} else {
+    $sku = $producto['sku'];
+}
 
 
 // Procesar formulario
@@ -69,6 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $caracteristicas = isset($_POST['caracteristicas']) ? trim($_POST['caracteristicas']) : '';
     $destacado = isset($_POST['destacado']) ? 1 : 0;
     $nuevo = isset($_POST['nuevo']) ? 1 : 0;
+    $en_oferta = isset($_POST['en_oferta']) ? 1 : 0; // Añadir esta línea
     $activo = isset($_POST['activo']) ? 1 : 0;
     
     // Validaciones básicas
@@ -91,11 +105,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Si no hay errores, actualizar en la base de datos
     if (empty($errores)) {
         if ($precio_oferta === null) {
-            $stmt = $conn->prepare("UPDATE productos SET nombre = ?, precio = ?, categoria_id = ?, descripcion = ?, descripcion_corta = ?, precio_oferta = NULL, stock = ?, marca = ?, modelo = ?, caracteristicas = ?, destacado = ?, nuevo = ?, activo = ? WHERE id = ?");
-            $stmt->bind_param("sdissiissiii", $nombre, $precio, $categoria_id, $descripcion, $descripcion_corta, $stock, $marca, $modelo, $caracteristicas, $destacado, $nuevo, $activo, $producto_id);
+            $stmt = $conn->prepare("UPDATE productos SET sku = ?, nombre = ?, slug = ?, precio = ?, categoria_id = ?, descripcion = ?, descripcion_corta = ?, precio_oferta = NULL, stock = ?, marca = ?, modelo = ?, caracteristicas = ?, destacado = ?, nuevo = ?, en_oferta = ?, activo = ? WHERE id = ?");
+            $stmt->bind_param("sssdisissiiiii", $sku, $nombre, $slug, $precio, $categoria_id, $descripcion, $descripcion_corta, $stock, $marca, $modelo, $caracteristicas, $destacado, $nuevo, $en_oferta, $activo, $producto_id);
         } else {
-            $stmt = $conn->prepare("UPDATE productos SET nombre = ?, precio = ?, categoria_id = ?, descripcion = ?, descripcion_corta = ?, precio_oferta = ?, stock = ?, marca = ?, modelo = ?, caracteristicas = ?, destacado = ?, nuevo = ?, activo = ? WHERE id = ?");
-            $stmt->bind_param("sdissdiissiiii", $nombre, $precio, $categoria_id, $descripcion, $descripcion_corta, $precio_oferta, $stock, $marca, $modelo, $caracteristicas, $destacado, $nuevo, $activo, $producto_id);
+            $stmt = $conn->prepare("UPDATE productos SET sku = ?, nombre = ?, slug = ?, precio = ?, categoria_id = ?, descripcion = ?, descripcion_corta = ?, precio_oferta = ?, stock = ?, marca = ?, modelo = ?, caracteristicas = ?, destacado = ?, nuevo = ?, en_oferta = ?, activo = ? WHERE id = ?");
+            $stmt->bind_param("sssdiisdiissiiiii", $sku, $nombre, $slug, $precio, $categoria_id, $descripcion, $descripcion_corta, $precio_oferta, $stock, $marca, $modelo, $caracteristicas, $destacado, $nuevo, $en_oferta, $activo, $producto_id);
         }
         
         if ($stmt->execute()) {
@@ -329,8 +343,44 @@ if ($row = $result->fetch_assoc()) {
                                 </label>
                                 <p class="form-help">El producto estará visible y disponible para compra.</p>
                             </div>
+
+                            <div class="form-group options-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="en_oferta" <?php echo $producto['en_oferta'] ? 'checked' : ''; ?>>
+                                    Mostrar en Ofertas
+                                </label>
+                                <p class="form-help">Aparecerá en la sección de ofertas de la página principal (debe tener precio de oferta).</p>
+                            </div>
                         </div>
                         
+                        <div class="form-group specs-container">
+                            <h3>Especificaciones Técnicas</h3>
+                            <p class="form-help">Gestione las especificaciones técnicas del producto.</p>
+                            
+                            <div id="specs-fields">
+                                <?php if (empty($especificaciones)): ?>
+                                    <div class="no-specs">No hay especificaciones para este producto. Seleccione una categoría para cargar campos predefinidos.</div>
+                                <?php else: ?>
+                                    <?php foreach ($especificaciones as $spec): ?>
+                                        <div class="spec-field-row custom-field">
+                                            <div class="spec-field-group">
+                                                <label>Nombre:</label>
+                                                <input type="text" name="spec_nombres[]" value="<?php echo htmlspecialchars($spec['nombre']); ?>" class="spec-name" required>
+                                            </div>
+                                            <div class="spec-field-group">
+                                                <label>Valor:</label>
+                                                <input type="text" name="spec_valores[]" value="<?php echo htmlspecialchars($spec['valor']); ?>" class="spec-value" required>
+                                            </div>
+                                            <input type="hidden" name="spec_tipos[]" value="<?php echo htmlspecialchars($spec['tipo_spec']); ?>">
+                                            <input type="hidden" name="spec_ids[]" value="<?php echo $spec['id']; ?>">
+                                            <button type="button" class="btn-remove-spec" onclick="this.parentElement.remove()">×</button>
+                                        </div>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </div>
+                            
+                            <button type="button" id="add-spec-field" class="btn btn-secondary">Añadir especificación</button>
+                        </div>
                         <div class="form-actions">
                             <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                             <a href="index.php" class="btn btn-secondary">Cancelar</a>

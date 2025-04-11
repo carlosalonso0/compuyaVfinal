@@ -30,7 +30,7 @@ $productosNuevos = $result_nuevos->fetch_all(MYSQLI_ASSOC);
 // Productos en oferta
 $sql_ofertas = "SELECT p.*, c.nombre as categoria_nombre FROM productos p 
               JOIN categorias c ON p.categoria_id = c.id 
-              WHERE p.activo = 1 AND p.precio_oferta IS NOT NULL AND p.precio_oferta > 0
+              WHERE p.activo = 1 AND p.en_oferta = 1 AND p.precio_oferta IS NOT NULL AND p.precio_oferta > 0
               ORDER BY p.id DESC LIMIT 8";
 $result_ofertas = $conn->query($sql_ofertas);
 $productosOfertas = $result_ofertas->fetch_all(MYSQLI_ASSOC);
@@ -103,7 +103,7 @@ include 'includes/header.php';
                                    <span class="precio-actual">S/ <?php echo number_format($producto['precio'], 2); ?></span>
                                <?php endif; ?>
                            </div>
-                           <a href="product.php?id=<?php echo $producto['id']; ?>" class="btn-ver">Ver Producto</a>
+                           <a href="producto/<?php echo $producto['slug']; ?>" class="btn-ver">Ver Producto</a>
                        </div>
                    </div>
                <?php endforeach; ?>
@@ -136,7 +136,7 @@ include 'includes/header.php';
                                    <?php echo round(100 - (($producto['precio_oferta'] / $producto['precio']) * 100)); ?>% DSCTO
                                </span>
                            </div>
-                           <a href="product.php?id=<?php echo $producto['id']; ?>" class="btn-ver">Ver Producto</a>
+                           <a href="producto/<?php echo $producto['slug']; ?>" class="btn-ver">Ver Producto</a>
                        </div>
                    </div>
                <?php endforeach; ?>
@@ -181,7 +181,7 @@ include 'includes/header.php';
                                    <span class="precio-actual">S/ <?php echo number_format($producto['precio'], 2); ?></span>
                                <?php endif; ?>
                            </div>
-                           <a href="product.php?id=<?php echo $producto['id']; ?>" class="btn-ver">Ver Producto</a>
+                           <a href="producto/<?php echo $producto['slug']; ?>" class="btn-ver">Ver Producto</a>
                        </div>
                    </div>
                <?php endforeach; ?>

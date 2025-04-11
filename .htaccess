@@ -1,0 +1,13 @@
+RewriteEngine On
+RewriteBase /compuya/
+
+# Reglas para URL amigables de productos
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^producto/([a-zA-Z0-9-]+)/?$ product.php?slug=$1 [QSA,L]
+
+# Reglas para URL amigables de categorías
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^categoria/([a-zA-Z0-9-]+)/?$ category.php?slug=$1 [QSA,L]
+RewriteRule ^test-rewrite/?$ test_rewrite.php [QSA,L]

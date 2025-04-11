@@ -7,6 +7,54 @@ require_once '../../includes/functions.php';
 // Procesar formularios
 $mensajes = [];
 $errores = [];
+$db = Database::getInstance();
+$conn = $db->getConnection();
+
+// Proceso para activar/desactivar oferta
+if (isset($_POST['toggle_oferta']) && isset($_POST['producto_id'])) {
+    $producto_id = (int)$_POST['producto_id'];
+    $accion = $_POST['accion']; // 'activar' o 'desactivar'
+    
+    if ($accion == 'activar') {
+        // Verificar que el producto tenga precio_oferta
+        $result = $conn->query("SELECT precio_oferta FROM productos WHERE id = $producto_id");
+        if ($row = $result->fetch_assoc()) {
+            if (!empty($row['precio_oferta'])) {
+                $conn->query("UPDATE productos SET en_oferta = 1 WHERE id = $producto_id");
+                $mensajes[] = "Producto añadido a ofertas correctamente.";
+            } else {
+                $errores[] = "Este producto no tiene un precio de oferta establecido.";
+            }
+        }
+    } else {
+        $conn->query("UPDATE productos SET en_oferta = 0 WHERE id = $producto_id");
+        $mensajes[] = "Producto removido de ofertas correctamente.";
+    }
+    
+    // Redirigir a la misma pestaña
+    header("Location: index.php?tab=ofertas");
+    exit;
+}
+
+// Proceso para aplicar oferta
+if (isset($_POST['aplicar_oferta']) && isset($_POST['producto_id']) && isset($_POST['precio_oferta'])) {
+    $producto_id = (int)$_POST['producto_id'];
+    $precio_oferta = (float)$_POST['precio_oferta'];
+    $precio_original = (float)$_POST['precio_original'];
+    
+    // Validar que el precio de oferta sea menor al precio original
+    if ($precio_oferta >= $precio_original) {
+        $errores[] = "El precio de oferta debe ser menor al precio original.";
+    } else {
+        // Actualizar producto con oferta
+        $conn->query("UPDATE productos SET precio_oferta = $precio_oferta WHERE id = $producto_id");
+        $mensajes[] = "Oferta aplicada correctamente.";
+        
+        // Redirigir a la misma pestaña
+        header("Location: index.php?tab=ofertas");
+        exit;
+    }
+}
 
 $db = Database::getInstance();
 $conn = $db->getConnection();
@@ -358,7 +406,9 @@ if (isset($_POST['toggle_producto'])) {
                 
                 <!-- Buscador de productos -->
                 <h3 style="margin-top: 30px;">Buscar Productos</h3>
+                <!-- Buscador de productos -->
                 <form action="" method="get">
+                    <input type="hidden" name="tab" value="destacados">
                     <div class="form-group">
                         <input type="text" name="q" placeholder="Nombre o modelo del producto" value="<?php echo isset($_GET['q']) ? htmlspecialchars($_GET['q']) : ''; ?>">
                     </div>
@@ -427,56 +477,133 @@ if (isset($_POST['toggle_producto'])) {
         </div>
         
         <!-- Ofertas (Productos con precio_oferta) -->
-        <div class="tab-content" id="ofertas">
-            <div class="section">
-                <h2>Productos en Oferta</h2>
+<!-- Ofertas -->
+<div class="tab-content" id="ofertas">
+    <div class="section">
+        <h2>Productos en Oferta</h2>
+        
+        <p>Esta sección muestra los productos que se mostrarán en la sección de ofertas de la página principal. Para establecer un precio de oferta, edite el producto desde el gestor de productos.</p>
+        
+        <h3>Productos en Oferta Actuales</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Precio Regular</th>
+                    <th>Precio Oferta</th>
+                    <th>Descuento</th>
+                    <th>Categoría</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                $result = $conn->query("
+                    SELECT p.*, c.nombre as categoria_nombre 
+                    FROM productos p
+                    JOIN categorias c ON p.categoria_id = c.id
+                    WHERE p.activo = 1 AND p.en_oferta = 1 AND p.precio_oferta IS NOT NULL AND p.precio_oferta > 0
+                    ORDER BY p.id DESC
+                ");
                 
-                <p>Esta sección muestra los productos que tienen un precio de oferta establecido. Los productos aparecerán automáticamente en la sección de ofertas de la página de inicio si tienen un precio de oferta.</p>
-                
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nombre</th>
-                            <th>Precio Regular</th>
-                            <th>Precio Oferta</th>
-                            <th>Descuento</th>
-                            <th>Categoría</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        $result = $conn->query("
-                            SELECT p.*, c.nombre as categoria_nombre 
-                            FROM productos p
-                            JOIN categorias c ON p.categoria_id = c.id
-                            WHERE p.activo = 1 AND p.precio_oferta IS NOT NULL AND p.precio_oferta > 0
-                            ORDER BY p.id DESC
-                        ");
+                if ($result->num_rows > 0) {
+                    while ($prod = $result->fetch_assoc()) {
+                        $descuento = round(100 - (($prod['precio_oferta'] / $prod['precio']) * 100));
                         
-                        if ($result->num_rows > 0) {
-                            while ($prod = $result->fetch_assoc()) {
-                                $descuento = round(100 - (($prod['precio_oferta'] / $prod['precio']) * 100));
-                                
-                                echo '<tr>';
-                                echo '<td>' . $prod['id'] . '</td>';
-                                echo '<td>' . $prod['nombre'] . '</td>';
-                                echo '<td>S/ ' . number_format($prod['precio'], 2) . '</td>';
-                                echo '<td>S/ ' . number_format($prod['precio_oferta'], 2) . '</td>';
-                                echo '<td>' . $descuento . '%</td>';
-                                echo '<td>' . $prod['categoria_nombre'] . '</td>';
-                                echo '</tr>';
-                            }
-                        } else {
-                            echo '<tr><td colspan="6">No hay productos en oferta.</td></tr>';
-                        }
-                        ?>
-                    </tbody>
-                </table>
-                
-                <p style="margin-top: 20px;">Para establecer un precio de oferta, edite el producto desde el gestor de productos.</p>
+                        echo '<tr>';
+                        echo '<td>' . $prod['id'] . '</td>';
+                        echo '<td>' . $prod['nombre'] . '</td>';
+                        echo '<td>S/ ' . number_format($prod['precio'], 2) . '</td>';
+                        echo '<td>S/ ' . number_format($prod['precio_oferta'], 2) . '</td>';
+                        echo '<td>' . $descuento . '%</td>';
+                        echo '<td>' . $prod['categoria_nombre'] . '</td>';
+                        echo '<td class="actions">';
+                        echo '<form action="" method="post" style="display:inline;">';
+                        echo '<input type="hidden" name="producto_id" value="' . $prod['id'] . '">';
+                        echo '<input type="hidden" name="accion" value="desactivar">';
+                        echo '<button type="submit" name="toggle_oferta" class="btn-small btn-danger" onclick="return confirm(\'¿Estás seguro de quitar este producto de ofertas?\')">Quitar de ofertas</button>';
+                        echo '</form>';
+                        echo '</td>';
+                        echo '</tr>';
+                    }
+                } else {
+                    echo '<tr><td colspan="7">No hay productos en ofertas.</td></tr>';
+                }
+                ?>
+            </tbody>
+        </table>
+        
+        <h3 style="margin-top: 30px;">Añadir Producto a Ofertas</h3>
+        <p>Busque un producto con precio de oferta establecido para añadirlo a la sección de ofertas:</p>
+        
+        <!-- Buscador de productos -->
+        <form action="" method="get">
+            <input type="hidden" name="tab" value="ofertas">
+            <div class="form-group">
+                <input type="text" name="qo" placeholder="Nombre o modelo del producto" value="<?php echo isset($_GET['qo']) ? htmlspecialchars($_GET['qo']) : ''; ?>">
             </div>
-        </div>
+            <button type="submit">Buscar</button>
+        </form>
+        
+        <?php
+        if (isset($_GET['qo']) && !empty($_GET['qo'])) {
+            $q = $conn->real_escape_string($_GET['qo']);
+            $result = $conn->query("
+                SELECT p.*, c.nombre as categoria_nombre 
+                FROM productos p
+                JOIN categorias c ON p.categoria_id = c.id
+                WHERE p.activo = 1 AND p.precio_oferta IS NOT NULL AND p.precio_oferta > 0 AND p.en_oferta = 0
+                AND (p.nombre LIKE '%$q%' OR p.modelo LIKE '%$q%')
+                ORDER BY p.nombre
+                LIMIT 20
+            ");
+            
+            echo '<h4 style="margin-top: 20px;">Resultados de la búsqueda</h4>';
+            echo '<table>';
+            echo '<thead>';
+            echo '<tr>';
+            echo '<th>ID</th>';
+            echo '<th>Nombre</th>';
+            echo '<th>Precio Regular</th>';
+            echo '<th>Precio Oferta</th>';
+            echo '<th>Descuento</th>';
+            echo '<th>Categoría</th>';
+            echo '<th>Acciones</th>';
+            echo '</tr>';
+            echo '</thead>';
+            echo '<tbody>';
+            
+            if ($result->num_rows > 0) {
+                while ($prod = $result->fetch_assoc()) {
+                    $descuento = round(100 - (($prod['precio_oferta'] / $prod['precio']) * 100));
+                    
+                    echo '<tr>';
+                    echo '<td>' . $prod['id'] . '</td>';
+                    echo '<td>' . $prod['nombre'] . '</td>';
+                    echo '<td>S/ ' . number_format($prod['precio'], 2) . '</td>';
+                    echo '<td>S/ ' . number_format($prod['precio_oferta'], 2) . '</td>';
+                    echo '<td>' . $descuento . '%</td>';
+                    echo '<td>' . $prod['categoria_nombre'] . '</td>';
+                    echo '<td class="actions">';
+                    echo '<form action="" method="post" style="display:inline;">';
+                    echo '<input type="hidden" name="producto_id" value="' . $prod['id'] . '">';
+                    echo '<input type="hidden" name="accion" value="activar">';
+                    echo '<button type="submit" name="toggle_oferta" class="btn-small btn-success">Añadir a ofertas</button>';
+                    echo '</form>';
+                    echo '</td>';
+                    echo '</tr>';
+                }
+            } else {
+                echo '<tr><td colspan="7">No se encontraron productos con precio de oferta que no estén ya en ofertas.</td></tr>';
+            }
+            
+            echo '</tbody>';
+            echo '</table>';
+        }
+        ?>
+    </div>
+</div>
         
         <!-- Productos Nuevos -->
         <div class="tab-content" id="nuevos">
@@ -607,38 +734,38 @@ if (isset($_POST['toggle_producto'])) {
     </div>
     
     <script>
-        // Script para las pestañas
-        document.addEventListener('DOMContentLoaded', function() {
-            const tabs = document.querySelectorAll('.tab');
-            const tabContents = document.querySelectorAll('.tab-content');
-            
-            // Si hay un parámetro de tab en la URL, activar esa pestaña
-            const urlParams = new URLSearchParams(window.location.search);
-            const tabParam = urlParams.get('tab');
-            
-            if (tabParam) {
-                const targetTab = document.querySelector(`.tab[data-tab="${tabParam}"]`);
-                if (targetTab) {
-                    tabs.forEach(tab => tab.classList.remove('active'));
-                    tabContents.forEach(content => content.classList.remove('active'));
-                    
-                    targetTab.classList.add('active');
-                    document.getElementById(tabParam).classList.add('active');
-                }
+    // Script para las pestañas
+    document.addEventListener('DOMContentLoaded', function() {
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        // Si hay un parámetro de tab en la URL, activar esa pestaña
+        const urlParams = new URLSearchParams(window.location.search);
+        const tabParam = urlParams.get('tab');
+        
+        if (tabParam) {
+            const targetTab = document.querySelector(`.tab[data-tab="${tabParam}"]`);
+            if (targetTab) {
+                tabs.forEach(tab => tab.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+                
+                targetTab.classList.add('active');
+                document.getElementById(tabParam).classList.add('active');
             }
-            
-            tabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    const tabId = this.getAttribute('data-tab');
-                    
-                    tabs.forEach(t => t.classList.remove('active'));
-                    tabContents.forEach(c => c.classList.remove('active'));
-                    
-                    this.classList.add('active');
-                    document.getElementById(tabId).classList.add('active');
-                });
+        }
+        
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabId = this.getAttribute('data-tab');
+                
+                tabs.forEach(t => t.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+                
+                this.classList.add('active');
+                document.getElementById(tabId).classList.add('active');
             });
         });
-    </script>
+    });
+</script>
 </body>
-</html>
+</html> 

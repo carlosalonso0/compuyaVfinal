@@ -57,6 +57,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["archivo_csv"])) {
                 $destacado = ($data[10] === "true" || $data[10] === "1") ? 1 : 0;
                 $nuevo = ($data[11] === "true" || $data[11] === "1") ? 1 : 0;
                 $activo = ($data[12] === "true" || $data[12] === "1") ? 1 : 0;
+                // Generar SKU y slug o usar los proporcionados en el CSV
+                $sku = isset($data[13]) && !empty($data[13]) ? $conn->real_escape_string($data[13]) : generarSKU($nombre, $categoria_id, $conn);
+                $slug = generarSlugUnico($nombre, $conn);
+                $en_oferta = isset($data[13]) && ($data[13] === "true" || $data[13] === "1") ? 1 : 0;
+
                 
                 // Debug - mostrar la marca
                 echo "<div style='margin:10px; padding:10px; border:1px solid #ccc'>";
@@ -68,9 +73,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["archivo_csv"])) {
                 
                 // Crear consulta SQL directa en lugar de usar bind_param
                 $precio_oferta_sql = $precio_oferta === "NULL" ? "NULL" : "'$precio_oferta'";
-                
-                $sql = "INSERT INTO productos (nombre, precio, categoria_id, descripcion, descripcion_corta, precio_oferta, stock, marca, modelo, caracteristicas, destacado, nuevo, activo) 
-                        VALUES ('$nombre', $precio, $categoria_id, '$descripcion', '$descripcion_corta', $precio_oferta_sql, $stock, '$marca', '$modelo', '$caracteristicas', $destacado, $nuevo, $activo)";
+                $sql = "INSERT INTO productos (sku, nombre, slug, precio, categoria_id, descripcion, descripcion_corta, precio_oferta, stock, marca, modelo, caracteristicas, destacado, nuevo, en_oferta, activo) 
+        VALUES ('$sku', '$nombre', '$slug', $precio, $categoria_id, '$descripcion', '$descripcion_corta', $precio_oferta_sql, $stock, '$marca', '$modelo', '$caracteristicas', $destacado, $nuevo, $en_oferta, $activo)";
                 
                 // Ejecutar la sentencia
                 if ($conn->query($sql)) {
@@ -90,6 +94,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["archivo_csv"])) {
         }
     }
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -123,9 +128,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["archivo_csv"])) {
             
             <div class="form-info">
                 <p>El archivo CSV debe tener el siguiente formato:</p>
-                <pre>nombre,precio,categoria_id,descripcion,descripcion_corta,precio_oferta,stock,marca,modelo,caracteristicas,destacado,nuevo,activo</pre>
+                <pre>nombre,precio,categoria_id,descripcion,descripcion_corta,precio_oferta,stock,marca,modelo,caracteristicas,destacado,nuevo,en_oferta,activo,sku</pre>
                 <p>Ejemplo:</p>
-                <pre>HP-SMART-TANK-530-MULTIFUNCIONAL-WIFI,699.00,4,"Descripción larga","Descripción corta",549.00,25,HP,Smart Tank 530,"Características",true,true,true</pre>
+                <pre>HP-SMART-TANK-530-MULTIFUNCIONAL-WIFI,699.00,4,"Descripción larga","Descripción corta",549.00,25,HP,Smart Tank 530,"Características",true,true,true,true,IMP-HP-SMART-TANK-530-001</pre>
+                <p>Nota: El campo SKU es opcional. Si no se proporciona, se generará automáticamente.</p>
             </div>
             
             <div class="form-actions">

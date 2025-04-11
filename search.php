@@ -85,7 +85,7 @@ include 'includes/header.php';
                                     <span class="precio-actual">S/ <?php echo number_format($producto['precio'], 2); ?></span>
                                 <?php endif; ?>
                             </div>
-                            <a href="product.php?id=<?php echo $producto['id']; ?>" class="btn-ver">Ver Producto</a>
+                            <a href="producto/<?php echo $producto['slug']; ?>" class="btn-ver">Ver Producto</a>
                         </div>
                     </div>
                 <?php endforeach; ?>

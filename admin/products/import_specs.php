@@ -55,17 +55,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["archivo_csv"])) {
                         }
                         
                         // Obtener datos del CSV
-                        $producto_id = (int)$data[0];
+                        $sku = trim($data[0]);
                         $tipo_spec = trim($data[1]);
                         $nombre = trim($data[2]);
                         $valor = trim($data[3]);
                         
-                        // Verificar que el producto exista
-                        $check = $conn->query("SELECT id FROM productos WHERE id = $producto_id");
-                        if ($check->num_rows == 0) {
-                            $filas_con_error++;
-                            continue;
-                        }
+                        // Buscar el producto por SKU
+                            $check = $conn->query("SELECT id FROM productos WHERE sku = '$sku'");
+                            if ($check->num_rows == 0) {
+                                $filas_con_error++;
+                                continue;
+                            }
+                            $producto = $check->fetch_assoc();
+                            $producto_id = $producto['id'];
                         
                         // Vincular parámetros
                         $stmt->bind_param("isss", $producto_id, $tipo_spec, $nombre, $valor);
@@ -154,14 +156,14 @@ if ($result) {
                         <div class="form-info">
                             <h3>Instrucciones</h3>
                             <p>El archivo CSV debe tener el siguiente formato:</p>
-                            <pre>producto_id,tipo_spec,nombre,valor</pre>
+                            <pre>sku,tipo_spec,nombre,valor</pre>
                             <p>Ejemplo:</p>
-                            <pre>412,tarjeta_grafica,Chipset,NVIDIA GeForce RTX 4060
-412,tarjeta_grafica,Memoria,8GB GDDR6
-412,tarjeta_grafica,Bus de memoria,128 bits</pre>
+                            <pre>IMP-HP-SMART-TANK-530-001,impresora,Tipo,Multifuncional de inyección
+                            IMP-HP-SMART-TANK-530-001,impresora,Funciones,Impresión, Escaneo, Copia
+                            IMP-HP-SMART-TANK-530-001,impresora,Conectividad,USB, Wi-Fi, Ethernet</pre>
                             <p>Donde:</p>
                             <ul>
-                                <li><strong>producto_id</strong>: ID del producto en la base de datos</li>
+                                <li><strong>sku</strong>: SKU del producto en la base de datos</li>
                                 <li><strong>tipo_spec</strong>: Tipo de especificación (tarjeta_grafica, procesador, monitor, etc.)</li>
                                 <li><strong>nombre</strong>: Nombre del campo de especificación</li>
                                 <li><strong>valor</strong>: Valor de la especificación</li>

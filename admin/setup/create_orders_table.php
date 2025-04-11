@@ -6,32 +6,32 @@ $db = Database::getInstance();
 $conn = $db->getConnection();
 
 // Crear tabla de pedidos
-$sql_pedidos = "CREATE TABLE IF NOT EXISTS pedidos (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    cliente_nombre VARCHAR(100) NOT NULL,
-    cliente_email VARCHAR(100) NOT NULL,
-    cliente_telefono VARCHAR(20),
-    cliente_direccion TEXT NOT NULL,
-    cliente_distrito VARCHAR(100),
-    total DECIMAL(10,2) NOT NULL,
-    estado ENUM('pendiente', 'pagado', 'enviado', 'entregado', 'cancelado') DEFAULT 'pendiente',
-    metodo_pago VARCHAR(50),
-    notas TEXT,
-    fecha_pedido TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-)";
+    $sql_pedidos = "CREATE TABLE IF NOT EXISTS pedidos (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        cliente_nombre VARCHAR(100) NOT NULL,
+        cliente_email VARCHAR(100) NOT NULL,
+        cliente_telefono VARCHAR(20),
+        cliente_direccion TEXT NOT NULL,
+        cliente_distrito VARCHAR(100),
+        total DECIMAL(10,2) NOT NULL,
+        estado ENUM('pendiente', 'pagado', 'enviado', 'entregado', 'cancelado') DEFAULT 'pendiente',
+        metodo_pago VARCHAR(50),
+        notas TEXT,
+        fecha_pedido TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    )";
 
-// Crear tabla de detalles de pedido
-$sql_detalles = "CREATE TABLE IF NOT EXISTS detalles_pedido (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    pedido_id INT NOT NULL,
-    producto_id INT NOT NULL,
-    producto_nombre VARCHAR(255) NOT NULL,
-    cantidad INT NOT NULL,
-    precio_unitario DECIMAL(10,2) NOT NULL,
-    subtotal DECIMAL(10,2) NOT NULL,
-    FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE CASCADE
-)";
+    // Crear tabla de detalles de pedido
+    $sql_detalles = "CREATE TABLE IF NOT EXISTS detalles_pedido (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        pedido_id INT NOT NULL,
+        producto_id INT NOT NULL,
+        producto_nombre VARCHAR(255) NOT NULL,
+        cantidad INT NOT NULL,
+        precio_unitario DECIMAL(10,2) NOT NULL,
+        subtotal DECIMAL(10,2) NOT NULL,
+        FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE CASCADE
+    )";
 
 if ($conn->query($sql_pedidos) === TRUE) {
     echo "Tabla de pedidos creada correctamente.<br>";

@@ -7,6 +7,10 @@ require_once '../../includes/functions.php';
 // Verificar si está iniciada la sesión
 // Aquí iría el control de acceso cuando implementemos el login
 
+// Generar SKU y slug
+$sku = generarSKU($nombre, $categoria_id, $conn);
+$slug = generarSlugUnico($nombre, $conn);
+
 $db = Database::getInstance();
 $conn = $db->getConnection();
 
@@ -35,6 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $caracteristicas = isset($_POST['caracteristicas']) ? trim($_POST['caracteristicas']) : '';
     $destacado = isset($_POST['destacado']) ? 1 : 0;
     $nuevo = isset($_POST['nuevo']) ? 1 : 0;
+    $en_oferta = isset($_POST['en_oferta']) ? 1 : 0;
     $activo = isset($_POST['activo']) ? 1 : 0;
     
     // Validaciones básicas
@@ -75,27 +80,27 @@ if (empty($errores)) {
     echo "Nuevo: " . $nuevo . "<br>";
     echo "Activo: " . $activo . "<br>";
 
-    $stmt = $conn->prepare("INSERT INTO productos (nombre, precio, categoria_id, descripcion, descripcion_corta, precio_oferta, stock, marca, modelo, caracteristicas, destacado, nuevo, activo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-
-    // Tipos de datos: s(string), d(double/float), i(integer)
-    $tipos = "sdissddiisssiii";
-    
-    // Directamente con bind_param para ver exactamente qué pasa
-    $stmt->bind_param($tipos, 
-        $nombre, 
-        $precio, 
-        $categoria_id, 
-        $descripcion, 
-        $descripcion_corta, 
-        $precio_oferta, 
-        $stock, 
-        $marca, 
-        $modelo, 
-        $caracteristicas, 
-        $destacado, 
-        $nuevo, 
-        $activo
-    );
+    $stmt = $conn->prepare("INSERT INTO productos (sku, nombre, slug, precio, categoria_id, descripcion, descripcion_corta, precio_oferta, stock, marca, modelo, caracteristicas, destacado, nuevo, en_oferta, activo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");    // Tipos de datos: s(string), d(double/float), i(integer)
+    // Asegúrate de que $tipos tiene exactamente 14 caracteres (uno por parámetro)
+// Enfoque alternativo, sin usar $tipos como variable
+        $stmt->bind_param("sssdissddiisiiii", 
+            $sku,
+            $nombre, 
+            $slug,
+            $precio, 
+            $categoria_id, 
+            $descripcion, 
+            $descripcion_corta, 
+            $precio_oferta, 
+            $stock, 
+            $marca, 
+            $modelo, 
+            $caracteristicas, 
+            $destacado, 
+            $nuevo,
+            $en_oferta,
+            $activo
+        );
         if ($stmt->execute()) {
             $nuevo_id = $conn->insert_id;
             $mensajes[] = "Producto añadido correctamente.";
@@ -277,7 +282,7 @@ if (empty($errores)) {
                                 </label>
                                 <p class="form-help">Aparecerá en la sección de destacados de la página principal.</p>
                             </div>
-                            
+
                             <div class="form-group options-group">
                                 <label class="checkbox-label">
                                     <input type="checkbox" name="nuevo" <?php echo isset($_POST['nuevo']) ? 'checked' : ''; ?>>
@@ -285,7 +290,17 @@ if (empty($errores)) {
                                 </label>
                                 <p class="form-help">Aparecerá en la sección de nuevos productos.</p>
                             </div>
-                            
+
+                            <!-- Añadir esta sección nueva -->
+                            <div class="form-group options-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="en_oferta" <?php echo isset($_POST['en_oferta']) ? 'checked' : ''; ?>>
+                                    Mostrar en Ofertas
+                                </label>
+                                <p class="form-help">Aparecerá en la sección de ofertas de la página principal (debe tener precio de oferta).</p>
+                            </div>
+                            <!-- Fin de la sección nueva -->
+
                             <div class="form-group options-group">
                                 <label class="checkbox-label">
                                     <input type="checkbox" name="activo" checked>

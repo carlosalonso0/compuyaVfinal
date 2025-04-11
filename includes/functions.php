@@ -125,4 +125,82 @@ function obtenerImagenProducto($producto_id) {
     
     return 'assets/img/no-image.jpg'; // Imagen por defecto
 }
+
+// Función para generar slug único
+function generarSlugUnico($texto, $conn, $id = 0) {
+    // Convertir a minúsculas y eliminar caracteres especiales
+    $slug = strtolower($texto);
+    // Reemplazar espacios y guiones por guiones
+    $slug = preg_replace('/[\s-]+/', '-', $slug);
+    // Eliminar caracteres que no sean letras, números o guiones
+    $slug = preg_replace('/[^a-z0-9-]/', '', $slug);
+    // Eliminar guiones del principio y del final
+    $slug = trim($slug, '-');
+    
+    // Verificar unicidad
+    $slug_original = $slug;
+    $contador = 1;
+    
+    while (true) {
+        // Preparar consulta para verificar si el slug ya existe
+        $sql = "SELECT id FROM productos WHERE slug = ? AND id != ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("si", $slug, $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        // Si no existe, devolver el slug
+        if ($result->num_rows == 0) {
+            return $slug;
+        }
+        
+        // Si existe, añadir contador y volver a verificar
+        $slug = $slug_original . '-' . $contador;
+        $contador++;
+    }
+}
+
+// Función para generar SKU único basado en categoría
+function generarSKU($nombre, $categoria_id, $conn) {
+    // Obtener prefijo de categoría
+    $prefijos = [
+        1 => 'PERI', // Periféricos
+        2 => 'MON',  // Monitores
+        3 => 'LAP',  // Laptops
+        4 => 'IMP',  // Impresoras
+        5 => 'COMP', // Componentes
+        6 => 'PC',   // Computadoras completas
+        7 => 'GAB',  // Gabinetes
+        8 => 'PROC', // Procesadores
+        9 => 'GPU',  // Tarjetas gráficas
+        10 => 'MB'   // Placas madre
+    ];
+    
+    $prefijo = isset($prefijos[$categoria_id]) ? $prefijos[$categoria_id] : 'PROD';
+    
+    // Crear base del SKU
+    $base_sku = $prefijo . '-' . strtoupper($nombre);
+    
+    // Verificar unicidad
+    $sku_original = $base_sku;
+    $contador = 1;
+    
+    while (true) {
+        $sku = $contador < 10 ? $sku_original . '-00' . $contador : 
+              ($contador < 100 ? $sku_original . '-0' . $contador : $sku_original . '-' . $contador);
+        
+        // Verificar si existe
+        $sql = "SELECT id FROM productos WHERE sku = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("s", $sku);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if ($result->num_rows == 0) {
+            return $sku;
+        }
+        
+        $contador++;
+    }
+}
 ?>

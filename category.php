@@ -268,7 +268,7 @@ include 'includes/header.php';
                         <?php endif; ?>
                         
                         <div class="producto-imagen">
-                            <a href="product.php?id=<?php echo $producto['id']; ?>">
+                            <a href="producto/<?php echo $producto['slug']; ?>">
                                 <img src="assets/img/productos/placeholder.png" alt="<?php echo $producto['nombre']; ?>">
                             </a>
                         </div>
@@ -276,7 +276,7 @@ include 'includes/header.php';
                         <div class="producto-info">
                             <div class="producto-marca"><?php echo $producto['marca']; ?></div>
                             <h3 class="producto-nombre">
-                                <a href="product.php?id=<?php echo $producto['id']; ?>"><?php echo $producto['nombre']; ?></a>
+                                <a href="producto/<?php echo $producto['slug'];?>"><?php echo $producto['nombre']; ?></a>
                             </h3>
                             <div class="producto-precio">
                                 <?php if (!empty($producto['precio_oferta'])): ?>
@@ -298,7 +298,7 @@ include 'includes/header.php';
                                 <?php endif; ?>
                             </div>
                             
-                            <a href="product.php?id=<?php echo $producto['id']; ?>" class="btn-ver">Ver Producto</a>
+                            <a href="producto/<?php echo $producto['slug'];?>" class="btn-ver">Ver Producto</a>
                         </div>
                     </div>
                     <?php endforeach; ?>

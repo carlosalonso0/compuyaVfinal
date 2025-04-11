@@ -4,8 +4,47 @@ require_once 'includes/config.php';
 require_once 'includes/db.php';
 require_once 'includes/functions.php';
 
+
+// Obtener ID o slug del producto
+$producto_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+$slug = isset($_GET['slug']) ? $_GET['slug'] : '';
+
 $db = Database::getInstance();
 $conn = $db->getConnection();
+
+// Determinar qué consulta usar
+if ($producto_id > 0) {
+    // Buscar por ID
+    $stmt = $conn->prepare("SELECT p.*, c.nombre as categoria_nombre FROM productos p 
+                          LEFT JOIN categorias c ON p.categoria_id = c.id 
+                          WHERE p.id = ? AND p.activo = 1");
+    $stmt->bind_param("i", $producto_id);
+} elseif (!empty($slug)) {
+    // Buscar por slug
+    $stmt = $conn->prepare("SELECT p.*, c.nombre as categoria_nombre FROM productos p 
+                          LEFT JOIN categorias c ON p.categoria_id = c.id 
+                          WHERE p.slug = ? AND p.activo = 1");
+    $stmt->bind_param("s", $slug);
+} else {
+    // Ni ID ni slug proporcionados
+    header('Location: index.php');
+    exit;
+}
+
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows === 0) {
+    header('Location: index.php');
+    exit;
+}
+
+$producto = $result->fetch_assoc();
+$producto_id = $producto['id']; // Asignar ID para usar en el resto del código
+$page_title = $producto['nombre'];
+
+
+
 
 // Obtener ID del producto
 $producto_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
@@ -331,7 +370,7 @@ include 'includes/header.php';
         <div class="related-products-grid">
             <?php foreach ($productos_relacionados as $prod_rel): ?>
                 <div class="producto-card">
-                    <a href="product.php?id=<?php echo $prod_rel['id']; ?>" class="product-link">
+                <a href="producto/<?php echo $producto['slug']; ?>" class="product-link">
                         <div class="producto-imagen">
                             <img src="assets/img/productos/placeholder.png" alt="<?php echo $prod_rel['nombre']; ?>">
                         </div>
