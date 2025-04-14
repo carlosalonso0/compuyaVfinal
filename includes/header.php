@@ -9,7 +9,7 @@ if (!defined('IN_COMPUYA')) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo isset($page_title) ? $page_title . ' - ' . SITE_NAME : SITE_NAME; ?></title>
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/main.css">
+        <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/main.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/product.css">
 
 </head>
@@ -50,17 +50,17 @@ if (!defined('IN_COMPUYA')) {
         <nav class="main-menu">
             <div class="container">
                 <ul>
-                    <li><a href="index.php">Inicio</a></li>
+                    <li><a href="<?php echo BASE_URL; ?>/index.php">Inicio</a></li>
                     <?php
                     $categorias = obtenerCategorias();
                     foreach ($categorias as $categoria) {
                         // Solo mostrar categorías padre (sin padre_id)
                         if ($categoria['padre_id'] === NULL) {
-                            echo '<li><a href="category.php?id=' . $categoria['id'] . '">' . $categoria['nombre'] . '</a></li>';
+                            echo '<li><a href="' . BASE_URL . '/category.php?id=' . $categoria['id'] . '">' . $categoria['nombre'] . '</a></li>';
                         }
                     }
                     ?>
-                    <li><a href="contact.php">Contacto</a></li>
+                    <li><a href="<?php echo BASE_URL; ?>/contact.php">Contacto</a></li>
                 </ul>
             </div>
         </nav>

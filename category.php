@@ -8,6 +8,9 @@ require_once 'includes/functions.php';
 $categoria_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 $slug = isset($_GET['slug']) ? $_GET['slug'] : '';
 
+$db = Database::getInstance();
+$conn = $db->getConnection();
+
 // Determinar qué consulta usar
 if ($categoria_id > 0) {
     // Buscar por ID
@@ -23,17 +26,6 @@ if ($categoria_id > 0) {
 }
 
 // Obtener datos de la categoría
-$db = Database::getInstance();
-$conn = $db->getConnection();
-
-if ($categoria_id <= 0) {
-    // Redirigir si no hay ID válido
-    header('Location: index.php');
-    exit;
-}
-
-// Obtener información de la categoría
-$sql_categoria = "SELECT * FROM categorias WHERE id = $categoria_id AND activo = 1";
 $result_categoria = $conn->query($sql_categoria);
 
 if (!$result_categoria || $result_categoria->num_rows == 0) {
@@ -168,7 +160,7 @@ include 'includes/header.php';
     <div class="container">
         <h1><?php echo $categoria['nombre']; ?></h1>
         <div class="breadcrumbs">
-            <a href="index.php">Inicio</a> &raquo; <?php echo $categoria['nombre']; ?>
+            <a href="<?php echo BASE_URL; ?>/index.php">Inicio</a> &raquo; <?php echo $categoria['nombre']; ?>
         </div>
     </div>
 </section>

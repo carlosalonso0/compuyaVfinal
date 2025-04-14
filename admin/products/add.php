@@ -7,10 +7,6 @@ require_once '../../includes/functions.php';
 // Verificar si está iniciada la sesión
 // Aquí iría el control de acceso cuando implementemos el login
 
-// Generar SKU y slug
-$sku = generarSKU($nombre, $categoria_id, $conn);
-$slug = generarSlugUnico($nombre, $conn);
-
 $db = Database::getInstance();
 $conn = $db->getConnection();
 
@@ -60,47 +56,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     
    // Si no hay errores, guardar en la base de datos
-// Si no hay errores, guardar en la base de datos
-// Si no hay errores, guardar en la base de datos
-// Si no hay errores, guardar en la base de datos
-if (empty($errores)) {
-    // Depuración ANTES de preparar
-    echo "Variables antes de inserción:<br>";
-    echo "Nombre: " . $nombre . "<br>";
-    echo "Precio: " . $precio . "<br>";
-    echo "Categoría ID: " . $categoria_id . "<br>";
-    echo "Descripción: " . $descripcion . "<br>";
-    echo "Descripción Corta: " . $descripcion_corta . "<br>";
-    echo "Precio Oferta: " . ($precio_oferta === null ? 'NULL' : $precio_oferta) . "<br>";
-    echo "Stock: " . $stock . "<br>";
-    echo "Marca: " . $marca . "<br>";
-    echo "Modelo: " . $modelo . "<br>";
-    echo "Características: " . $caracteristicas . "<br>";
-    echo "Destacado: " . $destacado . "<br>";
-    echo "Nuevo: " . $nuevo . "<br>";
-    echo "Activo: " . $activo . "<br>";
+    if (empty($errores)) {
+        // Generar SKU y slug
+        $sku = generarSKU($nombre, $categoria_id, $conn);
+        $slug = generarSlugUnico($nombre, $conn);
 
-    $stmt = $conn->prepare("INSERT INTO productos (sku, nombre, slug, precio, categoria_id, descripcion, descripcion_corta, precio_oferta, stock, marca, modelo, caracteristicas, destacado, nuevo, en_oferta, activo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");    // Tipos de datos: s(string), d(double/float), i(integer)
-    // Asegúrate de que $tipos tiene exactamente 14 caracteres (uno por parámetro)
-// Enfoque alternativo, sin usar $tipos como variable
-        $stmt->bind_param("sssdissddiisiiii", 
-            $sku,
-            $nombre, 
-            $slug,
-            $precio, 
-            $categoria_id, 
-            $descripcion, 
-            $descripcion_corta, 
-            $precio_oferta, 
-            $stock, 
-            $marca, 
-            $modelo, 
-            $caracteristicas, 
-            $destacado, 
-            $nuevo,
-            $en_oferta,
-            $activo
-        );
+        // Preparar la consulta SQL
+        $stmt = $conn->prepare("INSERT INTO productos (sku, nombre, slug, precio, categoria_id, descripcion, descripcion_corta, precio_oferta, stock, marca, modelo, caracteristicas, destacado, nuevo, en_oferta, activo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+        // Si precio_oferta es NULL, usamos una consulta diferente
+        if ($precio_oferta === null) {
+            $stmt->bind_param("sssdiissssiiiii", 
+                $sku,
+                $nombre, 
+                $slug,
+                $precio, 
+                $categoria_id, 
+                $descripcion, 
+                $descripcion_corta, 
+                $precio_oferta, 
+                $stock, 
+                $marca, 
+                $modelo, 
+                $caracteristicas, 
+                $destacado, 
+                $nuevo,
+                $en_oferta,
+                $activo
+            );
+        } else {
+            $stmt->bind_param("sssdiidssssiiiii", 
+                $sku,
+                $nombre, 
+                $slug,
+                $precio, 
+                $categoria_id, 
+                $descripcion, 
+                $descripcion_corta, 
+                $precio_oferta, 
+                $stock, 
+                $marca, 
+                $modelo, 
+                $caracteristicas, 
+                $destacado, 
+                $nuevo,
+                $en_oferta,
+                $activo
+            );
+        }
+        
         if ($stmt->execute()) {
             $nuevo_id = $conn->insert_id;
             $mensajes[] = "Producto añadido correctamente.";
@@ -291,7 +295,6 @@ if (empty($errores)) {
                                 <p class="form-help">Aparecerá en la sección de nuevos productos.</p>
                             </div>
 
-                            <!-- Añadir esta sección nueva -->
                             <div class="form-group options-group">
                                 <label class="checkbox-label">
                                     <input type="checkbox" name="en_oferta" <?php echo isset($_POST['en_oferta']) ? 'checked' : ''; ?>>
@@ -299,7 +302,6 @@ if (empty($errores)) {
                                 </label>
                                 <p class="form-help">Aparecerá en la sección de ofertas de la página principal (debe tener precio de oferta).</p>
                             </div>
-                            <!-- Fin de la sección nueva -->
 
                             <div class="form-group options-group">
                                 <label class="checkbox-label">

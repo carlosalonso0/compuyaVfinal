@@ -1,140 +1,250 @@
 <?php
 define('IN_COMPUYA', true);
-require_once 'includes/config.php';
-require_once 'includes/db.php';
-require_once 'includes/functions.php';
+require_once '../../includes/config.php';
+require_once '../../includes/db.php';
+require_once '../../includes/functions.php';
 
-// Diagnóstico - NO ELIMINAR HASTA RESOLVER EL PROBLEMA
-echo "Archivo product.php está siendo ejecutado.<br>";
-echo "REQUEST_URI: " . $_SERVER['REQUEST_URI'] . "<br>";
-echo "QUERY_STRING: " . $_SERVER['QUERY_STRING'] . "<br>";
-echo "GET params: <pre>";
-print_r($_GET);
-echo "</pre>";
-
-// Obtener ID o slug del producto
-$producto_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-$slug = isset($_GET['slug']) ? $_GET['slug'] : '';
-
-echo "Producto ID: " . $producto_id . "<br>";
-echo "Slug: " . $slug . "<br>";
+// Verificar si está iniciada la sesión
+// Aquí iría el control de acceso cuando implementemos el login
 
 $db = Database::getInstance();
 $conn = $db->getConnection();
 
-// Determinar qué consulta usar
-if ($producto_id > 0) {
-    // Buscar por ID
-    $stmt = $conn->prepare("SELECT p.*, c.nombre as categoria_nombre FROM productos p 
-                          LEFT JOIN categorias c ON p.categoria_id = c.id 
-                          WHERE p.id = ? AND p.activo = 1");
-    $stmt->bind_param("i", $producto_id);
-    echo "Buscando por ID: " . $producto_id . "<br>";
-} elseif (!empty($slug)) {
-    // Buscar por slug
-    $stmt = $conn->prepare("SELECT p.*, c.nombre as categoria_nombre FROM productos p 
-                          LEFT JOIN categorias c ON p.categoria_id = c.id 
-                          WHERE p.slug = ? AND p.activo = 1");
-    $stmt->bind_param("s", $slug);
-    echo "Buscando por slug: " . $slug . "<br>";
-} else {
-    // Ni ID ni slug proporcionados - NO redireccionar aún para propósitos de depuración
-    echo "No se proporcionó ID ni slug<br>";
-    // COMENTAMOS LA REDIRECCIÓN PARA DEPURAR
-    // header('Location: index.php');
-    // exit;
+// Mensajes y errores
+$mensajes = [];
+$errores = [];
+
+// Obtener ID del producto
+$producto_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+
+if ($producto_id <= 0) {
+    // Redirigir si no hay ID válido
+    header('Location: index.php');
+    exit;
 }
 
-// Solo ejecutar la consulta si tenemos una declaración preparada
-if (isset($stmt)) {
-    $stmt->execute();
-    $result = $stmt->get_result();
-    echo "Número de resultados encontrados: " . $result->num_rows . "<br>";
+// Obtener información del producto
+$stmt = $conn->prepare("SELECT p.*, c.nombre as categoria_nombre FROM productos p 
+                        LEFT JOIN categorias c ON p.categoria_id = c.id 
+                        WHERE p.id = ?");
+$stmt->bind_param("i", $producto_id);
+$stmt->execute();
+$result = $stmt->get_result();
 
-    if ($result->num_rows === 0) {
-        echo "No se encontró el producto. Debería redirigir a index.php pero no lo hará para depuración.<br>";
-        // COMENTAMOS LA REDIRECCIÓN PARA DEPURAR
-        // header('Location: index.php');
-        // exit;
+if ($result->num_rows == 0) {
+    // Producto no encontrado
+    header('Location: index.php');
+    exit;
+}
+
+$producto = $result->fetch_assoc();
+
+// Obtener categorías
+$result_categorias = $conn->query("SELECT id, nombre FROM categorias ORDER BY nombre");
+$categorias = [];
+while ($row = $result_categorias->fetch_assoc()) {
+    $categorias[] = $row;
+}
+
+// Obtener la imagen principal del producto
+$imagen_producto = '';
+$img_result = $conn->query("SELECT ruta FROM imagenes_producto WHERE producto_id = {$producto_id} AND principal = 1 LIMIT 1");
+if ($img_result && $img_result->num_rows > 0) {
+    $img_row = $img_result->fetch_assoc();
+    $imagen_producto = $img_row['ruta'];
+}
+
+// Obtener especificaciones del producto
+$especificaciones = [];
+$stmt = $conn->prepare("SELECT * FROM especificaciones_producto WHERE producto_id = ? ORDER BY tipo_spec, nombre");
+$stmt->bind_param("i", $producto_id);
+$stmt->execute();
+$result_specs = $stmt->get_result();
+
+while ($spec = $result_specs->fetch_assoc()) {
+    $especificaciones[] = $spec;
+}
+
+// Procesar formulario de actualización
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Obtener y validar datos
+    $nombre = isset($_POST['nombre']) ? trim($_POST['nombre']) : '';
+    $precio = isset($_POST['precio']) ? (float)$_POST['precio'] : 0;
+    $categoria_id = isset($_POST['categoria_id']) ? (int)$_POST['categoria_id'] : 0;
+    $descripcion = isset($_POST['descripcion']) ? trim($_POST['descripcion']) : '';
+    $descripcion_corta = isset($_POST['descripcion_corta']) ? trim($_POST['descripcion_corta']) : '';
+    $precio_oferta = !empty($_POST['precio_oferta']) ? (float)$_POST['precio_oferta'] : null;
+    $stock = isset($_POST['stock']) ? (int)$_POST['stock'] : 0;
+    $marca = isset($_POST['marca']) ? trim($_POST['marca']) : '';
+    $modelo = isset($_POST['modelo']) ? trim($_POST['modelo']) : '';
+    $caracteristicas = isset($_POST['caracteristicas']) ? trim($_POST['caracteristicas']) : '';
+    $destacado = isset($_POST['destacado']) ? 1 : 0;
+    $nuevo = isset($_POST['nuevo']) ? 1 : 0;
+    $en_oferta = isset($_POST['en_oferta']) ? 1 : 0;
+    $activo = isset($_POST['activo']) ? 1 : 0;
+    
+    // Validaciones
+    if (empty($nombre)) {
+        $errores[] = "El nombre del producto es obligatorio.";
     }
-
-    $producto = $result->fetch_assoc();
-    $producto_id = $producto['id']; // Asignar ID para usar en el resto del código
-    $page_title = $producto['nombre'];
-
-    // Obtener especificaciones del producto
-    $especificaciones = [];
-    $stmt = $conn->prepare("SELECT * FROM especificaciones_producto WHERE producto_id = ? ORDER BY tipo_spec, nombre");
-    $stmt->bind_param("i", $producto_id);
-    $stmt->execute();
-    $result_specs = $stmt->get_result();
-
-    while ($spec = $result_specs->fetch_assoc()) {
-        $especificaciones[] = $spec;
+    
+    if ($precio <= 0) {
+        $errores[] = "El precio debe ser mayor que cero.";
     }
-
-    // Organizar especificaciones por tipo
-    $specs_por_tipo = [];
-    foreach ($especificaciones as $spec) {
-        $tipo = $spec['tipo_spec'];
-        if (!isset($specs_por_tipo[$tipo])) {
-            $specs_por_tipo[$tipo] = [];
+    
+    if ($categoria_id <= 0) {
+        $errores[] = "Debe seleccionar una categoría.";
+    }
+    
+    if ($stock < 0) {
+        $errores[] = "El stock no puede ser negativo.";
+    }
+    
+    // Si no hay errores, actualizar en la base de datos
+    if (empty($errores)) {
+        // Actualizar slug si ha cambiado el nombre
+        if ($nombre != $producto['nombre']) {
+            $slug = generarSlugUnico($nombre, $conn, $producto_id);
+        } else {
+            $slug = $producto['slug'];
         }
-        $specs_por_tipo[$tipo][] = $spec;
-    }
-
-    // Obtener imágenes del producto
-    $imagenes = [];
-    $stmt = $conn->prepare("SELECT * FROM imagenes_producto WHERE producto_id = ? ORDER BY principal DESC, id ASC");
-    $stmt->bind_param("i", $producto_id);
-    $stmt->execute();
-    $result_img = $stmt->get_result();
-
-    while ($img = $result_img->fetch_assoc()) {
-        $imagenes[] = $img;
-    }
-
-    // Si no hay imágenes, usar una por defecto
-    if (empty($imagenes)) {
-        $imagenes[] = ['ruta' => 'assets/img/productos/placeholder.png', 'principal' => 1];
-    }
-
-    // Obtener productos relacionados (misma categoría)
-    $productos_relacionados = [];
-    if (isset($producto['categoria_id'])) {
-        $stmt = $conn->prepare("SELECT p.* FROM productos p 
-                           WHERE p.categoria_id = ? AND p.id != ? AND p.activo = 1 
-                           ORDER BY p.destacado DESC, RAND() 
-                           LIMIT 4");
-        $stmt->bind_param("ii", $producto['categoria_id'], $producto_id);
-        $stmt->execute();
-        $result_rel = $stmt->get_result();
-
-        while ($prod_rel = $result_rel->fetch_assoc()) {
-            $productos_relacionados[] = $prod_rel;
+        
+        // Preparar la consulta de actualización
+        $sql = "UPDATE productos SET 
+                nombre = ?, 
+                slug = ?,
+                precio = ?, 
+                categoria_id = ?, 
+                descripcion = ?, 
+                descripcion_corta = ?, 
+                precio_oferta = ?, 
+                stock = ?, 
+                marca = ?, 
+                modelo = ?, 
+                caracteristicas = ?, 
+                destacado = ?, 
+                nuevo = ?,
+                en_oferta = ?,
+                activo = ? 
+                WHERE id = ?";
+                
+        $stmt = $conn->prepare($sql);
+        
+        if ($precio_oferta === null) {
+            $stmt->bind_param("ssdsssdsssiiiii", 
+                $nombre, 
+                $slug,
+                $precio, 
+                $categoria_id, 
+                $descripcion, 
+                $descripcion_corta, 
+                $stock,  // Note: no precio_oferta here 
+                $marca, 
+                $modelo, 
+                $caracteristicas, 
+                $destacado, 
+                $nuevo,
+                $en_oferta,
+                $activo,
+                $producto_id
+            );
+        } else {
+            $stmt->bind_param("ssdsssdisssiiiii", 
+                $nombre, 
+                $slug,
+                $precio, 
+                $categoria_id, 
+                $descripcion, 
+                $descripcion_corta, 
+                $precio_oferta, 
+                $stock, 
+                $marca, 
+                $modelo, 
+                $caracteristicas, 
+                $destacado, 
+                $nuevo,
+                $en_oferta,
+                $activo,
+                $producto_id
+            );
+        }
+        
+        if ($stmt->execute()) {
+            $mensajes[] = "Producto actualizado correctamente.";
+            
+            // Actualizar especificaciones
+            if (isset($_POST['spec_nombres']) && isset($_POST['spec_valores']) && isset($_POST['spec_tipos'])) {
+                // Primero, eliminar especificaciones existentes
+                $conn->query("DELETE FROM especificaciones_producto WHERE producto_id = $producto_id");
+                
+                // Luego, insertar las nuevas
+                $spec_nombres = $_POST['spec_nombres'];
+                $spec_valores = $_POST['spec_valores'];
+                $spec_tipos = $_POST['spec_tipos'];
+                
+                $stmt_spec = $conn->prepare("INSERT INTO especificaciones_producto (producto_id, tipo_spec, nombre, valor) VALUES (?, ?, ?, ?)");
+                
+                for ($i = 0; $i < count($spec_nombres); $i++) {
+                    if (!empty($spec_nombres[$i]) && !empty($spec_valores[$i])) {
+                        $stmt_spec->bind_param("isss", $producto_id, $spec_tipos[$i], $spec_nombres[$i], $spec_valores[$i]);
+                        $stmt_spec->execute();
+                    }
+                }
+                
+                $mensajes[] = "Especificaciones actualizadas correctamente.";
+            }
+            
+            // Procesar imagen si se ha subido
+            if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] == 0) {
+                $imagen = $_FILES['imagen'];
+                $extension = pathinfo($imagen['name'], PATHINFO_EXTENSION);
+                $nombre_archivo = 'producto_' . $producto_id . '_' . uniqid() . '.' . $extension;
+                $ruta_destino = '../../uploads/productos/' . $nombre_archivo;
+                
+                // Crear directorio si no existe
+                if (!is_dir('../../uploads/productos/')) {
+                    mkdir('../../uploads/productos/', 0777, true);
+                }
+                
+                if (move_uploaded_file($imagen['tmp_name'], $ruta_destino)) {
+                    // Actualizar imagen en la base de datos
+                    $ruta_bd = 'uploads/productos/' . $nombre_archivo;
+                    
+                    // Verificar si ya tiene una imagen principal
+                    $result = $conn->query("SELECT id FROM imagenes_producto WHERE producto_id = $producto_id AND principal = 1");
+                    
+                    if ($result->num_rows > 0) {
+                        // Actualizar imagen existente
+                        $stmt = $conn->prepare("UPDATE imagenes_producto SET ruta = ? WHERE producto_id = ? AND principal = 1");
+                        $stmt->bind_param("si", $ruta_bd, $producto_id);
+                        $stmt->execute();
+                    } else {
+                        // Insertar nueva imagen
+                        $stmt = $conn->prepare("INSERT INTO imagenes_producto (producto_id, ruta, principal) VALUES (?, ?, 1)");
+                        $stmt->bind_param("is", $producto_id, $ruta_bd);
+                        $stmt->execute();
+                    }
+                    
+                    $mensajes[] = "Imagen actualizada correctamente.";
+                    $imagen_producto = $ruta_bd; // Actualizar para mostrar
+                } else {
+                    $errores[] = "Error al subir la imagen.";
+                }
+            }
+            
+            // Recargar datos del producto
+            $stmt = $conn->prepare("SELECT p.*, c.nombre as categoria_nombre FROM productos p 
+                                 LEFT JOIN categorias c ON p.categoria_id = c.id 
+                                 WHERE p.id = ?");
+            $stmt->bind_param("i", $producto_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $producto = $result->fetch_assoc();
+        } else {
+            $errores[] = "Error al actualizar el producto: " . $conn->error;
         }
     }
-
-    // Procesar caracteristicas (formato de lista)
-    $caracteristicas_lista = [];
-    if (!empty($producto['caracteristicas'])) {
-        $caracteristicas_lista = explode("\n", $producto['caracteristicas']);
-        $caracteristicas_lista = array_map('trim', $caracteristicas_lista);
-        $caracteristicas_lista = array_filter($caracteristicas_lista);
-    }
-} else {
-    echo "No se creó ninguna consulta SQL porque no hay ID ni slug<br>";
 }
-
-// Controlar mensajes
-$mensaje = '';
-if (isset($_GET['added']) && $_GET['added'] == 1) {
-    $mensaje = 'Producto añadido al carrito correctamente.';
-}
-
-// Incluir cabecera solo si no estamos en modo depuración
-// Para depuración, comenta esta línea
-include 'includes/header.php';
 ?>
 
 <!DOCTYPE html>
@@ -274,18 +384,18 @@ include 'includes/header.php';
                             
                             <div class="form-group options-group">
                                 <label class="checkbox-label">
-                                    <input type="checkbox" name="activo" <?php echo $producto['activo'] ? 'checked' : ''; ?>>
-                                    Producto Activo
-                                </label>
-                                <p class="form-help">El producto estará visible y disponible para compra.</p>
-                            </div>
-
-                            <div class="form-group options-group">
-                                <label class="checkbox-label">
                                     <input type="checkbox" name="en_oferta" <?php echo $producto['en_oferta'] ? 'checked' : ''; ?>>
                                     Mostrar en Ofertas
                                 </label>
                                 <p class="form-help">Aparecerá en la sección de ofertas de la página principal (debe tener precio de oferta).</p>
+                            </div>
+                            
+                            <div class="form-group options-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="activo" <?php echo $producto['activo'] ? 'checked' : ''; ?>>
+                                    Producto Activo
+                                </label>
+                                <p class="form-help">El producto estará visible y disponible para compra.</p>
                             </div>
                         </div>
                         
@@ -308,7 +418,6 @@ include 'includes/header.php';
                                                 <input type="text" name="spec_valores[]" value="<?php echo htmlspecialchars($spec['valor']); ?>" class="spec-value" required>
                                             </div>
                                             <input type="hidden" name="spec_tipos[]" value="<?php echo htmlspecialchars($spec['tipo_spec']); ?>">
-                                            <input type="hidden" name="spec_ids[]" value="<?php echo $spec['id']; ?>">
                                             <button type="button" class="btn-remove-spec" onclick="this.parentElement.remove()">×</button>
                                         </div>
                                     <?php endforeach; ?>
@@ -317,6 +426,7 @@ include 'includes/header.php';
                             
                             <button type="button" id="add-spec-field" class="btn btn-secondary">Añadir especificación</button>
                         </div>
+                        
                         <div class="form-actions">
                             <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                             <a href="index.php" class="btn btn-secondary">Cancelar</a>
@@ -328,280 +438,284 @@ include 'includes/header.php';
     </div>
     
     <script>
-// Mapeo de categorías a tipos de especificaciones
-// Mapeo de categorías a tipos de especificaciones
-const categoriasSpecs = {
-    '8': 'procesador',          // Categoría ID para procesadores
-    '9': 'tarjeta_grafica',     // Categoría ID para tarjetas gráficas
-    '2': 'monitor',             // Categoría ID para monitores
-    '4': 'impresora',           // Categoría ID para impresoras
-    '3': 'laptop',              // Categoría ID para laptops
-    '10': 'placa_madre',        // Categoría ID para placas madre
-    '7': 'gabinete',            // Categoría ID para gabinetes
-    '6': 'computadora_completa' // Categoría ID para computadoras completas
-};
+        // Mapeo de categorías a tipos de especificaciones
+        const categoriasSpecs = {
+            '8': 'procesador',          // Categoría ID para procesadores
+            '9': 'tarjeta_grafica',     // Categoría ID para tarjetas gráficas
+            '2': 'monitor',             // Categoría ID para monitores
+            '4': 'impresora',           // Categoría ID para impresoras
+            '3': 'laptop',              // Categoría ID para laptops
+            '10': 'placa_madre',        // Categoría ID para placas madre
+            '7': 'gabinete',            // Categoría ID para gabinetes
+            '6': 'computadora_completa' // Categoría ID para computadoras completas
+        };
 
-// Mapeo de tipos a campos de especificaciones
-const camposSpecs = {
-    'procesador': [
-        { nombre: 'Núcleos', placeholder: 'Ej: 6' },
-        { nombre: 'Hilos', placeholder: 'Ej: 12' },
-        { nombre: 'Frecuencia base', placeholder: 'Ej: 3.7 GHz' },
-        { nombre: 'Frecuencia turbo', placeholder: 'Ej: 4.6 GHz' },
-        { nombre: 'Caché', placeholder: 'Ej: 12MB' },
-        { nombre: 'Socket', placeholder: 'Ej: LGA 1200' },
-        { nombre: 'Arquitectura', placeholder: 'Ej: 10nm' },
-        { nombre: 'TDP', placeholder: 'Ej: 65W' },
-        { nombre: 'Gráficos integrados', placeholder: 'Ej: Intel UHD Graphics 730' }
-    ],
-    'tarjeta_grafica': [
-        { nombre: 'Chipset', placeholder: 'Ej: NVIDIA GeForce RTX 4060' },
-        { nombre: 'Memoria', placeholder: 'Ej: 8GB GDDR6' },
-        { nombre: 'Bus de memoria', placeholder: 'Ej: 128 bits' },
-        { nombre: 'Interfaz', placeholder: 'Ej: PCI Express 4.0' },
-        { nombre: 'Conectores', placeholder: 'Ej: 1x HDMI 2.1, 3x DisplayPort 1.4a' },
-        { nombre: 'CUDA Cores', placeholder: 'Ej: 3584' },
-        { nombre: 'Consumo', placeholder: 'Ej: 170W' }
-    ],
-    'monitor': [
-        { nombre: 'Tamaño', placeholder: 'Ej: 27 pulgadas' },
-        { nombre: 'Resolución', placeholder: 'Ej: 1920 x 1080' },
-        { nombre: 'Tipo de panel', placeholder: 'Ej: IPS' },
-        { nombre: 'Tasa de refresco', placeholder: 'Ej: 144 Hz' },
-        { nombre: 'Tiempo de respuesta', placeholder: 'Ej: 1ms' }
-    ],
-    'impresora': [
-        { nombre: 'Tipo', placeholder: 'Ej: Multifuncional de inyección' },
-        { nombre: 'Funciones', placeholder: 'Ej: Impresión, Escaneo, Copia' },
-        { nombre: 'Conectividad', placeholder: 'Ej: USB, Wi-Fi, Ethernet' },
-        { nombre: 'Velocidad B/N', placeholder: 'Ej: 20 ppm' },
-        { nombre: 'Velocidad Color', placeholder: 'Ej: 15 ppm' },
-        { nombre: 'Resolución', placeholder: 'Ej: 4800 x 1200 dpi' }
-    ],
-    'laptop': [
-        { nombre: 'Procesador', placeholder: 'Ej: Intel Core i5-1135G7' },
-        { nombre: 'Memoria RAM', placeholder: 'Ej: 8GB DDR4' },
-        { nombre: 'Almacenamiento', placeholder: 'Ej: SSD 512GB NVMe' },
-        { nombre: 'Pantalla', placeholder: 'Ej: 15.6" Full HD IPS' },
-        { nombre: 'Tarjeta gráfica', placeholder: 'Ej: NVIDIA GeForce MX350 2GB' },
-        { nombre: 'Sistema operativo', placeholder: 'Ej: Windows 11 Home' },
-        { nombre: 'Batería', placeholder: 'Ej: 3 celdas, 45Wh' },
-        { nombre: 'Puertos', placeholder: 'Ej: 2x USB 3.2, 1x HDMI, 1x USB-C' }
-    ],
-    'placa_madre': [
-        { nombre: 'Socket', placeholder: 'Ej: LGA 1700' },
-        { nombre: 'Chipset', placeholder: 'Ej: Intel Z690' },
-        { nombre: 'Formato', placeholder: 'Ej: ATX' },
-        { nombre: 'Ranuras RAM', placeholder: 'Ej: 4x DDR4' },
-        { nombre: 'Capacidad máxima RAM', placeholder: 'Ej: 128GB' },
-        { nombre: 'Velocidad RAM', placeholder: 'Ej: DDR4-5333 (OC)' },
-        { nombre: 'Ranuras PCIe', placeholder: 'Ej: 1x PCIe 5.0 x16, 2x PCIe 3.0 x16' },
-        { nombre: 'Conectores SATA', placeholder: 'Ej: 6x SATA III' },
-        { nombre: 'Conectores M.2', placeholder: 'Ej: 3x M.2 PCIe 4.0 x4' },
-        { nombre: 'Puertos USB', placeholder: 'Ej: 2x USB 3.2 Gen2, 4x USB 3.2 Gen1, 4x USB 2.0' },
-        { nombre: 'LAN', placeholder: 'Ej: Intel 2.5Gb Ethernet' },
-        { nombre: 'Audio', placeholder: 'Ej: Realtek ALC1220' },
-        { nombre: 'Iluminación', placeholder: 'Ej: RGB Fusion 2.0' }
-    ],
-    'gabinete': [
-        { nombre: 'Formato', placeholder: 'Ej: Mid-Tower' },
-        { nombre: 'Compatibilidad', placeholder: 'Ej: ATX, Micro-ATX, Mini-ITX' },
-        { nombre: 'Material', placeholder: 'Ej: Acero SPCC, Vidrio templado' },
-        { nombre: 'Bahías', placeholder: 'Ej: 2x 3.5", 2x 2.5"' },
-        { nombre: 'Ventiladores incluidos', placeholder: 'Ej: 3x 120mm ARGB' },
-        { nombre: 'Ventiladores soportados', placeholder: 'Ej: Frontal: 3x 120mm, Superior: 2x 140mm, Trasero: 1x 120mm' },
-        { nombre: 'Refrigeración líquida', placeholder: 'Ej: Frontal: 360mm, Superior: 240mm' },
-        { nombre: 'Espacio GPU', placeholder: 'Ej: Hasta 330mm' },
-        { nombre: 'Espacio CPU cooler', placeholder: 'Ej: Hasta 165mm' },
-        { nombre: 'Puertos frontales', placeholder: 'Ej: 1x USB 3.1 Type-C, 2x USB 3.0, Audio' },
-        { nombre: 'Filtros polvo', placeholder: 'Ej: Frontal, Inferior, Superior (magnéticos)' },
-        { nombre: 'Iluminación', placeholder: 'Ej: ARGB con controlador' }
-    ],
-    'computadora_completa': [
-        { nombre: 'Procesador', placeholder: 'Ej: Intel Core i7-12700K' },
-        { nombre: 'Placa madre', placeholder: 'Ej: ASUS ROG Strix Z690-A' },
-        { nombre: 'Memoria RAM', placeholder: 'Ej: 32GB (2x16GB) DDR4 3600MHz' },
-        { nombre: 'Tarjeta gráfica', placeholder: 'Ej: NVIDIA GeForce RTX 3080 10GB' },
-        { nombre: 'Almacenamiento', placeholder: 'Ej: 1TB NVMe SSD + 2TB HDD' },
-        { nombre: 'Refrigeración', placeholder: 'Ej: AIO Liquid Cooling 360mm' },
-        { nombre: 'Fuente de poder', placeholder: 'Ej: 850W 80+ Gold' },
-        { nombre: 'Gabinete', placeholder: 'Ej: Corsair 4000D Airflow' },
-        { nombre: 'Sistema operativo', placeholder: 'Ej: Windows 11 Pro' },
-        { nombre: 'Conectividad', placeholder: 'Ej: Wi-Fi 6, Bluetooth 5.2, Ethernet 2.5Gb' },
-        { nombre: 'Garantía', placeholder: 'Ej: 3 años en piezas, 1 año en mano de obra' }
-    ]
-};
+        // Mapeo de tipos a campos de especificaciones
+        const camposSpecs = {
+            'procesador': [
+                { nombre: 'Núcleos', placeholder: 'Ej: 6' },
+                { nombre: 'Hilos', placeholder: 'Ej: 12' },
+                { nombre: 'Frecuencia base', placeholder: 'Ej: 3.7 GHz' },
+                { nombre: 'Frecuencia turbo', placeholder: 'Ej: 4.6 GHz' },
+                { nombre: 'Caché', placeholder: 'Ej: 12MB' },
+                { nombre: 'Socket', placeholder: 'Ej: LGA 1200' },
+                { nombre: 'Arquitectura', placeholder: 'Ej: 10nm' },
+                { nombre: 'TDP', placeholder: 'Ej: 65W' },
+                { nombre: 'Gráficos integrados', placeholder: 'Ej: Intel UHD Graphics 730' }
+            ],
+            'tarjeta_grafica': [
+                { nombre: 'Chipset', placeholder: 'Ej: NVIDIA GeForce RTX 4060' },
+                { nombre: 'Memoria', placeholder: 'Ej: 8GB GDDR6' },
+                { nombre: 'Bus de memoria', placeholder: 'Ej: 128 bits' },
+                { nombre: 'Interfaz', placeholder: 'Ej: PCI Express 4.0' },
+                { nombre: 'Conectores', placeholder: 'Ej: 1x HDMI 2.1, 3x DisplayPort 1.4a' },
+                { nombre: 'CUDA Cores', placeholder: 'Ej: 3584' },
+                { nombre: 'Consumo', placeholder: 'Ej: 170W' }
+            ],
+            'monitor': [
+                { nombre: 'Tamaño', placeholder: 'Ej: 27 pulgadas' },
+                { nombre: 'Resolución', placeholder: 'Ej: 1920 x 1080' },
+                { nombre: 'Tipo de panel', placeholder: 'Ej: IPS' },
+                { nombre: 'Tasa de refresco', placeholder: 'Ej: 144 Hz' },
+                { nombre: 'Tiempo de respuesta', placeholder: 'Ej: 1ms' }
+            ],
+            'impresora': [
+                { nombre: 'Tipo', placeholder: 'Ej: Multifuncional de inyección' },
+                { nombre: 'Funciones', placeholder: 'Ej: Impresión, Escaneo, Copia' },
+                { nombre: 'Conectividad', placeholder: 'Ej: USB, Wi-Fi, Ethernet' },
+                { nombre: 'Velocidad B/N', placeholder: 'Ej: 20 ppm' },
+                { nombre: 'Velocidad Color', placeholder: 'Ej: 15 ppm' },
+                { nombre: 'Resolución', placeholder: 'Ej: 4800 x 1200 dpi' }
+            ],
+            'laptop': [
+                { nombre: 'Procesador', placeholder: 'Ej: Intel Core i5-1135G7' },
+                { nombre: 'Memoria RAM', placeholder: 'Ej: 8GB DDR4' },
+                { nombre: 'Almacenamiento', placeholder: 'Ej: SSD 512GB NVMe' },
+                { nombre: 'Pantalla', placeholder: 'Ej: 15.6" Full HD IPS' },
+                { nombre: 'Tarjeta gráfica', placeholder: 'Ej: NVIDIA GeForce MX350 2GB' },
+                { nombre: 'Sistema operativo', placeholder: 'Ej: Windows 11 Home' },
+                { nombre: 'Batería', placeholder: 'Ej: 3 celdas, 45Wh' },
+                { nombre: 'Puertos', placeholder: 'Ej: 2x USB 3.2, 1x HDMI, 1x USB-C' }
+            ],
+            'placa_madre': [
+                { nombre: 'Socket', placeholder: 'Ej: LGA 1700' },
+                { nombre: 'Chipset', placeholder: 'Ej: Intel Z690' },
+                { nombre: 'Formato', placeholder: 'Ej: ATX' },
+                { nombre: 'Ranuras RAM', placeholder: 'Ej: 4x DDR4' },
+                { nombre: 'Capacidad máxima RAM', placeholder: 'Ej: 128GB' },
+                { nombre: 'Velocidad RAM', placeholder: 'Ej: DDR4-5333 (OC)' },
+                { nombre: 'Ranuras PCIe', placeholder: 'Ej: 1x PCIe 5.0 x16, 2x PCIe 3.0 x16' },
+                { nombre: 'Conectores SATA', placeholder: 'Ej: 6x SATA III' },
+                { nombre: 'Conectores M.2', placeholder: 'Ej: 3x M.2 PCIe 4.0 x4' },
+                { nombre: 'Puertos USB', placeholder: 'Ej: 2x USB 3.2 Gen2, 4x USB 3.2 Gen1, 4x USB 2.0' },
+                { nombre: 'LAN', placeholder: 'Ej: Intel 2.5Gb Ethernet' },
+                { nombre: 'Audio', placeholder: 'Ej: Realtek ALC1220' },
+                { nombre: 'Iluminación', placeholder: 'Ej: RGB Fusion 2.0' }
+            ],
+            'gabinete': [
+                { nombre: 'Formato', placeholder: 'Ej: Mid-Tower' },
+                { nombre: 'Compatibilidad', placeholder: 'Ej: ATX, Micro-ATX, Mini-ITX' },
+                { nombre: 'Material', placeholder: 'Ej: Acero SPCC, Vidrio templado' },
+                { nombre: 'Bahías', placeholder: 'Ej: 2x 3.5", 2x 2.5"' },
+                { nombre: 'Ventiladores incluidos', placeholder: 'Ej: 3x 120mm ARGB' },
+                { nombre: 'Ventiladores soportados', placeholder: 'Ej: Frontal: 3x 120mm, Superior: 2x 140mm, Trasero: 1x 120mm' },
+                { nombre: 'Refrigeración líquida', placeholder: 'Ej: Frontal: 360mm, Superior: 240mm' },
+                { nombre: 'Espacio GPU', placeholder: 'Ej: Hasta 330mm' },
+                { nombre: 'Espacio CPU cooler', placeholder: 'Ej: Hasta 165mm' },
+                { nombre: 'Puertos frontales', placeholder: 'Ej: 1x USB 3.1 Type-C, 2x USB 3.0, Audio' },
+                { nombre: 'Filtros polvo', placeholder: 'Ej: Frontal, Inferior, Superior (magnéticos)' },
+                { nombre: 'Iluminación', placeholder: 'Ej: ARGB con controlador' }
+            ],
+            'computadora_completa': [
+                { nombre: 'Procesador', placeholder: 'Ej: Intel Core i7-12700K' },
+                { nombre: 'Placa madre', placeholder: 'Ej: ASUS ROG Strix Z690-A' },
+                { nombre: 'Memoria RAM', placeholder: 'Ej: 32GB (2x16GB) DDR4 3600MHz' },
+                { nombre: 'Tarjeta gráfica', placeholder: 'Ej: NVIDIA GeForce RTX 3080 10GB' },
+                { nombre: 'Almacenamiento', placeholder: 'Ej: 1TB NVMe SSD + 2TB HDD' },
+                { nombre: 'Refrigeración', placeholder: 'Ej: AIO Liquid Cooling 360mm' },
+                { nombre: 'Fuente de poder', placeholder: 'Ej: 850W 80+ Gold' },
+                { nombre: 'Gabinete', placeholder: 'Ej: Corsair 4000D Airflow' },
+                { nombre: 'Sistema operativo', placeholder: 'Ej: Windows 11 Pro' },
+                { nombre: 'Conectividad', placeholder: 'Ej: Wi-Fi 6, Bluetooth 5.2, Ethernet 2.5Gb' },
+                { nombre: 'Garantía', placeholder: 'Ej: 3 años en piezas, 1 año en mano de obra' }
+            ]
+        };
 
-// Función para generar campos de especificaciones
-function generarCamposSpecs(tipo) {
-    const specsFields = document.getElementById('specs-fields');
-    specsFields.innerHTML = '';
-    
-    if (!tipo || !camposSpecs[tipo]) {
-        specsFields.innerHTML = '<div class="no-specs">No hay especificaciones disponibles para esta categoría.</div>';
-        document.getElementById('add-spec-field').style.display = 'none';
-        return;
-    }
-    
-    // Mostrar campos predefinidos
-    camposSpecs[tipo].forEach((campo, index) => {
-        const fieldHtml = `
-            <div class="spec-field-row">
-                <input type="hidden" name="spec_nombres[]" value="${campo.nombre}">
-                <div class="spec-field-group">
-                    <label>${campo.nombre}:</label>
-                    <input type="text" name="spec_valores[]" placeholder="${campo.placeholder}" class="spec-value">
-                </div>
-                <input type="hidden" name="spec_tipos[]" value="${tipo}">
-            </div>
-        `;
-        specsFields.insertAdjacentHTML('beforeend', fieldHtml);
-    });
-    
-    // Mostrar botón para añadir campo personalizado
-    document.getElementById('add-spec-field').style.display = 'inline-block';
-}
-
-// Función para añadir un campo personalizado
-function agregarCampoSpec() {
-    const categoriaId = document.getElementById('categoria_id').value;
-    const tipo = categoriasSpecs[categoriaId] || '';
-    
-    if (!tipo) return;
-    
-    const specsFields = document.getElementById('specs-fields');
-    const fieldHtml = `
-        <div class="spec-field-row custom-field">
-            <div class="spec-field-group">
-                <label>Nombre:</label>
-                <input type="text" name="spec_nombres[]" placeholder="Nombre de la especificación" class="spec-name" required>
-            </div>
-            <div class="spec-field-group">
-                <label>Valor:</label>
-                <input type="text" name="spec_valores[]" placeholder="Valor de la especificación" class="spec-value" required>
-            </div>
-            <input type="hidden" name="spec_tipos[]" value="${tipo}">
-            <button type="button" class="btn-remove-spec" onclick="this.parentElement.remove()">×</button>
-        </div>
-    `;
-    specsFields.insertAdjacentHTML('beforeend', fieldHtml);
-}
-
-// Función para añadir especificaciones con valores
-function agregarCampoSpecConValores(nombre, valor, tipo) {
-    const specsFields = document.getElementById('specs-fields');
-    const fieldHtml = `
-        <div class="spec-field-row custom-field">
-            <div class="spec-field-group">
-                <label>Nombre:</label>
-                <input type="text" name="spec_nombres[]" value="${nombre}" class="spec-name" required>
-            </div>
-            <div class="spec-field-group">
-                <label>Valor:</label>
-                <input type="text" name="spec_valores[]" value="${valor}" class="spec-value" required>
-            </div>
-            <input type="hidden" name="spec_tipos[]" value="${tipo}">
-            <button type="button" class="btn-remove-spec" onclick="this.parentElement.remove()">×</button>
-        </div>
-    `;
-    specsFields.insertAdjacentHTML('beforeend', fieldHtml);
-}
-
-// Evento para cambio de categoría
-document.getElementById('categoria_id').addEventListener('change', function() {
-    const categoriaId = this.value;
-    const tipo = categoriasSpecs[categoriaId] || '';
-    generarCamposSpecs(tipo);
-});
-
-// Evento para añadir campo de especificación
-document.getElementById('add-spec-field').addEventListener('click', agregarCampoSpec);
-
-// Aplicar los estilos
-document.head.insertAdjacentHTML('beforeend', `
-    <style>
-        .specs-container {
-            grid-column: 1 / -1;
-            border-top: 1px solid #eee;
-            padding-top: 20px;
-            margin-top: 20px;
-        }
-        
-        .specs-container h3 {
-            margin-bottom: 15px;
-            font-size: 18px;
-        }
-        
-        .no-specs {
-            padding: 15px;
-            background-color: #f8f9fa;
-            border-radius: 4px;
-            color: #666;
-            font-style: italic;
-        }
-        
-        .spec-field-row {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 10px;
-            padding: 10px;
-            background-color: #f8f9fa;
-            border-radius: 4px;
-            align-items: center;
-        }
-        
-        .spec-field-group {
-            flex: 1;
-        }
-        
-        .custom-field {
-            background-color: #e9ecef;
-        }
-        
-        .btn-remove-spec {
-            background: none;
-            border: none;
-            color: #dc3545;
-            font-size: 20px;
-            cursor: pointer;
-            padding: 0 5px;
-        }
-    </style>
-`);
-
-// Cargar especificaciones existentes
-document.addEventListener('DOMContentLoaded', function() {
-    const categoriaId = document.getElementById('categoria_id').value;
-    const tipo = categoriasSpecs[categoriaId] || '';
-    
-    if (tipo) {
-        generarCamposSpecs(tipo);
-        
-        // Rellenar con valores existentes
-        const especificaciones = <?php echo json_encode($especificaciones); ?>;
-        if (especificaciones.length > 0) {
-            const inputsValores = document.querySelectorAll('input[name="spec_valores[]"]');
-            const inputsNombres = document.querySelectorAll('input[name="spec_nombres[]"]');
+        // Función para generar campos de especificaciones
+        function generarCamposSpecs(tipo) {
+            const specsFields = document.getElementById('specs-fields');
+            specsFields.innerHTML = '';
             
-            especificaciones.forEach(spec => {
-                // Buscar campo existente
-                let encontrado = false;
-                for (let i = 0; i < inputsNombres.length; i++) {
-                    if (inputsNombres[i].value === spec.nombre) {
-                        inputsValores[i].value = spec.valor;
-                        encontrado = true;
-                        break;
-                    }
+            if (!tipo || !camposSpecs[tipo]) {
+                specsFields.innerHTML = '<div class="no-specs">No hay especificaciones disponibles para esta categoría.</div>';
+                document.getElementById('add-spec-field').style.display = 'none';
+                return;
+            }
+            
+            // Mostrar campos predefinidos
+            camposSpecs[tipo].forEach((campo, index) => {
+                const fieldHtml = `
+                    <div class="spec-field-row">
+                        <input type="hidden" name="spec_nombres[]" value="${campo.nombre}">
+                        <div class="spec-field-group">
+                            <label>${campo.nombre}:</label>
+                            <input type="text" name="spec_valores[]" placeholder="${campo.placeholder}" class="spec-value">
+                        </div>
+                        <input type="hidden" name="spec_tipos[]" value="${tipo}">
+                    </div>
+                `;
+                specsFields.insertAdjacentHTML('beforeend', fieldHtml);
+            });
+            
+            // Mostrar botón para añadir campo personalizado
+            document.getElementById('add-spec-field').style.display = 'inline-block';
+        }
+
+        // Función para añadir un campo personalizado
+        function agregarCampoSpec() {
+            const categoriaId = document.getElementById('categoria_id').value;
+            const tipo = categoriasSpecs[categoriaId] || '';
+            
+            if (!tipo) return;
+            
+            const specsFields = document.getElementById('specs-fields');
+            const fieldHtml = `
+                <div class="spec-field-row custom-field">
+                    <div class="spec-field-group">
+                        <label>Nombre:</label>
+                        <input type="text" name="spec_nombres[]" placeholder="Nombre de la especificación" class="spec-name" required>
+                    </div>
+                    <div class="spec-field-group">
+                        <label>Valor:</label>
+                        <input type="text" name="spec_valores[]" placeholder="Valor de la especificación" class="spec-value" required>
+                    </div>
+                    <input type="hidden" name="spec_tipos[]" value="${tipo}">
+                    <button type="button" class="btn-remove-spec" onclick="this.parentElement.remove()">×</button>
+                </div>
+            `;
+            specsFields.insertAdjacentHTML('beforeend', fieldHtml);
+        }
+
+        // Función para añadir especificaciones con valores
+        function agregarCampoSpecConValores(nombre, valor, tipo) {
+            const specsFields = document.getElementById('specs-fields');
+            const fieldHtml = `
+                <div class="spec-field-row custom-field">
+                    <div class="spec-field-group">
+                        <label>Nombre:</label>
+                        <input type="text" name="spec_nombres[]" value="${nombre}" class="spec-name" required>
+                    </div>
+                    <div class="spec-field-group">
+                        <label>Valor:</label>
+                        <input type="text" name="spec_valores[]" value="${valor}" class="spec-value" required>
+                    </div>
+                    <input type="hidden" name="spec_tipos[]" value="${tipo}">
+                    <button type="button" class="btn-remove-spec" onclick="this.parentElement.remove()">×</button>
+                </div>
+            `;
+            specsFields.insertAdjacentHTML('beforeend', fieldHtml);
+        }
+
+        // Evento para cambio de categoría
+        document.getElementById('categoria_id').addEventListener('change', function() {
+            const categoriaId = this.value;
+            const tipo = categoriasSpecs[categoriaId] || '';
+            generarCamposSpecs(tipo);
+        });
+
+        // Evento para añadir campo de especificación
+        document.getElementById('add-spec-field').addEventListener('click', agregarCampoSpec);
+
+        // Aplicar los estilos
+        document.head.insertAdjacentHTML('beforeend', `
+            <style>
+                .specs-container {
+                    grid-column: 1 / -1;
+                    border-top: 1px solid #eee;
+                    padding-top: 20px;
+                    margin-top: 20px;
                 }
                 
-                // Si no se encontró, crear uno nuevo
-                if (!encontrado && spec.tipo_spec === tipo) {
-                    agregarCampoSpecConValores(spec.nombre, spec.valor, spec.tipo_spec);
+                .specs-container h3 {
+                    margin-bottom: 15px;
+                    font-size: 18px;
                 }
-            });
-        }
-    }
-});
-</script>
+                
+                .no-specs {
+                    padding: 15px;
+                    background-color: #f8f9fa;
+                    border-radius: 4px;
+                    color: #666;
+                    font-style: italic;
+                }
+                
+                .spec-field-row {
+                    display: flex;
+                    gap: 15px;
+                    margin-bottom: 10px;
+                    padding: 10px;
+                    background-color: #f8f9fa;
+                    border-radius: 4px;
+                    align-items: center;
+                }
+                
+                .spec-field-group {
+                    flex: 1;
+                }
+                
+                .custom-field {
+                    background-color: #e9ecef;
+                }
+                
+                .btn-remove-spec {
+                    background: none;
+                    border: none;
+                    color: #dc3545;
+                    font-size: 20px;
+                    cursor: pointer;
+                    padding: 0 5px;
+                }
+            </style>
+        `);
+
+        // Cargar especificaciones existentes
+        document.addEventListener('DOMContentLoaded', function() {
+            const categoriaId = document.getElementById('categoria_id').value;
+            const tipo = categoriasSpecs[categoriaId] || '';
+            
+            if (tipo) {
+                generarCamposSpecs(tipo);
+                
+                // Si hay especificaciones, no es necesario hacer más
+                if (document.querySelectorAll('.spec-field-row').length > 0) {
+                    return;
+                }
+                
+                // Si no hay especificaciones pero hay un tipo, generar campos vacíos
+                const especificaciones = <?php echo json_encode($especificaciones); ?>;
+                if (especificaciones.length > 0) {
+                    const inputsValores = document.querySelectorAll('input[name="spec_valores[]"]');
+                    const inputsNombres = document.querySelectorAll('input[name="spec_nombres[]"]');
+                    
+                    especificaciones.forEach(spec => {
+                        // Buscar campo existente
+                        let encontrado = false;
+                        for (let i = 0; i < inputsNombres.length; i++) {
+                            if (inputsNombres[i].value === spec.nombre) {
+                                inputsValores[i].value = spec.valor;
+                                encontrado = true;
+                                break;
+                            }
+                        }
+                        
+                        // Si no se encontró, crear uno nuevo
+                        if (!encontrado && spec.tipo_spec === tipo) {
+                            agregarCampoSpecConValores(spec.nombre, spec.valor, spec.tipo_spec);
+                        }
+                    });
+                }
+            }
+        });
+    </script>
 </body>
 </html>

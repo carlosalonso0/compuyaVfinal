@@ -457,31 +457,42 @@ document.addEventListener('DOMContentLoaded', function() {
         addToCartForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
+            console.log('Formulario enviado'); // Para debugging
+            
             const formData = new FormData(this);
             formData.append('action', 'add');
             
             // Enviar mediante fetch
-            fetch('cart_add.php', {
+            fetch('<?php echo BASE_URL; ?>/cart_add.php', {
                 method: 'POST',
                 body: formData,
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
                 }
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
             .then(data => {
+                console.log('Respuesta:', data); // Para debugging
+                
                 if (data.success) {
                     // Redireccionar a la misma página con mensaje de éxito
-                    window.location.href = `product.php?id=${<?php echo $producto_id; ?>}&added=1`;
+                    window.location.href = data.redirect_url || `<?php echo BASE_URL; ?>/producto/<?php echo $producto['slug']; ?>?added=1`;
                 } else {
                     alert(data.error || 'Error al añadir al carrito');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Error al procesar la solicitud');
+                alert('Error al procesar la solicitud: ' + error.message);
             });
         });
+    } else {
+        console.error('Formulario no encontrado');
     }
 });
 </script>

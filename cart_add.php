@@ -1,5 +1,6 @@
 <?php
 // Archivo para añadir productos al carrito mediante AJAX
+header('Content-Type: application/json');
 require_once 'includes/config.php';
 require_once 'includes/db.php';
 require_once 'includes/functions.php';
@@ -47,7 +48,10 @@ $db = Database::getInstance();
 $conn = $db->getConnection();
 
 // Verificar si el producto existe y está activo
-$result = $conn->query("SELECT id, nombre, stock FROM productos WHERE id = $producto_id AND activo = 1");
+$stmt = $conn->prepare("SELECT id, nombre, stock, slug FROM productos WHERE id = ? AND activo = 1");
+$stmt->bind_param("i", $producto_id);
+$stmt->execute();
+$result = $stmt->get_result();
 
 if (!$result || $result->num_rows === 0) {
     echo json_encode(['success' => false, 'error' => 'Producto no encontrado o no disponible']);
@@ -90,12 +94,16 @@ foreach ($_SESSION['carrito'] as $cantidad_producto) {
     $total_productos += $cantidad_producto;
 }
 
+// Generar URL de redirección
+$redirect_url = BASE_URL . '/producto/' . $producto['slug'] . '?added=1';
+
 // Devolver respuesta exitosa
 echo json_encode([
     'success' => true, 
     'message' => $mensaje, 
     'product_name' => $producto['nombre'],
-    'cart_count' => $total_productos
+    'cart_count' => $total_productos,
+    'redirect_url' => $redirect_url
 ]);
 exit;
 ?>
