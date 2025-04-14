@@ -35,6 +35,11 @@ if (!$result_categoria || $result_categoria->num_rows == 0) {
 }
 
 $categoria = $result_categoria->fetch_assoc();
+// Añade este código de depuración:
+echo "<!-- DEBUG: Categoría ID: " . $categoria_id . " -->";
+echo "<!-- DEBUG: Slug: " . $slug . " -->";
+echo "<!-- DEBUG: SQL: " . $sql_categoria . " -->";
+echo "<!-- DEBUG: Nombre categoría: " . $categoria['nombre'] . " -->";
 $page_title = $categoria['nombre'];
 
 // Obtener subcategorías (si las hay)

@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Si precio_oferta es NULL, usamos una consulta diferente
         if ($precio_oferta === null) {
-            $stmt->bind_param("sssdiissssiiiii", 
+            $stmt->bind_param("sssdissdisssiiii", 
                 $sku,
                 $nombre, 
                 $slug,
@@ -85,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $activo
             );
         } else {
-            $stmt->bind_param("sssdiidssssiiiii", 
+            $stmt->bind_param("sssdissdisssiiii", 
                 $sku,
                 $nombre, 
                 $slug,
@@ -110,23 +110,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mensajes[] = "Producto añadido correctamente.";
             
             // Procesar especificaciones
-            if (isset($_POST['spec_nombres']) && isset($_POST['spec_valores']) && isset($_POST['spec_tipos'])) {
+            if (isset($_POST['spec_nombres']) && isset($_POST['spec_valores'])) {
                 $spec_nombres = $_POST['spec_nombres'];
                 $spec_valores = $_POST['spec_valores'];
-                $spec_tipos = $_POST['spec_tipos'];
                 
                 // Preparar la consulta
-                $stmt_spec = $conn->prepare("INSERT INTO especificaciones_producto (producto_id, tipo_spec, nombre, valor) VALUES (?, ?, ?, ?)");
+                $stmt_spec = $conn->prepare("INSERT INTO especificaciones_producto (producto_id, nombre, valor) VALUES (?, ?, ?)");
                 
                 for ($i = 0; $i < count($spec_nombres); $i++) {
                     if (!empty($spec_nombres[$i]) && !empty($spec_valores[$i])) {
-                        $stmt_spec->bind_param("isss", $nuevo_id, $spec_tipos[$i], $spec_nombres[$i], $spec_valores[$i]);
+                        $stmt_spec->bind_param("iss", $nuevo_id, $spec_nombres[$i], $spec_valores[$i]);
                         $stmt_spec->execute();
                     }
                 }
                 
                 $mensajes[] = "Especificaciones guardadas correctamente.";
             }
+            
             
             // Procesar imagen si se ha subido
             if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] == 0) {
@@ -314,13 +314,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         
                         <div class="form-group specs-container">
                             <h3>Especificaciones Técnicas</h3>
-                            <p class="form-help">Las especificaciones se cargarán según la categoría seleccionada.</p>
+                            <p class="form-help">Las especificaciones se cargarán según la categoría seleccionada. También puede añadir especificaciones manualmente.</p>
                             
                             <div id="specs-fields">
-                                <div class="no-specs">Por favor, seleccione una categoría para cargar las especificaciones.</div>
+                                <div class="no-specs">Por favor, seleccione una categoría para cargar las especificaciones o añada manualmente.</div>
                             </div>
                             
-                            <button type="button" id="add-spec-field" class="btn btn-secondary" style="display:none;">Añadir especificación</button>
+                            <button type="button" id="add-spec-field" class="btn btn-secondary">Añadir especificación</button>
                         </div>
 
 
@@ -367,8 +367,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </script>
 
 <script>
-
-    
 // Mapeo de categorías a tipos de especificaciones
 const categoriasSpecs = {
     '8': 'procesador',          // Categoría ID para procesadores
@@ -471,14 +469,15 @@ const camposSpecs = {
         { nombre: 'Garantía', placeholder: 'Ej: 3 años en piezas, 1 año en mano de obra' }
     ]
 };
+
 // Función para generar campos de especificaciones
 function generarCamposSpecs(tipo) {
     const specsFields = document.getElementById('specs-fields');
     specsFields.innerHTML = '';
     
     if (!tipo || !camposSpecs[tipo]) {
-        specsFields.innerHTML = '<div class="no-specs">No hay especificaciones disponibles para esta categoría.</div>';
-        document.getElementById('add-spec-field').style.display = 'none';
+        specsFields.innerHTML = '<div class="no-specs">No hay especificaciones disponibles para esta categoría. Puede añadir especificaciones manualmente.</div>';
+        document.getElementById('add-spec-field').style.display = 'inline-block';
         return;
     }
     
@@ -486,12 +485,15 @@ function generarCamposSpecs(tipo) {
     camposSpecs[tipo].forEach((campo, index) => {
         const fieldHtml = `
             <div class="spec-field-row">
-                <input type="hidden" name="spec_nombres[]" value="${campo.nombre}">
                 <div class="spec-field-group">
-                    <label>${campo.nombre}:</label>
-                    <input type="text" name="spec_valores[]" placeholder="${campo.placeholder}" class="spec-value">
+                    <label>Nombre:</label>
+                    <input type="text" name="spec_nombres[]" value="${campo.nombre}" class="spec-name" required>
                 </div>
-                <input type="hidden" name="spec_tipos[]" value="${tipo}">
+                <div class="spec-field-group">
+                    <label>Valor:</label>
+                    <input type="text" name="spec_valores[]" placeholder="${campo.placeholder}" class="spec-value" required>
+                </div>
+                <button type="button" class="btn-remove-spec" onclick="this.parentElement.remove()">×</button>
             </div>
         `;
         specsFields.insertAdjacentHTML('beforeend', fieldHtml);
@@ -503,12 +505,14 @@ function generarCamposSpecs(tipo) {
 
 // Función para añadir un campo personalizado
 function agregarCampoSpec() {
-    const categoriaId = document.getElementById('categoria_id').value;
-    const tipo = categoriasSpecs[categoriaId] || '';
-    
-    if (!tipo) return;
-    
     const specsFields = document.getElementById('specs-fields');
+    
+    // Eliminar mensaje de no specs si existe
+    const noSpecsMsg = specsFields.querySelector('.no-specs');
+    if (noSpecsMsg) {
+        noSpecsMsg.remove();
+    }
+    
     const fieldHtml = `
         <div class="spec-field-row custom-field">
             <div class="spec-field-group">
@@ -519,7 +523,6 @@ function agregarCampoSpec() {
                 <label>Valor:</label>
                 <input type="text" name="spec_valores[]" placeholder="Valor de la especificación" class="spec-value" required>
             </div>
-            <input type="hidden" name="spec_tipos[]" value="${tipo}">
             <button type="button" class="btn-remove-spec" onclick="this.parentElement.remove()">×</button>
         </div>
     `;
@@ -587,6 +590,12 @@ document.head.insertAdjacentHTML('beforeend', `
         }
     </style>
 `);
+
+// Activar el botón para añadir especificaciones desde el inicio
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('add-spec-field').style.display = 'inline-block';
+});
 </script>
+
 </body>
 </html>

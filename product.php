@@ -44,7 +44,7 @@ $page_title = $producto['nombre'];
 
 // Obtener especificaciones del producto
 $especificaciones = [];
-$stmt = $conn->prepare("SELECT * FROM especificaciones_producto WHERE producto_id = ? ORDER BY tipo_spec, nombre");
+$stmt = $conn->prepare("SELECT * FROM especificaciones_producto WHERE producto_id = ? ORDER BY nombre");
 $stmt->bind_param("i", $producto_id);
 $stmt->execute();
 $result_specs = $stmt->get_result();
@@ -55,12 +55,8 @@ while ($spec = $result_specs->fetch_assoc()) {
 
 // Organizar especificaciones por tipo
 $specs_por_tipo = [];
-foreach ($especificaciones as $spec) {
-    $tipo = $spec['tipo_spec'];
-    if (!isset($specs_por_tipo[$tipo])) {
-        $specs_por_tipo[$tipo] = [];
-    }
-    $specs_por_tipo[$tipo][] = $spec;
+if (!empty($especificaciones)) {
+    $specs_por_tipo['especificaciones_tecnicas'] = $especificaciones;
 }
 
 // Obtener imágenes del producto
@@ -280,14 +276,13 @@ include 'includes/header.php';
                 <?php endif; ?>
                 
                 <?php if (!empty($especificaciones)): ?>
-                <div class="tab-panel" id="specs">
-                    <div class="product-specs">
-                        <?php foreach ($specs_por_tipo as $tipo => $specs): ?>
+                    <div class="tab-panel" id="specs">
+                        <div class="product-specs">
                             <div class="specs-group">
-                                <h3><?php echo ucfirst(str_replace('_', ' ', $tipo)); ?></h3>
+                                <h3>Especificaciones Técnicas</h3>
                                 <table class="specs-table">
                                     <tbody>
-                                        <?php foreach ($specs as $spec): ?>
+                                        <?php foreach ($especificaciones as $spec): ?>
                                         <tr>
                                             <th><?php echo $spec['nombre']; ?></th>
                                             <td><?php echo $spec['valor']; ?></td>
@@ -296,10 +291,9 @@ include 'includes/header.php';
                                     </tbody>
                                 </table>
                             </div>
-                        <?php endforeach; ?>
+                        </div>
                     </div>
-                </div>
-                <?php endif; ?>
+                    <?php endif; ?>
                 
                 <div class="tab-panel" id="shipping">
                     <div class="shipping-info">
@@ -342,7 +336,7 @@ include 'includes/header.php';
         <div class="related-products-grid">
             <?php foreach ($productos_relacionados as $prod_rel): ?>
                 <div class="producto-card">
-                <a href="producto/<?php echo $producto['slug']; ?>" class="product-link">
+                <a href="<?php echo BASE_URL; ?>/producto/<?php echo $prod_rel['slug']; ?>" class="product-link">
                         <div class="producto-imagen">
                             <img src="assets/img/productos/placeholder.png" alt="<?php echo $prod_rel['nombre']; ?>">
                         </div>

@@ -55,6 +55,7 @@ include 'includes/header.php';
                 <h2>Ofertas Especiales</h2>
                 <p>Descuentos en los mejores productos de tecnología</p>
                 <a href="category.php?id=1" class="btn">Ver Ofertas</a>
+                
             </div>
         </div>
     </div>
