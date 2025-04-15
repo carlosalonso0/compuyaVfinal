@@ -91,8 +91,8 @@ include 'includes/header.php';
                     <div class="producto-card">
                         <div class="producto-imagen">
                             <!-- Por ahora sin imagen real -->
-                            <img src="assets/img/productos/placeholder.png" alt="<?php echo $producto['nombre']; ?>">
-                        </div>
+                            <img src="<?php echo BASE_URL . '/' . obtenerImagenProducto($producto['id']); ?>" alt="<?php echo $producto['nombre']; ?>">
+                            </div>
                         <div class="producto-info">
                             <div class="producto-marca"><?php echo $producto['marca']; ?></div>
                             <h3 class="producto-nombre"><?php echo $producto['nombre']; ?></h3>
@@ -125,7 +125,7 @@ include 'includes/header.php';
                    <div class="producto-card oferta">
                        <div class="etiqueta-oferta">OFERTA</div>
                        <div class="producto-imagen">
-                           <img src="assets/img/productos/placeholder.png" alt="<?php echo $producto['nombre']; ?>">
+                       <img src="<?php echo BASE_URL . '/' . obtenerImagenProducto($producto['id']); ?>" alt="<?php echo $producto['nombre']; ?>">
                        </div>
                        <div class="producto-info">
                            <div class="producto-marca"><?php echo $producto['marca']; ?></div>
@@ -169,7 +169,7 @@ include 'includes/header.php';
                    <div class="producto-card nuevo">
                        <div class="etiqueta-nuevo">NUEVO</div>
                        <div class="producto-imagen">
-                           <img src="assets/img/productos/placeholder.png" alt="<?php echo $producto['nombre']; ?>">
+                       <img src="<?php echo BASE_URL . '/' . obtenerImagenProducto($producto['id']); ?>" alt="<?php echo $producto['nombre']; ?>">
                        </div>
                        <div class="producto-info">
                            <div class="producto-marca"><?php echo $producto['marca']; ?></div>

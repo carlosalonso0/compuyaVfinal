@@ -132,19 +132,19 @@ include 'includes/header.php';
         <div class="product-layout">
             <!-- Galería de imágenes -->
             <div class="product-gallery">
-                <div class="gallery-main">
-                    <img id="main-image" src="<?php echo $imagenes[0]['ruta']; ?>" alt="<?php echo $producto['nombre']; ?>">
-                    <div class="zoom-hint">🔍 Pase el mouse para hacer zoom</div>
-                </div>
+            <div class="gallery-main">
+                <img id="main-image" src="<?php echo BASE_URL . '/' . obtenerImagenProducto($producto['id']); ?>" alt="<?php echo $producto['nombre']; ?>">
+                <div class="zoom-hint">🔍 Pase el mouse para hacer zoom</div>
+            </div>
                 
                 <?php if (count($imagenes) > 1): ?>
-                <div class="gallery-thumbs">
-                    <?php foreach ($imagenes as $index => $imagen): ?>
-                    <div class="thumb <?php echo $index === 0 ? 'active' : ''; ?>" data-img="<?php echo $imagen['ruta']; ?>">
-                        <img src="<?php echo $imagen['ruta']; ?>" alt="Thumbnail <?php echo $index + 1; ?>">
+                    <div class="gallery-thumbs">
+                        <?php foreach ($imagenes as $index => $imagen): ?>
+                        <div class="thumb <?php echo $index === 0 ? 'active' : ''; ?>" data-img="<?php echo BASE_URL . '/' . $imagen['ruta']; ?>">
+                            <img src="<?php echo BASE_URL . '/' . $imagen['ruta']; ?>" alt="Thumbnail <?php echo $index + 1; ?>">
+                        </div>
+                        <?php endforeach; ?>
                     </div>
-                    <?php endforeach; ?>
-                </div>
                 <?php endif; ?>
             </div>
             
@@ -337,9 +337,9 @@ include 'includes/header.php';
             <?php foreach ($productos_relacionados as $prod_rel): ?>
                 <div class="producto-card">
                 <a href="<?php echo BASE_URL; ?>/producto/<?php echo $prod_rel['slug']; ?>" class="product-link">
-                        <div class="producto-imagen">
-                            <img src="assets/img/productos/placeholder.png" alt="<?php echo $prod_rel['nombre']; ?>">
-                        </div>
+                <div class="producto-imagen">
+                    <img src="<?php echo BASE_URL . '/' . obtenerImagenProducto($prod_rel['id']); ?>" alt="<?php echo $prod_rel['nombre']; ?>">
+                </div>
                         <div class="producto-info">
                             <div class="producto-marca"><?php echo $prod_rel['marca']; ?></div>
                             <h3 class="producto-nombre"><?php echo $prod_rel['nombre']; ?></h3>

@@ -199,7 +199,7 @@ include 'includes/header.php';
                             <div class="cart-row" data-id="<?php echo $producto['id']; ?>">
                                 <div class="cart-cell product-info">
                                     <div class="product-image">
-                                        <img src="assets/img/productos/placeholder.png" alt="<?php echo $producto['nombre']; ?>">
+                                    <img src="<?php echo BASE_URL . '/' . obtenerImagenProducto($producto['id']); ?>" alt="<?php echo $producto['nombre']; ?>">
                                     </div>
                                     <div class="product-details">
                                         <div class="product-brand"><?php echo $producto['marca']; ?></div>

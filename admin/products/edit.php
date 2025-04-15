@@ -64,6 +64,38 @@ $result_specs = $stmt->get_result();
 while ($spec = $result_specs->fetch_assoc()) {
     $especificaciones[] = $spec;
 }
+// Procesar eliminación de imagen
+if (isset($_GET['eliminar_imagen']) && !empty($_GET['eliminar_imagen'])) {
+    $imagen_id = (int)$_GET['eliminar_imagen'];
+    
+    // Verificar que la imagen pertenezca a este producto
+    $stmt = $conn->prepare("SELECT ruta FROM imagenes_producto WHERE id = ? AND producto_id = ?");
+    $stmt->bind_param("ii", $imagen_id, $producto_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($result->num_rows > 0) {
+        $imagen = $result->fetch_assoc();
+        $ruta_fisica = '../../' . $imagen['ruta'];
+        
+        // Eliminar el archivo físico si existe
+        if (file_exists($ruta_fisica)) {
+            unlink($ruta_fisica);
+        }
+        
+        // Eliminar referencia en la base de datos
+        $stmt = $conn->prepare("DELETE FROM imagenes_producto WHERE id = ?");
+        $stmt->bind_param("i", $imagen_id);
+        $stmt->execute();
+        
+        $mensajes[] = "Imagen eliminada correctamente.";
+        
+        // Redireccionar para evitar reenvíos
+        header("Location: edit.php?id=$producto_id");
+        exit;
+    }
+}
+
 
 // Procesar formulario de actualización
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -193,43 +225,96 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $mensajes[] = "Especificaciones actualizadas correctamente.";
             }
             
-            // Procesar imagen si se ha subido
-            if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] == 0) {
-                $imagen = $_FILES['imagen'];
-                $extension = pathinfo($imagen['name'], PATHINFO_EXTENSION);
-                $nombre_archivo = 'producto_' . $producto_id . '_' . uniqid() . '.' . $extension;
+            // Procesar imagen principal si se ha subido
+if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] == 0) {
+    $imagen = $_FILES['imagen'];
+    $extension = pathinfo($imagen['name'], PATHINFO_EXTENSION);
+    $nombre_archivo = 'producto_' . $producto_id . '_main_' . uniqid() . '.' . $extension;
+    $ruta_destino = '../../uploads/productos/' . $nombre_archivo;
+    
+    // Crear directorio si no existe
+    if (!is_dir('../../uploads/productos/')) {
+        mkdir('../../uploads/productos/', 0777, true);
+    }
+    
+    if (move_uploaded_file($imagen['tmp_name'], $ruta_destino)) {
+        // Verificar si ya tiene una imagen principal
+        $result = $conn->query("SELECT id, ruta FROM imagenes_producto WHERE producto_id = $producto_id AND principal = 1");
+        
+        if ($result->num_rows > 0) {
+            // Actualizar imagen existente
+            $img_actual = $result->fetch_assoc();
+            $ruta_bd = 'uploads/productos/' . $nombre_archivo;
+            
+            // Eliminar la imagen anterior
+            if (file_exists('../../' . $img_actual['ruta'])) {
+                unlink('../../' . $img_actual['ruta']);
+            }
+            
+            $stmt = $conn->prepare("UPDATE imagenes_producto SET ruta = ? WHERE id = ?");
+            $stmt->bind_param("si", $ruta_bd, $img_actual['id']);
+            $stmt->execute();
+        } else {
+            // Insertar nueva imagen principal
+            $ruta_bd = 'uploads/productos/' . $nombre_archivo;
+            $stmt = $conn->prepare("INSERT INTO imagenes_producto (producto_id, ruta, principal) VALUES (?, ?, 1)");
+            $stmt->bind_param("is", $producto_id, $ruta_bd);
+            $stmt->execute();
+        }
+        
+        $mensajes[] = "Imagen principal actualizada correctamente.";
+        $imagen_producto = $ruta_bd; // Actualizar para mostrar
+    } else {
+        $errores[] = "Error al subir la imagen principal.";
+    }
+}
+
+// Procesar imágenes adicionales
+if (isset($_FILES['imagenes_adicionales']) && !empty($_FILES['imagenes_adicionales']['name'][0])) {
+    $imagenes = $_FILES['imagenes_adicionales'];
+    $num_imagenes = count($imagenes['name']);
+    
+    // Verificar cuántas imágenes adicionales ya tiene este producto
+    $result = $conn->query("SELECT COUNT(*) as total FROM imagenes_producto WHERE producto_id = $producto_id AND principal = 0");
+    $row = $result->fetch_assoc();
+    $imagenes_existentes = $row['total'];
+    
+    // Limitar a 5 imágenes adicionales en total
+    $max_nuevas = 5 - $imagenes_existentes;
+    
+    if ($max_nuevas <= 0) {
+        $errores[] = "Ya has alcanzado el máximo de 5 imágenes adicionales.";
+    } else {
+        // Crear directorio si no existe
+        if (!is_dir('../../uploads/productos/')) {
+            mkdir('../../uploads/productos/', 0777, true);
+        }
+        
+        $imagenes_subidas = 0;
+        
+        for ($i = 0; $i < min($num_imagenes, $max_nuevas); $i++) {
+            if ($imagenes['error'][$i] == 0) {
+                $extension = pathinfo($imagenes['name'][$i], PATHINFO_EXTENSION);
+                $nombre_archivo = 'producto_' . $producto_id . '_add_' . uniqid() . '.' . $extension;
                 $ruta_destino = '../../uploads/productos/' . $nombre_archivo;
                 
-                // Crear directorio si no existe
-                if (!is_dir('../../uploads/productos/')) {
-                    mkdir('../../uploads/productos/', 0777, true);
-                }
-                
-                if (move_uploaded_file($imagen['tmp_name'], $ruta_destino)) {
-                    // Actualizar imagen en la base de datos
+                if (move_uploaded_file($imagenes['tmp_name'][$i], $ruta_destino)) {
+                    // Insertar referencia en la base de datos
                     $ruta_bd = 'uploads/productos/' . $nombre_archivo;
+                    $stmt = $conn->prepare("INSERT INTO imagenes_producto (producto_id, ruta, principal) VALUES (?, ?, 0)");
+                    $stmt->bind_param("is", $producto_id, $ruta_bd);
+                    $stmt->execute();
                     
-                    // Verificar si ya tiene una imagen principal
-                    $result = $conn->query("SELECT id FROM imagenes_producto WHERE producto_id = $producto_id AND principal = 1");
-                    
-                    if ($result->num_rows > 0) {
-                        // Actualizar imagen existente
-                        $stmt = $conn->prepare("UPDATE imagenes_producto SET ruta = ? WHERE producto_id = ? AND principal = 1");
-                        $stmt->bind_param("si", $ruta_bd, $producto_id);
-                        $stmt->execute();
-                    } else {
-                        // Insertar nueva imagen
-                        $stmt = $conn->prepare("INSERT INTO imagenes_producto (producto_id, ruta, principal) VALUES (?, ?, 1)");
-                        $stmt->bind_param("is", $producto_id, $ruta_bd);
-                        $stmt->execute();
-                    }
-                    
-                    $mensajes[] = "Imagen actualizada correctamente.";
-                    $imagen_producto = $ruta_bd; // Actualizar para mostrar
-                } else {
-                    $errores[] = "Error al subir la imagen.";
+                    $imagenes_subidas++;
                 }
             }
+        }
+        
+        if ($imagenes_subidas > 0) {
+            $mensajes[] = "Se han subido $imagenes_subidas imágenes adicionales.";
+        }
+    }
+}
             
             // Recargar datos del producto
             $stmt = $conn->prepare("SELECT p.*, c.nombre as categoria_nombre FROM productos p 
@@ -259,12 +344,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php include '../includes/sidebar.php'; ?>
         
         <main class="admin-content">
-            <header class="admin-header">
-                <h1>Editar Producto</h1>
-                <div class="admin-actions">
-                    <a href="index.php" class="btn btn-secondary">Volver a Productos</a>
-                </div>
-            </header>
+        <header class="admin-header">
+            <h1>Editar Producto</h1>
+            <div class="admin-actions">
+                <a href="manage_specs.php?producto_id=<?php echo $producto_id; ?>" class="btn btn-primary">Gestionar Especificaciones</a>
+                <a href="index.php" class="btn btn-secondary">Volver a Productos</a>
+            </div>
+        </header>
             
             <?php if (!empty($mensajes)): ?>
                 <div class="mensajes-container">
@@ -353,18 +439,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <p class="form-help">Lista de características técnicas, una por línea.</p>
                             </div>
                             
-                            <div class="form-group">
-                                <label for="imagen">Imagen del Producto:</label>
-                                <?php if ($imagen_producto): ?>
-                                    <div class="current-image">
-                                        <img src="../../<?php echo $imagen_producto; ?>" alt="<?php echo $producto['nombre']; ?>">
-                                        <p>Imagen actual</p>
+                            <div class="form-group description-group">
+                                <label>Imágenes del Producto:</label>
+                                
+                                <!-- Imagen Principal -->
+                                <div class="form-group">
+                                    <label for="imagen">Imagen Principal:</label>
+                                    <?php if ($imagen_producto): ?>
+                                        <div class="current-image">
+                                            <img src="../../<?php echo $imagen_producto; ?>" alt="<?php echo $producto['nombre']; ?>">
+                                            <p>Imagen principal actual</p>
+                                        </div>
+                                    <?php endif; ?>
+                                    <input type="file" id="imagen" name="imagen" accept="image/*">
+                                    <p class="form-help">Tamaño recomendado: 800x800px. Formatos: JPG, PNG.</p>
+                                </div>
+                                
+                                <!-- Imágenes Adicionales -->
+                                <div class="form-group">
+                                    <label for="imagenes_adicionales">Imágenes Adicionales (máximo 5):</label>
+                                    
+                                    <!-- Mostrar imágenes adicionales existentes -->
+                                    <div class="current-images-grid">
+                                        <?php
+                                        // Obtener imágenes adicionales (no principales)
+                                        $result_imgs = $conn->query("SELECT * FROM imagenes_producto WHERE producto_id = $producto_id AND principal = 0 ORDER BY id");
+                                        $hay_imagenes_adicionales = false;
+                                        if ($result_imgs && $result_imgs->num_rows > 0):
+                                            $hay_imagenes_adicionales = true;
+                                        ?>
+                                            <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 15px;">
+                                            <?php while ($img = $result_imgs->fetch_assoc()): ?>
+                                                <div class="additional-image">
+                                                    <img src="../../<?php echo $img['ruta']; ?>" alt="Imagen adicional">
+                                                    <a href="?id=<?php echo $producto_id; ?>&eliminar_imagen=<?php echo $img['id']; ?>" class="btn-remove-image" onclick="return confirm('¿Estás seguro de eliminar esta imagen?')">×</a>
+                                                </div>
+                                            <?php endwhile; ?>
+                                            </div>
+                                        <?php endif; ?>
+                                        
+                                        <?php if (!$hay_imagenes_adicionales): ?>
+                                            <p>No hay imágenes adicionales para este producto.</p>
+                                        <?php endif; ?>
+                                        
+                                        <input type="file" id="imagenes_adicionales" name="imagenes_adicionales[]" accept="image/*" multiple>
+                                        <p class="form-help">Puedes seleccionar múltiples imágenes a la vez. Tamaño recomendado: 800x800px. Formatos: JPG, PNG.</p>
                                     </div>
-                                <?php endif; ?>
-                                <input type="file" id="imagen" name="imagen" accept="image/*">
-                                <p class="form-help">Tamaño recomendado: 800x800px. Formatos: JPG, PNG.</p>
+                                </div>
                             </div>
-                            
+
                             <div class="form-group options-group">
                                 <label class="checkbox-label">
                                     <input type="checkbox" name="destacado" <?php echo $producto['destacado'] ? 'checked' : ''; ?>>
@@ -574,6 +697,38 @@ document.getElementById('add-spec-field').addEventListener('click', agregarCampo
 // Aplicar los estilos
 document.head.insertAdjacentHTML('beforeend', `
     <style>
+
+.current-images-grid {
+    margin-top: 10px;
+}
+.additional-image {
+    position: relative;
+    border: 1px solid #ddd;
+    padding: 5px;
+    border-radius: 4px;
+    height: 120px;
+}
+.additional-image img {
+    max-width: 100%;
+    max-height: 100px;
+    display: block;
+    margin: 0 auto;
+    object-fit: contain;
+}
+.btn-remove-image {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #ff0000;
+    color: white;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    line-height: 20px;
+    border-radius: 50%;
+    text-decoration: none;
+    font-weight: bold;
+}
         .specs-container {
             grid-column: 1 / -1;
             border-top: 1px solid #eee;

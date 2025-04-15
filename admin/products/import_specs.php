@@ -140,8 +140,8 @@ include '../includes/sidebar.php';
                             <pre>sku,nombre,valor</pre>
                             <p>Ejemplo:</p>
                             <pre>IMP-HP-SMART-TANK-530-001,Tipo,Multifuncional de inyección
-IMP-HP-SMART-TANK-530-001,Funciones,"Impresión, Escaneo, Copia"
-IMP-HP-SMART-TANK-530-001,Conectividad,"USB, Wi-Fi, Bluetooth"</pre>
+                                IMP-HP-SMART-TANK-530-001,Funciones,"Impresión, Escaneo, Copia"
+                                IMP-HP-SMART-TANK-530-001,Conectividad,"USB, Wi-Fi, Bluetooth"</pre>
                             <p>Donde:</p>
                             <ul>
                                 <li><strong>sku</strong>: SKU del producto en la base de datos</li>

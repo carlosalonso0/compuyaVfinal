@@ -281,7 +281,7 @@ include 'includes/header.php';
                         
                         <div class="producto-imagen">
                             <a href="producto/<?php echo $producto['slug']; ?>">
-                                <img src="assets/img/productos/placeholder.png" alt="<?php echo $producto['nombre']; ?>">
+                            <img src="<?php echo BASE_URL . '/' . obtenerImagenProducto($producto['id']); ?>" alt="<?php echo $producto['nombre']; ?>">
                             </a>
                         </div>
                         

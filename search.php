@@ -71,7 +71,7 @@ include 'includes/header.php';
                 <?php foreach ($productos as $producto): ?>
                     <div class="producto-card">
                         <div class="producto-imagen">
-                            <img src="assets/img/productos/placeholder.png" alt="<?php echo $producto['nombre']; ?>">
+                        <img src="<?php echo BASE_URL . '/' . obtenerImagenProducto($producto['id']); ?>" alt="<?php echo $producto['nombre']; ?>">
                         </div>
                         <div class="producto-info">
                             <div class="producto-marca"><?php echo $producto['marca']; ?></div>

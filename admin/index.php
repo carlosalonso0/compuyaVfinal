@@ -220,6 +220,11 @@ while ($row = $result->fetch_assoc()) {
                                 <div class="quick-action-text">Importar CSV</div>
                             </a>
                             
+                            <a href="products/import_specs.php" class="quick-action-card">
+                                <div class="quick-action-icon">📋</div>
+                                <div class="quick-action-text">Importar Especificaciones</div>
+                            </a>
+                            
                             <a href="homepage/index.php" class="quick-action-card">
                                 <div class="quick-action-icon">🏠</div>
                                 <div class="quick-action-text">Editar Inicio</div>

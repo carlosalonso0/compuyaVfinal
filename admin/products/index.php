@@ -174,13 +174,14 @@ while ($row = $result_categorias->fetch_assoc()) {
         <?php include '../includes/sidebar.php'; ?>
         
         <main class="admin-content">
-            <header class="admin-header">
-                <h1>Gestión de Productos</h1>
-                <div class="admin-actions">
-                    <a href="add.php" class="btn btn-primary">Añadir Producto</a>
-                    <a href="import.php" class="btn btn-secondary">Importar CSV</a>
-                </div>
-            </header>
+        <header class="admin-header">
+            <h1>Gestión de Productos</h1>
+            <div class="admin-actions">
+                <a href="add.php" class="btn btn-primary">Añadir Producto</a>
+                <a href="import.php" class="btn btn-secondary">Importar CSV</a>
+                <a href="import_specs.php" class="btn btn-secondary">Importar Especificaciones</a>
+            </div>
+        </header>
             
             <?php if (!empty($mensajes)): ?>
                 <div class="mensajes-container">
@@ -299,7 +300,7 @@ while ($row = $result_categorias->fetch_assoc()) {
                                     <tr>
                                         <td><?php echo $producto['id']; ?></td>
                                         <td class="product-image">
-                                            <img src="../../assets/img/productos/placeholder.png" alt="<?php echo $producto['nombre']; ?>">
+                                            <img src="<?php echo BASE_URL . '/' . obtenerImagenProducto($producto['id']); ?>" alt="<?php echo $producto['nombre']; ?>">
                                         </td>
                                         <td class="product-name">
                                             <div class="product-name-text"><?php echo $producto['nombre']; ?></div>
