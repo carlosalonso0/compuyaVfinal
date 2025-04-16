@@ -1,0 +1,120 @@
+/* ==========================================================================
+   ESTILOS DEL FOOTER - COMPUYA
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   FOOTER SUPERIOR
+   -------------------------------------------------------------------------- */
+   .footer-top {
+    background-color: var(--bg-light);
+    padding: var(--spacing-xl) 0;
+    border-top: 1px solid var(--border-light);
+}
+
+.footer-columns {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: var(--spacing-xl);
+}
+
+.footer-column {
+    flex: 1;
+    min-width: 200px;
+    margin-bottom: var(--spacing-lg);
+    padding-right: var(--spacing-lg);
+}
+
+.footer-column h3 {
+    font-size: 18px;
+    margin-bottom: var(--spacing-md);
+    color: var(--primary);
+}
+
+.footer-column ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-column li {
+    margin-bottom: var(--spacing-sm);
+}
+
+.footer-column a {
+    color: var(--text-medium);
+    display: inline-block;
+    transition: color 0.3s;
+}
+
+.footer-column a:hover {
+    color: var(--primary);
+}
+
+.footer-column p {
+    color: var(--text-medium);
+    margin-bottom: var(--spacing-sm);
+}
+
+/* --------------------------------------------------------------------------
+   MÉTODOS DE PAGO
+   -------------------------------------------------------------------------- */
+.payment-methods {
+    margin-top: var(--spacing-lg);
+}
+
+.payment-methods h3 {
+    font-size: 18px;
+    margin-bottom: var(--spacing-md);
+    color: var(--primary);
+}
+
+.payment-icons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+}
+
+.payment-icons span {
+    display: inline-block;
+    background-color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: 1px solid var(--border-light);
+    font-size: 14px;
+    color: var(--text-medium);
+}
+
+/* --------------------------------------------------------------------------
+   FOOTER INFERIOR
+   -------------------------------------------------------------------------- */
+.footer-bottom {
+    background-color: var(--primary);
+    color: white;
+    padding: var(--spacing-md) 0;
+    text-align: center;
+}
+
+.footer-bottom p {
+    margin: 0;
+    font-size: 14px;
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIVE
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+    .footer-column {
+        flex: 0 0 50%;
+    }
+}
+
+@media (max-width: 576px) {
+    .footer-column {
+        flex: 0 0 100%;
+    }
+    
+    .payment-icons {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+}

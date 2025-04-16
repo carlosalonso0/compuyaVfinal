@@ -1,0 +1,341 @@
+/* ==========================================================================
+   ESTILOS DE LA PÁGINA DE CATEGORÍA - COMPUYA
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   ENCABEZADO DE CATEGORÍA
+   -------------------------------------------------------------------------- */
+   .category-header {
+    background-color: var(--primary);
+    color: white;
+    padding: var(--spacing-lg) 0;
+    margin-bottom: var(--spacing-xl);
+}
+
+.category-header h1 {
+    margin-bottom: var(--spacing-sm);
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.category-header .breadcrumbs {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.category-header .breadcrumbs a {
+    color: white;
+}
+
+/* --------------------------------------------------------------------------
+   LAYOUT DE CATEGORÍA
+   -------------------------------------------------------------------------- */
+.category-layout {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: var(--spacing-xl);
+    margin-bottom: var(--spacing-xxl);
+}
+
+/* --------------------------------------------------------------------------
+   FILTROS (SIDEBAR)
+   -------------------------------------------------------------------------- */
+.filters-sidebar {
+    background-color: var(--white);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+    position: sticky;
+    top: 20px;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+}
+
+.filters-sidebar h3 {
+    margin-bottom: var(--spacing-md);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--primary);
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: var(--spacing-sm);
+}
+
+.filter-group {
+    margin-bottom: var(--spacing-lg);
+}
+
+.filter-group:last-child {
+    margin-bottom: 0;
+}
+
+.filter-group h4 {
+    font-size: 16px;
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-dark);
+}
+
+.filter-options {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.filter-options li {
+    margin-bottom: var(--spacing-sm);
+    display: flex;
+    align-items: center;
+}
+
+.filter-options input[type="radio"],
+.filter-options input[type="checkbox"] {
+    margin-right: var(--spacing-sm);
+}
+
+.filter-options label {
+    font-size: 14px;
+    color: var(--text-medium);
+    cursor: pointer;
+    margin-bottom: 0;
+}
+
+.price-range {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.price-range input[type="number"] {
+    flex: 1;
+    padding: 8px;
+    font-size: 14px;
+}
+
+.price-range span {
+    color: var(--text-medium);
+    font-size: 14px;
+}
+
+.availability-options,
+.offers-options {
+    display: flex;
+    align-items: center;
+    margin-top: var(--spacing-sm);
+}
+
+.filter-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--border-light);
+}
+
+.btn-filter {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s;
+}
+
+.btn-filter:hover {
+    background-color: var(--primary-light);
+}
+
+.btn-clear {
+    text-align: center;
+    color: var(--text-medium);
+    font-size: 14px;
+}
+
+.btn-clear:hover {
+    color: var(--primary);
+    text-decoration: underline;
+}
+
+/* --------------------------------------------------------------------------
+   CONTENEDOR DE PRODUCTOS
+   -------------------------------------------------------------------------- */
+.products-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.products-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--border-light);
+}
+
+.products-count {
+    font-size: 14px;
+    color: var(--text-medium);
+}
+
+.products-sort {
+    display: flex;
+    align-items: center;
+}
+
+.products-sort label {
+    margin-right: var(--spacing-sm);
+    font-size: 14px;
+    color: var(--text-medium);
+    margin-bottom: 0;
+}
+
+.products-sort select {
+    padding: 8px;
+    border-radius: var(--border-radius-sm);
+    border: 1px solid var(--border-light);
+    font-size: 14px;
+    background-color: var(--white);
+}
+
+/* --------------------------------------------------------------------------
+   GRID DE PRODUCTOS
+   -------------------------------------------------------------------------- */
+.productos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+/* Los estilos de las tarjetas de productos ya están definidos en home.css */
+
+/* --------------------------------------------------------------------------
+   MENSAJE DE NO PRODUCTOS
+   -------------------------------------------------------------------------- */
+.no-products-message {
+    background-color: var(--bg-light);
+    padding: var(--spacing-xl);
+    border-radius: var(--border-radius-md);
+    text-align: center;
+}
+
+.no-products-message p {
+    margin-bottom: var(--spacing-md);
+    color: var(--text-medium);
+}
+
+.no-products-message a {
+    color: var(--primary);
+    font-weight: 500;
+}
+
+.no-products-message a:hover {
+    text-decoration: underline;
+}
+
+/* --------------------------------------------------------------------------
+   PAGINACIÓN
+   -------------------------------------------------------------------------- */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: var(--spacing-xl);
+}
+
+.page-prev,
+.page-next {
+    padding: 8px 16px;
+    background-color: var(--white);
+    border: 1px solid var(--border-light);
+    border-radius: var(--border-radius-sm);
+    color: var(--text-medium);
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.page-prev:hover,
+.page-next:hover {
+    background-color: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.page-numbers {
+    display: flex;
+    margin: 0 var(--spacing-md);
+}
+
+.page-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    margin: 0 4px;
+    border-radius: var(--border-radius-sm);
+    border: 1px solid var(--border-light);
+    color: var(--text-medium);
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.page-number:hover {
+    background-color: var(--bg-light);
+    color: var(--primary);
+}
+
+.page-number.active {
+    background-color: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIVE
+   -------------------------------------------------------------------------- */
+@media (max-width: 992px) {
+    .category-layout {
+        grid-template-columns: 220px 1fr;
+        gap: var(--spacing-lg);
+    }
+}
+
+@media (max-width: 768px) {
+    .category-layout {
+        grid-template-columns: 1fr;
+    }
+    
+    .filters-sidebar {
+        position: static;
+        max-height: none;
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .products-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .products-sort {
+        margin-top: var(--spacing-sm);
+    }
+    
+    .productos-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+}
+
+@media (max-width: 576px) {
+    .pagination {
+        flex-wrap: wrap;
+    }
+    
+    .page-numbers {
+        order: 3;
+        margin: var(--spacing-md) 0 0;
+        width: 100%;
+        justify-content: center;
+    }
+}

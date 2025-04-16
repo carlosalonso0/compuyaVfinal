@@ -53,12 +53,6 @@ while ($spec = $result_specs->fetch_assoc()) {
     $especificaciones[] = $spec;
 }
 
-// Organizar especificaciones por tipo
-$specs_por_tipo = [];
-if (!empty($especificaciones)) {
-    $specs_por_tipo['especificaciones_tecnicas'] = $especificaciones;
-}
-
 // Obtener imágenes del producto
 $imagenes = [];
 $stmt = $conn->prepare("SELECT * FROM imagenes_producto WHERE producto_id = ? ORDER BY principal DESC, id ASC");
@@ -103,21 +97,23 @@ if (isset($_GET['added']) && $_GET['added'] == 1) {
     $mensaje = 'Producto añadido al carrito correctamente.';
 }
 
+// Definir CSS adicional para esta página
+$extra_css = ['product-redesign.css'];
+
 // Incluir cabecera
 include 'includes/header.php';
 ?>
 
-<link rel="stylesheet" href="assets/css/product.css">
-
-<section class="product-header">
+<!-- Barra de navegación / migas de pan -->
+<div class="breadcrumb-container">
     <div class="container">
         <div class="breadcrumbs">
-            <a href="index.php">Inicio</a> &raquo; 
-            <a href="category.php?id=<?php echo $producto['categoria_id']; ?>"><?php echo $producto['categoria_nombre']; ?></a> &raquo; 
+            <a href="<?php echo BASE_URL; ?>/index.php">Inicio</a> &raquo; 
+            <a href="<?php echo BASE_URL; ?>/category.php?id=<?php echo $producto['categoria_id']; ?>"><?php echo $producto['categoria_nombre']; ?></a> &raquo; 
             <?php echo $producto['nombre']; ?>
         </div>
     </div>
-</section>
+</div>
 
 <?php if (!empty($mensaje)): ?>
 <div class="container">
@@ -127,17 +123,18 @@ include 'includes/header.php';
 </div>
 <?php endif; ?>
 
-<section class="product-main">
+<!-- Contenido Principal -->
+<div class="product-main-container">
     <div class="container">
-        <div class="product-layout">
-            <!-- Galería de imágenes -->
-            <div class="product-gallery">
-            <div class="gallery-main">
-                <img id="main-image" src="<?php echo BASE_URL . '/' . obtenerImagenProducto($producto['id']); ?>" alt="<?php echo $producto['nombre']; ?>">
-                <div class="zoom-hint">🔍 Pase el mouse para hacer zoom</div>
-            </div>
-                
-                <?php if (count($imagenes) > 1): ?>
+        <div class="white-card">
+            <div class="product-layout">
+                <!-- Galería de imágenes - Columna izquierda -->
+                <div class="product-gallery">
+                    <div class="gallery-main">
+                        <img id="main-image" src="<?php echo BASE_URL . '/' . obtenerImagenProducto($producto['id']); ?>" alt="<?php echo $producto['nombre']; ?>">
+                    </div>
+                    
+                    <?php if (count($imagenes) > 1): ?>
                     <div class="gallery-thumbs">
                         <?php foreach ($imagenes as $index => $imagen): ?>
                         <div class="thumb <?php echo $index === 0 ? 'active' : ''; ?>" data-img="<?php echo BASE_URL . '/' . $imagen['ruta']; ?>">
@@ -145,240 +142,201 @@ include 'includes/header.php';
                         </div>
                         <?php endforeach; ?>
                     </div>
-                <?php endif; ?>
-            </div>
-            
-            <!-- Información del producto -->
-            <div class="product-info">
-                <div class="product-brand"><?php echo $producto['marca']; ?></div>
-                <h1 class="product-name"><?php echo $producto['nombre']; ?></h1>
-                <div class="product-model">Modelo: <?php echo $producto['modelo']; ?></div>
+                    <?php endif; ?>
+                </div>
                 
-                <div class="product-price">
-                    <?php if (!empty($producto['precio_oferta'])): ?>
-                        <div class="price-original">S/ <?php echo number_format($producto['precio'], 2); ?></div>
-                        <div class="price-current">S/ <?php echo number_format($producto['precio_oferta'], 2); ?></div>
-                        <div class="price-discount">
-                            <?php 
-                            $discount = round(100 - (($producto['precio_oferta'] / $producto['precio']) * 100)); 
-                            echo $discount; 
-                            ?>% DSCTO
+                <!-- Información del producto - Columna derecha -->
+                <div class="product-info">
+                    <div class="product-header">
+                        <div class="product-brand"><?php echo $producto['marca']; ?></div>
+                        <h1 class="product-name"><?php echo $producto['nombre']; ?></h1>
+                        
+                        <?php if ($producto['stock'] > 5): ?>
+                        <div class="product-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <span>(143 opiniones)</span>
                         </div>
-                    <?php else: ?>
-                        <div class="price-current">S/ <?php echo number_format($producto['precio'], 2); ?></div>
-                    <?php endif; ?>
-                </div>
-                
-                <div class="product-stock <?php echo $producto['stock'] <= 5 ? 'low-stock' : ''; ?>">
-                    <?php if ($producto['stock'] > 0): ?>
-                        <span class="stock-status in-stock">En stock</span>
-                        <?php if ($producto['stock'] <= 5): ?>
-                            <span class="stock-qty">¡Solo quedan <?php echo $producto['stock']; ?> unidades!</span>
                         <?php endif; ?>
-                    <?php else: ?>
-                        <span class="stock-status out-of-stock">Agotado</span>
-                    <?php endif; ?>
-                </div>
-                
-                <div class="product-short-desc">
-                    <?php echo $producto['descripcion_corta']; ?>
-                </div>
-                
-                <?php if ($producto['stock'] > 0): ?>
-                <div class="product-actions">
-                    <form id="add-to-cart-form" class="cart-form">
-                        <div class="quantity-control">
+                    </div>
+                    
+                    <div class="product-price-block">
+                        <?php if (!empty($producto['precio_oferta'])): ?>
+                            <div class="price-original">S/ <?php echo number_format($producto['precio'], 2); ?></div>
+                            <div class="price-current">S/ <?php echo number_format($producto['precio_oferta'], 2); ?></div>
+                        <?php else: ?>
+                            <div class="price-current">S/ <?php echo number_format($producto['precio'], 2); ?></div>
+                        <?php endif; ?>
+                    </div>
+                    
+                    <div class="product-stock <?php echo $producto['stock'] <= 5 ? 'low-stock' : ''; ?>">
+                        <?php if ($producto['stock'] > 0): ?>
+                            <span class="stock-status in-stock"><i class="fas fa-check-circle"></i> En stock (<?php echo $producto['stock']; ?> unidades)</span>
+                        <?php else: ?>
+                            <span class="stock-status out-of-stock"><i class="fas fa-times-circle"></i> Agotado</span>
+                        <?php endif; ?>
+                    </div>
+                    
+                    <div class="product-short-desc">
+                        <?php echo $producto['descripcion_corta']; ?>
+                    </div>
+                    
+                    <?php if ($producto['stock'] > 0): ?>
+                    <div class="product-actions">
+                        <div class="quantity-selector">
                             <button type="button" class="qty-btn qty-decrease">-</button>
-                            <input type="number" name="cantidad" id="cantidad" value="1" min="1" max="<?php echo $producto['stock']; ?>">
+                            <input type="number" id="cantidad" value="1" min="1" max="<?php echo $producto['stock']; ?>">
                             <button type="button" class="qty-btn qty-increase">+</button>
                         </div>
                         
-                        <input type="hidden" name="producto_id" value="<?php echo $producto_id; ?>">
-                        <button type="submit" class="btn-add-cart">
-                            <span class="cart-icon">🛒</span>
+                        <button id="btn-add-cart" class="btn-add-cart">
+                            <i class="fas fa-shopping-cart"></i>
                             Añadir al carrito
                         </button>
-                    </form>
-                </div>
-                <?php endif; ?>
-                
-                <div class="product-meta">
-                    <div class="meta-item">
-                        <span class="meta-label">Categoría:</span>
-                        <a href="category.php?id=<?php echo $producto['categoria_id']; ?>" class="meta-value"><?php echo $producto['categoria_nombre']; ?></a>
-                    </div>
-                    
-                    <div class="meta-item">
-                        <span class="meta-label">Marca:</span>
-                        <span class="meta-value"><?php echo $producto['marca']; ?></span>
-                    </div>
-                    
-                    <?php if (!empty($producto['modelo'])): ?>
-                    <div class="meta-item">
-                        <span class="meta-label">Modelo:</span>
-                        <span class="meta-value"><?php echo $producto['modelo']; ?></span>
                     </div>
                     <?php endif; ?>
-                </div>
-                
-                <div class="product-benefits">
-                    <div class="benefit">
-                        <div class="benefit-icon">🚚</div>
-                        <div class="benefit-text">Envío a todo Perú</div>
-                    </div>
                     
-                    <div class="benefit">
-                        <div class="benefit-icon">🛡️</div>
-                        <div class="benefit-text">Garantía oficial</div>
-                    </div>
-                    
-                    <div class="benefit">
-                        <div class="benefit-icon">💳</div>
-                        <div class="benefit-text">Pago seguro</div>
+                    <div class="product-meta">
+                        <div class="meta-item">
+                            <span class="meta-label">SKU:</span>
+                            <span class="meta-value"><?php echo $producto['sku']; ?></span>
+                        </div>
+                        
+                        <div class="meta-item">
+                            <span class="meta-label">Categoría:</span>
+                            <a href="category.php?id=<?php echo $producto['categoria_id']; ?>" class="meta-value"><?php echo $producto['categoria_nombre']; ?></a>
+                        </div>
+                        
+                        <div class="meta-item">
+                            <span class="meta-label">Marca:</span>
+                            <span class="meta-value"><?php echo $producto['marca']; ?></span>
+                        </div>
+                        
+                        <?php if (!empty($producto['modelo'])): ?>
+                        <div class="meta-item">
+                            <span class="meta-label">Modelo:</span>
+                            <span class="meta-value"><?php echo $producto['modelo']; ?></span>
+                        </div>
+                        <?php endif; ?>
+                        
+                        <div class="meta-item">
+                            <span class="meta-label">Garantía:</span>
+                            <span class="meta-value">1 año con el fabricante</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
-
-<section class="product-details">
-    <div class="container">
-        <div class="product-tabs">
-            <div class="tabs-header">
-                <button class="tab-btn active" data-tab="description">Descripción</button>
-                <?php if (!empty($caracteristicas_lista)): ?>
-                <button class="tab-btn" data-tab="features">Características</button>
-                <?php endif; ?>
-                <?php if (!empty($especificaciones)): ?>
-                <button class="tab-btn" data-tab="specs">Especificaciones</button>
-                <?php endif; ?>
-                <button class="tab-btn" data-tab="shipping">Envío y Garantía</button>
-            </div>
-            
-            <div class="tabs-content">
-                <div class="tab-panel active" id="description">
+        
+        <!-- Especificaciones y descripción -->
+        <div class="product-details-container">
+            <div class="product-details-layout">
+                <!-- Especificaciones -->
+                <div class="white-card product-specs-card">
+                    <h2 class="section-title">Especificaciones técnicas</h2>
+                    <?php if (!empty($especificaciones)): ?>
+                        <table class="specs-table">
+                            <tbody>
+                                <?php foreach ($especificaciones as $spec): ?>
+                                <tr>
+                                    <th><?php echo $spec['nombre']; ?></th>
+                                    <td><?php echo $spec['valor']; ?></td>
+                                </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    <?php else: ?>
+                        <p>No hay especificaciones disponibles para este producto.</p>
+                    <?php endif; ?>
+                </div>
+                
+                <!-- Descripción -->
+                <div class="white-card product-description-card">
+                    <h2 class="section-title">Descripción</h2>
                     <div class="product-description">
                         <?php echo nl2br($producto['descripcion']); ?>
                     </div>
-                </div>
-                
-                <?php if (!empty($caracteristicas_lista)): ?>
-                <div class="tab-panel" id="features">
+                    
+                    <?php if (!empty($caracteristicas_lista)): ?>
                     <div class="product-features">
+                        <h3>Características</h3>
                         <ul>
                             <?php foreach ($caracteristicas_lista as $caracteristica): ?>
                             <li><?php echo $caracteristica; ?></li>
                             <?php endforeach; ?>
                         </ul>
                     </div>
-                </div>
-                <?php endif; ?>
-                
-                <?php if (!empty($especificaciones)): ?>
-                    <div class="tab-panel" id="specs">
-                        <div class="product-specs">
-                            <div class="specs-group">
-                                <h3>Especificaciones Técnicas</h3>
-                                <table class="specs-table">
-                                    <tbody>
-                                        <?php foreach ($especificaciones as $spec): ?>
-                                        <tr>
-                                            <th><?php echo $spec['nombre']; ?></th>
-                                            <td><?php echo $spec['valor']; ?></td>
-                                        </tr>
-                                        <?php endforeach; ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
                     <?php endif; ?>
-                
-                <div class="tab-panel" id="shipping">
-                    <div class="shipping-info">
-                        <h3>Envío</h3>
-                        <p>En COMPU YA ofrecemos varias opciones de envío para tu comodidad:</p>
-                        <ul>
-                            <li><strong>Envío estándar:</strong> De 3 a 5 días hábiles en Lima Metropolitana.</li>
-                            <li><strong>Envío a provincia:</strong> De 5 a 7 días hábiles según la localidad.</li>
-                            <li><strong>Recojo en tienda:</strong> Disponible el mismo día si el producto está en stock.</li>
-                        </ul>
-                        
-                        <p>El costo de envío se calcula en función de la ubicación y el tamaño/peso del producto. Los envíos para compras superiores a S/ 300 en Lima Metropolitana son GRATIS.</p>
-                        
-                        <h3>Garantía</h3>
-                        <p>Todos nuestros productos cuentan con garantía oficial del fabricante:</p>
-                        <ul>
-                            <li>Garantía de 12 meses en la mayoría de productos.</li>
-                            <li>Soporte técnico especializado para resolver cualquier problema.</li>
-                            <li>Posibilidad de extensión de garantía en productos seleccionados.</li>
-                        </ul>
-                        
-                        <p>Para hacer efectiva la garantía, es necesario presentar la factura de compra y el producto debe estar en buenas condiciones físicas, sin daños causados por mal uso.</p>
-                        
-                        <h3>Política de devoluciones</h3>
-                        <p>Si no estás satisfecho con tu compra, puedes solicitar una devolución dentro de los primeros 7 días después de recibir el producto. El producto debe estar en su empaque original y sin señales de uso.</p>
-                        
-                        <p>Para más información sobre nuestras políticas de envío, garantía y devoluciones, puedes contactar a nuestro servicio al cliente.</p>
-                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
-
-<?php if (!empty($productos_relacionados)): ?>
-<section class="related-products">
-    <div class="container">
-        <h2>Productos Relacionados</h2>
         
-        <div class="related-products-grid">
-            <?php foreach ($productos_relacionados as $prod_rel): ?>
+        <!-- Productos relacionados -->
+        <?php if (!empty($productos_relacionados)): ?>
+        <div class="related-products-section">
+            <h2 class="section-title">Productos Relacionados</h2>
+            
+            <div class="related-products-grid">
+                <?php foreach ($productos_relacionados as $prod_rel): ?>
                 <div class="producto-card">
-                <a href="<?php echo BASE_URL; ?>/producto/<?php echo $prod_rel['slug']; ?>" class="product-link">
-                <div class="producto-imagen">
-                    <img src="<?php echo BASE_URL . '/' . obtenerImagenProducto($prod_rel['id']); ?>" alt="<?php echo $prod_rel['nombre']; ?>">
-                </div>
-                        <div class="producto-info">
-                            <div class="producto-marca"><?php echo $prod_rel['marca']; ?></div>
-                            <h3 class="producto-nombre"><?php echo $prod_rel['nombre']; ?></h3>
-                            <div class="producto-precio">
-                                <?php if (!empty($prod_rel['precio_oferta'])): ?>
-                                    <span class="precio-antiguo">S/ <?php echo number_format($prod_rel['precio'], 2); ?></span>
-                                    <span class="precio-actual">S/ <?php echo number_format($prod_rel['precio_oferta'], 2); ?></span>
-                                <?php else: ?>
-                                    <span class="precio-actual">S/ <?php echo number_format($prod_rel['precio'], 2); ?></span>
-                                <?php endif; ?>
+                    <?php if (!empty($prod_rel['precio_oferta'])): ?>
+                    <div class="etiqueta-oferta">OFERTA</div>
+                    <?php endif; ?>
+                    
+                    <div class="producto-imagen">
+                        <img src="<?php echo BASE_URL . '/' . obtenerImagenProducto($prod_rel['id']); ?>" alt="<?php echo $prod_rel['nombre']; ?>">
+                    </div>
+                    
+                    <div class="producto-info">
+                        <div class="producto-marca"><?php echo $prod_rel['marca']; ?></div>
+                        <h3 class="producto-nombre">
+                            <?php echo $prod_rel['nombre']; ?>
+                        </h3>
+                        
+                        <div class="producto-precio">
+                            <?php if (!empty($prod_rel['precio_oferta'])): ?>
+                            <div>
+                                <span class="precio-antiguo">S/ <?php echo number_format($prod_rel['precio'], 2); ?></span>
+                                <span class="precio-actual">S/ <?php echo number_format($prod_rel['precio_oferta'], 2); ?></span>
+                                <div>
+                                    <span class="descuento">
+                                        <?php echo round(100 - (($prod_rel['precio_oferta'] / $prod_rel['precio']) * 100)); ?>% DSCTO
+                                    </span>
+                                </div>
                             </div>
+                            <?php else: ?>
+                            <span class="precio-actual">S/ <?php echo number_format($prod_rel['precio'], 2); ?></span>
+                            <?php endif; ?>
                         </div>
-                    </a>
+                        
+                        <?php if ($prod_rel['stock'] > 0): ?>
+                        <div class="producto-stock">
+                            <span class="en-stock">En stock</span>
+                        </div>
+                        <?php else: ?>
+                        <div class="producto-stock">
+                            <span class="sin-stock">Agotado</span>
+                        </div>
+                        <?php endif; ?>
+                        
+                        <a href="producto/<?php echo $prod_rel['slug']; ?>" class="btn-ver">Ver Producto</a>
+                    </div>
                 </div>
-            <?php endforeach; ?>
+                <?php endforeach; ?>
+            </div>
         </div>
+        <?php endif; ?>
     </div>
-</section>
-<?php endif; ?>
+</div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Cambio de pestañas
-    const tabButtons = document.querySelectorAll('.tab-btn');
-    const tabPanels = document.querySelectorAll('.tab-panel');
-    
-    tabButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            // Desactivar todas las pestañas
-            tabButtons.forEach(btn => btn.classList.remove('active'));
-            tabPanels.forEach(panel => panel.classList.remove('active'));
-            
-            // Activar la pestaña seleccionada
-            button.classList.add('active');
-            document.getElementById(button.getAttribute('data-tab')).classList.add('active');
-        });
-    });
-    
-    // Galería de imágenes
+    // Cambio de imagen principal al hacer clic en miniaturas
     const thumbs = document.querySelectorAll('.thumb');
     const mainImage = document.getElementById('main-image');
     
@@ -389,28 +347,6 @@ document.addEventListener('DOMContentLoaded', function() {
             mainImage.src = thumb.getAttribute('data-img');
         });
     });
-    
-    // Zoom en la imagen principal
-    const galleryMain = document.querySelector('.gallery-main');
-    if (galleryMain) {
-        galleryMain.addEventListener('mousemove', function(e) {
-            const img = this.querySelector('img');
-            const bounds = this.getBoundingClientRect();
-            
-            // Calcular posición relativa del cursor
-            const x = (e.clientX - bounds.left) / bounds.width;
-            const y = (e.clientY - bounds.top) / bounds.height;
-            
-            // Aplicar transformación
-            img.style.transformOrigin = `${x * 100}% ${y * 100}%`;
-            img.style.transform = 'scale(1.5)';
-        });
-        
-        galleryMain.addEventListener('mouseleave', function() {
-            const img = this.querySelector('img');
-            img.style.transform = 'scale(1)';
-        });
-    }
     
     // Control de cantidad
     const qtyDecrease = document.querySelector('.qty-decrease');
@@ -446,17 +382,16 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Añadir al carrito
-    const addToCartForm = document.getElementById('add-to-cart-form');
-    if (addToCartForm) {
-        addToCartForm.addEventListener('submit', function(e) {
-            e.preventDefault();
+    const btnAddCart = document.getElementById('btn-add-cart');
+    if (btnAddCart) {
+        btnAddCart.addEventListener('click', function() {
+            const cantidad = document.getElementById('cantidad') ? document.getElementById('cantidad').value : 1;
             
-            console.log('Formulario enviado'); // Para debugging
-            
-            const formData = new FormData(this);
+            const formData = new FormData();
             formData.append('action', 'add');
+            formData.append('producto_id', <?php echo $producto_id; ?>);
+            formData.append('cantidad', cantidad);
             
-            // Enviar mediante fetch
             fetch('<?php echo BASE_URL; ?>/cart_add.php', {
                 method: 'POST',
                 body: formData,
@@ -471,10 +406,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return response.json();
             })
             .then(data => {
-                console.log('Respuesta:', data); // Para debugging
-                
                 if (data.success) {
-                    // Redireccionar a la misma página con mensaje de éxito
                     window.location.href = data.redirect_url || `<?php echo BASE_URL; ?>/producto/<?php echo $producto['slug']; ?>?added=1`;
                 } else {
                     alert(data.error || 'Error al añadir al carrito');
@@ -485,8 +417,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('Error al procesar la solicitud: ' + error.message);
             });
         });
-    } else {
-        console.error('Formulario no encontrado');
     }
 });
 </script>

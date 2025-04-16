@@ -1,0 +1,487 @@
+/* ==========================================================================
+   ESTILOS UNIFICADOS PARA CATEGORÍA Y BÚSQUEDA - COMPUYA
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   ENCABEZADO DE CATEGORÍA/BÚSQUEDA
+   -------------------------------------------------------------------------- */
+.category-header,
+.search-results-header {
+    background-color: #001CBD; /* Azul principal como en la imagen */
+    color: white;
+    padding: 20px 0;
+    margin-bottom: 25px;
+}
+
+.category-header h1,
+.search-results-header h1 {
+    margin-bottom: 5px;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.breadcrumbs,
+.search-count {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.breadcrumbs a {
+    color: white;
+}
+
+/* --------------------------------------------------------------------------
+   LAYOUT DE CATEGORÍA/BÚSQUEDA
+   -------------------------------------------------------------------------- */
+.category-layout,
+.search-layout {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 25px;
+    margin-bottom: 50px;
+}
+
+/* --------------------------------------------------------------------------
+   FILTROS (SIDEBAR)
+   -------------------------------------------------------------------------- */
+.filters-sidebar {
+    background-color: #FFFFFF;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.filters-sidebar h3 {
+    margin-bottom: 15px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #001CBD;
+    border-bottom: 1px solid #E0E0E0;
+    padding-bottom: 8px;
+}
+
+.filter-group {
+    margin-bottom: 20px;
+}
+
+.filter-group:last-child {
+    margin-bottom: 0;
+}
+
+.filter-group h4 {
+    font-size: 16px;
+    margin-bottom: 8px;
+    color: #212121;
+}
+
+.filter-options {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.filter-options li {
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+}
+
+.filter-options input[type="radio"],
+.filter-options input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+.filter-options label {
+    font-size: 14px;
+    color: #555555;
+    cursor: pointer;
+    margin-bottom: 0;
+}
+
+.price-range {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.price-range input[type="number"] {
+    flex: 1;
+    padding: 8px;
+    font-size: 14px;
+}
+
+.price-range span {
+    color: #555555;
+    font-size: 14px;
+}
+
+.filter-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #E0E0E0;
+}
+
+.btn-filter {
+    background-color: #001CBD;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s;
+}
+
+.btn-filter:hover {
+    background-color: #2945CF;
+}
+
+.btn-clear {
+    text-align: center;
+    color: #555555;
+    font-size: 14px;
+}
+
+.btn-clear:hover {
+    color: #001CBD;
+    text-decoration: underline;
+}
+
+/* --------------------------------------------------------------------------
+   CONTENEDOR DE PRODUCTOS
+   -------------------------------------------------------------------------- */
+.products-container,
+.search-results {
+    display: flex;
+    flex-direction: column;
+}
+
+.products-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #E0E0E0;
+}
+
+.products-count,
+.search-count {
+    font-size: 14px;
+    color: #555555;
+}
+
+.products-sort {
+    display: flex;
+    align-items: center;
+}
+
+.products-sort label {
+    margin-right: 8px;
+    font-size: 14px;
+    color: #555555;
+    margin-bottom: 0;
+}
+
+.products-sort select {
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #E0E0E0;
+    font-size: 14px;
+    background-color: #FFFFFF;
+}
+
+/* --------------------------------------------------------------------------
+   GRID DE PRODUCTOS
+   -------------------------------------------------------------------------- */
+.productos-grid,
+.search-results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+
+/* --------------------------------------------------------------------------
+   TARJETAS DE PRODUCTOS
+   -------------------------------------------------------------------------- */
+   .producto-card,
+   .search-product-card {
+       background-color: #FFFFFF;
+       border-radius: 8px;
+       overflow: hidden;
+       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+       position: relative;
+       display: flex;
+       flex-direction: column;
+       margin-bottom: 20px;
+       border: 1px solid #E0E0E0;
+   }
+   
+   .producto-imagen,
+   .search-product-image {
+       height: 200px;
+       background-color: #FFFFFF;
+       display: flex;
+       align-items: center;
+       justify-content: center;
+       padding: 15px;
+       border-bottom: 1px solid #F0F0F0;
+   }
+   
+   .producto-imagen img,
+   .search-product-image img {
+       max-height: 100%;
+       max-width: 100%;
+       object-fit: contain;
+   }
+   
+   .producto-info,
+   .search-product-info {
+       padding: 15px;
+       display: flex;
+       flex-direction: column;
+       flex-grow: 1;
+   }
+   
+   .producto-marca,
+   .search-product-brand {
+       color: #666666;
+       font-size: 14px;
+       margin-bottom: 5px;
+   }
+   
+   .producto-nombre,
+   .search-product-name {
+       font-size: 16px;
+       font-weight: 600;
+       margin-bottom: 15px;
+       height: 40px;
+       overflow: hidden;
+       display: -webkit-box;
+       -webkit-line-clamp: 2;
+       -webkit-box-orient: vertical;
+       color: #333333;
+   }
+   
+   .producto-precio,
+   .search-product-price {
+       margin-bottom: 15px;
+       display: flex;
+       align-items: center;
+       flex-wrap: wrap;
+   }
+   
+   .precio-antiguo,
+   .search-price-original {
+       color: #999999;
+       text-decoration: line-through;
+       font-size: 14px;
+       margin-right: 8px;
+   }
+   
+   .precio-actual,
+   .search-price-current {
+       font-size: 20px;
+       font-weight: 700;
+       color: #001CBD;
+   }
+   
+   /* Etiqueta de oferta */
+   .etiqueta-oferta {
+       position: absolute;
+       top: 10px;
+       right: 10px;
+       background-color: #DD0B0B;
+       color: white;
+       padding: 5px 10px;
+       font-size: 12px;
+       font-weight: 700;
+       border-radius: 4px;
+       z-index: 10;
+   }
+   
+   /* Etiqueta de descuento */
+   .descuento {
+       display: inline-block;
+       background-color: #DD0B0B;
+       color: white;
+       font-size: 12px;
+       padding: 4px 8px;
+       border-radius: 4px;
+       margin-top: 5px;
+   }
+   
+   .producto-stock {
+       margin-bottom: 10px;
+       font-size: 14px;
+   }
+   
+   .en-stock {
+       color: #28A745;
+   }
+   
+   .sin-stock {
+       color: #DC3545;
+   }
+   
+   .btn-ver {
+       display: block;
+       width: 100%;
+       padding: 10px;
+       background-color: #001CBD;
+       color: white;
+       text-align: center;
+       border-radius: 4px;
+       font-weight: 500;
+       transition: background-color 0.3s;
+       border: none;
+       cursor: pointer;
+       margin-top: auto;
+   }
+   
+   .btn-ver:hover {
+       background-color: #0016A6;
+       color: white;
+   }
+
+/* --------------------------------------------------------------------------
+   PAGINACIÓN
+   -------------------------------------------------------------------------- */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+}
+
+.page-prev,
+.page-next {
+    padding: 8px 16px;
+    background-color: #FFFFFF;
+    border: 1px solid #E0E0E0;
+    border-radius: 4px;
+    color: #555555;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.page-prev:hover,
+.page-next:hover {
+    background-color: #001CBD;
+    color: white;
+    border-color: #001CBD;
+}
+
+.page-numbers {
+    display: flex;
+    margin: 0 15px;
+}
+
+.page-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    margin: 0 4px;
+    border-radius: 4px;
+    border: 1px solid #E0E0E0;
+    color: #555555;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.page-number:hover {
+    background-color: #F5F5F5;
+    color: #001CBD;
+}
+
+.page-number.active {
+    background-color: #001CBD;
+    color: white;
+    border-color: #001CBD;
+}
+
+/* --------------------------------------------------------------------------
+   MENSAJE SIN RESULTADOS
+   -------------------------------------------------------------------------- */
+.no-products-message,
+.search-no-results {
+    background-color: #FFFFFF;
+    padding: 30px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.no-products-message p,
+.search-no-results p {
+    margin-bottom: 15px;
+    color: #555555;
+}
+
+.no-products-message a,
+.search-no-results a {
+    color: #001CBD;
+    font-weight: 500;
+}
+
+.no-products-message a:hover,
+.search-no-results a:hover {
+    text-decoration: underline;
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIVE
+   -------------------------------------------------------------------------- */
+@media (max-width: 992px) {
+    .category-layout,
+    .search-layout {
+        grid-template-columns: 220px 1fr;
+        gap: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .category-layout,
+    .search-layout {
+        grid-template-columns: 1fr;
+    }
+    
+    .filters-sidebar {
+        position: static;
+        max-height: none;
+        margin-bottom: 20px;
+    }
+    
+    .products-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .products-sort {
+        margin-top: 8px;
+    }
+    
+    .productos-grid,
+    .search-results-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+}
+
+@media (max-width: 576px) {
+    .pagination {
+        flex-wrap: wrap;
+    }
+    
+    .page-numbers {
+        order: 3;
+        margin: 15px 0 0;
+        width: 100%;
+        justify-content: center;
+    }
+}

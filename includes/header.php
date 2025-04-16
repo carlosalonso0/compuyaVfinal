@@ -16,13 +16,49 @@ if (!defined('IN_COMPUYA')) {
     <!-- Font Awesome para iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Estilos CSS -->
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/styles.css">
-    
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Estilos CSS -->
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/styles.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/header.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/footer.css">
+    
+    <?php 
+    // Cargar CSS específico según la página actual
+    $current_page = basename($_SERVER['PHP_SELF'], '.php');
+    switch ($current_page) {
+        case 'index':
+            echo '<link rel="stylesheet" href="' . BASE_URL . '/assets/css/home.css">';
+            break;
+        case 'product':
+            echo '<link rel="stylesheet" href="' . BASE_URL . '/assets/css/product.css">';
+            break;
+        case 'category':
+            echo '<link rel="stylesheet" href="' . BASE_URL . '/assets/css/category.css">';
+            break;
+        case 'cart':
+            echo '<link rel="stylesheet" href="' . BASE_URL . '/assets/css/cart.css">';
+            break;
+        case 'login':
+        case 'register':
+        case 'forgot-password':
+        case 'reset-password':
+            echo '<link rel="stylesheet" href="' . BASE_URL . '/assets/css/login.css">';
+            break;
+        case 'search':
+            echo '<link rel="stylesheet" href="' . BASE_URL . '/assets/css/search.css">';
+            break;
+    }
+    ?>
+    
+    <?php if (isset($extra_css) && is_array($extra_css)): ?>
+        <?php foreach ($extra_css as $css_file): ?>
+            <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/<?php echo $css_file; ?>">
+        <?php endforeach; ?>
+    <?php endif; ?>
 </head>
 <body>
     <!-- Header Principal -->

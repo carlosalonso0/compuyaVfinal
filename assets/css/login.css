@@ -1,0 +1,146 @@
+/* ==========================================================================
+   ESTILOS DE LOGIN Y REGISTRO - COMPUYA
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   SECCIÓN DE LOGIN
+   -------------------------------------------------------------------------- */
+   .login-section {
+    padding: var(--spacing-xxl) 0;
+}
+
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-box {
+    background-color: var(--white);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-md);
+    padding: var(--spacing-xl);
+    width: 100%;
+    max-width: 500px;
+}
+
+.login-box h1 {
+    margin-bottom: var(--spacing-xl);
+    text-align: center;
+    color: var(--primary);
+    font-size: 28px;
+}
+
+/* --------------------------------------------------------------------------
+   FORMULARIO DE LOGIN
+   -------------------------------------------------------------------------- */
+.login-form .form-group {
+    margin-bottom: var(--spacing-md);
+}
+
+.login-form label {
+    display: block;
+    margin-bottom: var(--spacing-sm);
+    font-weight: 500;
+    color: var(--text-dark);
+}
+
+.login-form input[type="text"],
+.login-form input[type="email"],
+.login-form input[type="password"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--border-light);
+    border-radius: var(--border-radius-sm);
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+.login-form input:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 28, 189, 0.1);
+}
+
+.form-actions {
+    margin-top: var(--spacing-xl);
+}
+
+.btn-login {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-login:hover {
+    background-color: var(--primary-light);
+}
+
+/* --------------------------------------------------------------------------
+   ENLACES DE LOGIN
+   -------------------------------------------------------------------------- */
+.login-links {
+    margin-top: var(--spacing-md);
+    text-align: center;
+}
+
+.login-links a {
+    color: var(--primary);
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.login-links a:hover {
+    text-decoration: underline;
+}
+
+/* --------------------------------------------------------------------------
+   REGISTRO
+   -------------------------------------------------------------------------- */
+.register-section {
+    padding: var(--spacing-xxl) 0;
+}
+
+.register-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.register-box {
+    background-color: var(--white);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-md);
+    padding: var(--spacing-xl);
+    width: 100%;
+    max-width: 600px;
+}
+
+.register-box h1 {
+    margin-bottom: var(--spacing-xl);
+    text-align: center;
+    color: var(--primary);
+    font-size: 28px;
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIVE
+   -------------------------------------------------------------------------- */
+@media (max-width: 576px) {
+    .login-box, .register-box {
+        padding: var(--spacing-lg);
+    }
+    
+    .login-box h1, .register-box h1 {
+        font-size: 24px;
+        margin-bottom: var(--spacing-lg);
+    }
+}

@@ -35,11 +35,6 @@ if (!$result_categoria || $result_categoria->num_rows == 0) {
 }
 
 $categoria = $result_categoria->fetch_assoc();
-// Añade este código de depuración:
-echo "<!-- DEBUG: Categoría ID: " . $categoria_id . " -->";
-echo "<!-- DEBUG: Slug: " . $slug . " -->";
-echo "<!-- DEBUG: SQL: " . $sql_categoria . " -->";
-echo "<!-- DEBUG: Nombre categoría: " . $categoria['nombre'] . " -->";
 $page_title = $categoria['nombre'];
 
 // Obtener subcategorías (si las hay)
@@ -155,11 +150,12 @@ if ($pagina_actual < 1) {
 $indice_inicio = ($pagina_actual - 1) * $productos_por_pagina;
 $productos_pagina = array_slice($productos, $indice_inicio, $productos_por_pagina);
 
+// Definir variable CSS adicional
+$extra_css = ['unified-category-search.css'];
+
 // Incluir cabecera
 include 'includes/header.php';
 ?>
-
-<link rel="stylesheet" href="assets/css/category.css">
 
 <section class="category-header">
     <div class="container">
@@ -274,45 +270,50 @@ include 'includes/header.php';
                 <?php else: ?>
                 <div class="productos-grid">
                     <?php foreach ($productos_pagina as $producto): ?>
-                    <div class="producto-card<?php echo !empty($producto['precio_oferta']) ? ' oferta' : ''; ?>">
-                        <?php if (!empty($producto['precio_oferta'])): ?>
-                        <div class="etiqueta-oferta">OFERTA</div>
-                        <?php endif; ?>
-                        
-                        <div class="producto-imagen">
-                            <a href="producto/<?php echo $producto['slug']; ?>">
-                            <img src="<?php echo BASE_URL . '/' . obtenerImagenProducto($producto['id']); ?>" alt="<?php echo $producto['nombre']; ?>">
-                            </a>
-                        </div>
-                        
-                        <div class="producto-info">
-                            <div class="producto-marca"><?php echo $producto['marca']; ?></div>
-                            <h3 class="producto-nombre">
-                                <a href="producto/<?php echo $producto['slug'];?>"><?php echo $producto['nombre']; ?></a>
-                            </h3>
-                            <div class="producto-precio">
-                                <?php if (!empty($producto['precio_oferta'])): ?>
-                                <span class="precio-antiguo">S/ <?php echo number_format($producto['precio'], 2); ?></span>
-                                <span class="precio-actual">S/ <?php echo number_format($producto['precio_oferta'], 2); ?></span>
-                                <span class="descuento">
-                                    <?php echo round(100 - (($producto['precio_oferta'] / $producto['precio']) * 100)); ?>% DSCTO
-                                </span>
-                                <?php else: ?>
-                                <span class="precio-actual">S/ <?php echo number_format($producto['precio'], 2); ?></span>
-                                <?php endif; ?>
+                        <div class="producto-card">
+                            <?php if (!empty($producto['precio_oferta'])): ?>
+                            <div class="etiqueta-oferta">OFERTA</div>
+                            <?php endif; ?>
+                            
+                            <div class="producto-imagen">
+                                <img src="<?php echo BASE_URL . '/' . obtenerImagenProducto($producto['id']); ?>" alt="<?php echo $producto['nombre']; ?>">
                             </div>
                             
-                            <div class="producto-stock">
+                            <div class="producto-info">
+                                <div class="producto-marca"><?php echo $producto['marca']; ?></div>
+                                <h3 class="producto-nombre">
+                                    <?php echo $producto['nombre']; ?>
+                                </h3>
+                                
+                                <div class="producto-precio">
+                                    <?php if (!empty($producto['precio_oferta'])): ?>
+                                    <div>
+                                        <span class="precio-antiguo">S/ <?php echo number_format($producto['precio'], 2); ?></span>
+                                        <span class="precio-actual">S/ <?php echo number_format($producto['precio_oferta'], 2); ?></span>
+                                        <div>
+                                            <span class="descuento">
+                                                <?php echo round(100 - (($producto['precio_oferta'] / $producto['precio']) * 100)); ?>% DSCTO
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <?php else: ?>
+                                    <span class="precio-actual">S/ <?php echo number_format($producto['precio'], 2); ?></span>
+                                    <?php endif; ?>
+                                </div>
+                                
                                 <?php if ($producto['stock'] > 0): ?>
-                                <span class="en-stock">En stock</span>
+                                <div class="producto-stock">
+                                    <span class="en-stock">En stock</span>
+                                </div>
                                 <?php else: ?>
-                                <span class="sin-stock">Agotado</span>
+                                <div class="producto-stock">
+                                    <span class="sin-stock">Agotado</span>
+                                </div>
                                 <?php endif; ?>
+                                
+                                <a href="producto/<?php echo $producto['slug']; ?>" class="btn-ver">Ver Producto</a>
                             </div>
-                            
-                            <a href="producto/<?php echo $producto['slug'];?>" class="btn-ver">Ver Producto</a>
                         </div>
-                    </div>
                     <?php endforeach; ?>
                 </div>
                 
