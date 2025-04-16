@@ -222,12 +222,24 @@ include 'includes/header.php';
    <div class="container">
        <h2>Nuestras Marcas</h2>
        <div class="marcas-grid">
-           <div class="marca">HP</div>
-           <div class="marca">EPSON</div>
-           <div class="marca">NVIDIA</div>
-           <div class="marca">INTEL</div>
-           <div class="marca">AMD</div>
-           <div class="marca">ASUS</div>
+           <div class="marca">
+               <img src="<?php echo BASE_URL; ?>/assets/img/brands/hp.png" alt="HP">
+           </div>
+           <div class="marca">
+               <img src="<?php echo BASE_URL; ?>/assets/img/brands/epson.png" alt="EPSON">
+           </div>
+           <div class="marca">
+               <img src="<?php echo BASE_URL; ?>/assets/img/brands/nvidia.png" alt="NVIDIA">
+           </div>
+           <div class="marca">
+               <img src="<?php echo BASE_URL; ?>/assets/img/brands/intel.png" alt="INTEL">
+           </div>
+           <div class="marca">
+               <img src="<?php echo BASE_URL; ?>/assets/img/brands/amd.png" alt="AMD">
+           </div>
+           <div class="marca">
+               <img src="<?php echo BASE_URL; ?>/assets/img/brands/asus.png" alt="ASUS">
+           </div>
        </div>
    </div>
 </section>
